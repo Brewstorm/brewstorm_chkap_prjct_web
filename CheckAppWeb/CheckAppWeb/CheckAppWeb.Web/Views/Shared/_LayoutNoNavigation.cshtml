@@ -1,0 +1,12 @@
+﻿<!DOCTYPE html>
+
+<html lang="@UICulture">
+<head>
+    @{Html.RenderPartial(MVC.Views.Shared._LayoutHead);}
+    @RenderSection("Head", false)
+    <title>@ViewData["Title"]</title>
+</head>
+<body id="s-@(ViewData["PageId"])Page" class="@(ViewData["BodyClass"]) no-navigation">
+    @RenderBody()
+</body>
+</html>

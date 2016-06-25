@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+@{
+    Func<string, IHtmlString> json = x => new HtmlString(Serenity.JSON.Stringify(x));
+    var hideNav = Request["hideNav"] == "1";
+    var logged = Serenity.Authorization.Username;
+    var themeCookie = Request.Cookies["ThemePreference"];
+    var theme = themeCookie != null && !themeCookie.Value.IsEmptyOrNull() ? themeCookie.Value : "blue";
+}
+<!--[if IE 8]> <html lang="@UICulture" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="@UICulture" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="@UICulture" class="no-js@(hideNav ? " no-navigation" : "")">
+<!--<![endif]-->
+<head>
+    @{Html.RenderPartial(MVC.Views.Shared._LayoutHead);}
+    @RenderSection("Head", false)
+    <title>@(ViewData["Title"]) - CheckAppWeb</title>
+</head>
+<body id="s-@(ViewData["PageId"])Page" class="@(ViewData["BodyClass"]) fixed sidebar-mini hold-transition skin-@theme@(hideNav ? " no-navigation" : " has-layout-event")">
+
+@if (hideNav)
+{
+<script type="text/javascript">
+    $(function () {
+        @RenderSection("PageInitScript", false)
+    });
+</script>
+<div id="page-outer-nonav">
+    <div id="page-container" class="page-container-common">
+        @RenderBody()
+    </div>
+</div>
+}
+else
+{
+<div class="wrapper">
+    <header class="main-header">
+        <a href="~/" class="logo">
+            <span class="logo-mini"><i></i></span>
+            <span class="logo-lg"><i></i><b>@LocalText.Get("Navigation.SiteTitle")</b></span>
+        </a>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i>
+                            @Serenity.Authorization.Username
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="~/Account/ChangePassword"><i class="fa fa-lock fa-fw"></i> @Texts.Forms.Membership.ChangePassword.FormTitle</a>
+                            </li>
+                            <li>
+                                <a href="~/Account/Signout"><i class="fa fa-sign-out fa-fw"></i> @LocalText.Get("Navigation.LogoutLink")</a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" id="SidebarSearch" name="q" class="form-control" autocomplete="off">
+                    <span class="input-group-btn">
+                        <button type="button" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </form>
+            <ul class="sidebar-menu" id="SidebarMenu">
+                @{Html.RenderPartial(MVC.Views.Shared.LeftNavigation, new CheckAppWeb.Navigation.NavigationModel()); }
+            </ul>
+        </section>
+    </aside>
+
+    <div class="content-wrapper">
+@if (IsSectionDefined("ContentHeader"))
+{
+        <section class="content-header">
+            @RenderSection("ContentHeader")
+        </section>
+}
+        <section class="content">
+            @RenderBody()
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            @Texts.Site.Layout.FooterInfo
+        </div>
+        <strong>@Texts.Site.Layout.FooterCopyright</strong> @Texts.Site.Layout.FooterRights
+    </footer>
+
+    <aside class="control-sidebar control-sidebar-dark">
+        <div class="tab-content">
+            <div class="tab-pane active" id="control-sidebar-settings-tab">
+                <form method="post">
+                    <h3 class="control-sidebar-heading">@Texts.Site.Layout.GeneralSettings</h3>
+
+                    <div class="form-group">
+                        <label class="control-sidebar-subheading">@Texts.Site.Layout.Language</label>
+                        <select id="LanguageSelect" class="form-control"></select>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label class="control-sidebar-subheading">@Texts.Site.Layout.Theme</label>
+                        <select id="ThemeSelect" class="form-control"></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </aside>
+    <div class="control-sidebar-bg"></div>
+</div>
+
+<script type="text/javascript">
+    $().ready(function () {
+        new CheckAppWeb.Common.SidebarSearch($('#SidebarSearch'), $('#SidebarMenu')).init();
+        new CheckAppWeb.Common.LanguageSelection($('#LanguageSelect'), '@(System.Globalization.CultureInfo.CurrentUICulture.Name)');
+        new CheckAppWeb.Common.ThemeSelection($('#ThemeSelect'));
+        @RenderSection("PageInitScript", false);
+
+        var doLayout = function () {
+            height = (this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height;
+            height -= $('header.main-header').outerHeight();
+            height -= $('section.content-header').outerHeight();
+            height -= $('footer.main-footer').outerHeight();
+            if (height < 200) height = 200;
+            $("section.content").css("min-height", (height) + "px");
+
+            $('body').triggerHandler('layout');
+        };
+
+        $(window).bind("load resize layout", doLayout);
+        doLayout();
+    });
+</script>
+}
+</body>
+</html>

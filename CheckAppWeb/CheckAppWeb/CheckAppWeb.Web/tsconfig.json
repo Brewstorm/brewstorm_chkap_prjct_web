@@ -1,0 +1,15 @@
+﻿{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "preserveConstEnums": true,
+        "experimentalDecorators": true,
+        "declaration": true,
+        "emitBOM": true,
+        "sourceMap": true,
+        "outFile": "Scripts/site/CheckAppWeb.Web.js",
+        "target": "ES5"
+    },
+    "exclude": [
+        "Scripts/site/CheckAppWeb.Web.d.ts"
+    ]
+}

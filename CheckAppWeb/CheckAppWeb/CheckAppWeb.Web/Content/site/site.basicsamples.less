@@ -1,0 +1,107 @@
+@import "site.mixins.less";
+
+.s-BasicSamples-ChartInDialog {
+    svg {
+        width: 100%;
+        height: 90%;
+    }
+
+    .ui-dialog-content {
+        overflow: hidden;
+    }
+    > .size { .widthAndMin(700px); .heightAndMin(400px); }
+}
+
+.s-BasicSamples-ResponsiveDialog {
+    > .size { width: 750px; height: 550px; }
+    .caption { width: 120px; }
+}
+
+.s-BasicSamples-MultiColumnResponsiveDialog {
+    > .size { width: 850px; height: 650px; }
+    .caption { width: 130px; }
+
+    @media (min-width: 768px) {
+        .field.OrderDate, .field.RequiredDate, .field.ShipName, .field.ShipAddress, 
+        .field.ShipCity, .field.ShipRegion, .field.ShipPostalCode, .field.ShipCountry {
+            flex: auto;
+            min-width: 50%;
+        }
+        
+        .field.ShippedDate, .field.ShipVia, .field.Freight { 
+            flex: auto;
+            min-width: 33%;
+            .caption { width: 90px; } 
+        }
+    }
+}
+
+.s-BasicSamples-CloneableEntityDialog {
+    > .size { width: 850px; height: 500px; }
+    .caption { width: 150px; }
+}
+
+.s-BasicSamples-LookupFilterByMultipleDialog {
+    > .size { width: 850px; height: 650px; }
+    .caption { width: 150px; }
+}
+
+.s-BasicSamples-FilteredLookupInDetailDialog {
+    > .size { width: 850px; height: 550px; }
+    .caption { width: 150px; }
+    .s-PropertyGrid .categories { overflow-y: auto; }
+}
+
+.s-BasicSamples-FilteredLookupOrderDetailDialog {
+    > .size { .widthAndMin(450px); }
+    .dialog-styles(@h: auto, @l: 80px, @e: 310px);
+}
+
+.s-BasicSamples-GroupingAndSummariesInGrid {
+    .slick-cell {
+        input[type=text] { text-align: right; border-radius: 0; width: 100%; padding: 0 2px; border: 1px solid #e7e7e7; }
+        input.dirty { background-color: #ffe0e0; }
+    }
+}
+
+.s-BasicSamples-ConditionalFormattingGrid {
+    .discontinued .slick-cell, .discontinued .slick-cell a {
+        color: lightgray;
+    }
+
+    .out-of-stock .slick-cell, .out-of-stock .slick-cell a {
+        background-color: #ffaaaa;
+        color: red;
+    }
+
+    .critical-stock {
+        background-color: #ffd5c0;
+
+        .slick-cell, .slick-cell a {
+            color: black;
+        }
+    }
+
+    .much-stock {
+
+        .slick-cell, .slick-cell a {
+            font-style: italic;
+        }
+    }
+
+    .high-price .col-unit-price {
+        background-color: darkorchid;
+        color: #fff;
+    }
+
+    .medium-price .col-unit-price {
+        background-color: yellow;
+        color: #000;
+    }
+
+    .low-price .col-unit-price {
+        background-color: green;
+        color: #fff;
+    }
+
+}

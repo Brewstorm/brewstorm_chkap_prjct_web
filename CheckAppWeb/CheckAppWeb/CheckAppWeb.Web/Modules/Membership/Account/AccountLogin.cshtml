@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    ViewData["PageId"] = "Login";
+    Layout = MVC.Views.Shared._LayoutNoNavigation;
+}
+
+<script id="Template_Membership_LoginPanel" type="text/template">
+<div>
+    <h3>@Texts.Forms.Membership.Login.FormTitle</h3>
+    <form id="~_Form" action="">
+        <div class="s-Form">
+            <div class="fieldset ui-widget ui-widget-content ui-corner-all">
+                <div id="~_PropertyGrid"></div>
+                <div class="clear"></div>
+            </div>
+            <div class="buttons">
+                <button id="~_LoginButton" type="submit" class="btn btn-primary">
+                    @Texts.Forms.Membership.Login.SignInButton
+                </button>
+                <a href="@Url.Content("~/Account/ForgotPassword")">@Texts.Forms.Membership.Login.ForgotPassword</a>
+                <a class="clear" href="@Url.Content("~/Account/SignUp")">@Texts.Forms.Membership.Login.SignUpButton</a>
+            </div>
+        </div>
+    </form>
+</div>
+</script>
+
+@if (SiteInitialization.SkippedMigrations)
+{
+<div class="alert alert-error alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h4><i class="icon fa fa-warning"></i> Warning!</h4>
+    CheckAppWeb skipped running migrations to avoid modifying an arbitrary database.
+    If you'd like to run migrations on this database, remove the safety check 
+    in SiteInitialization.RunMigrations method.
+</div>
+}
+
+@if (ViewData["Activated"] != null)
+{
+<div class="alert alert-info alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h4><i class="icon fa fa-info"></i>@LocalText.Get("Dialogs.InformationTitle")</h4>
+    @Texts.Forms.Membership.SignUp.ActivationCompleteMessage
+</div>
+}
+
+<div class="page-content">
+    <div id="LoginPanel">
+
+    </div>
+</div>
+
+<script type="text/javascript">
+jQuery(function() {
+    new CheckAppWeb.Membership.LoginPanel($('#LoginPanel')).init();
+@if (ViewData["Activated"] != null)
+{
+    <text>
+    $(function() { 
+        $('#CheckAppWeb_Membership_LoginPanel0_Username').val(@Html.Raw(Serenity.JSON.Stringify(ViewData["Activated"])));
+        $('#CheckAppWeb_Membership_LoginPanel0_Password').focus();
+    });
+    </text>
+}
+});
+</script>
