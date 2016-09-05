@@ -1,3 +1,3 @@
-# brewstorm_chkap_prjct_web
+# CheckApp
 
-Para utilizar o projeto CheckApCore é necessário atualizar o Visual Studio com a Update 3.
+Para utilizar o projeto CheckAppCore é necessário instalar a Update 3 do Visual Studio 2015.
