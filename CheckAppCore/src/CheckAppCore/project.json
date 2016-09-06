@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "BundlerMinifier.Core": "2.2.281",
+    "IdentityServer4.AspNetIdentity": "1.0.0-rc1",
+    "Microsoft.AspNetCore.Authentication.Google": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",

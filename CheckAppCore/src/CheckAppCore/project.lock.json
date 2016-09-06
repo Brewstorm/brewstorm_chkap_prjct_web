@@ -16,6 +16,53 @@
           "lib/net452/dotnet-bundle.exe": {}
         }
       },
+      "IdentityModel/2.0.0-rc3": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http"
+        ],
+        "compile": {
+          "lib/net45/IdentityModel.dll": {}
+        },
+        "runtime": {
+          "lib/net45/IdentityModel.dll": {}
+        }
+      },
+      "IdentityServer4/1.0.0-rc1": {
+        "type": "package",
+        "dependencies": {
+          "IdentityModel": "2.0.0-rc3",
+          "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
+          "Microsoft.AspNetCore.Cors": "1.0.0",
+          "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "2.0.0"
+        },
+        "compile": {
+          "lib/net452/IdentityServer4.dll": {}
+        },
+        "runtime": {
+          "lib/net452/IdentityServer4.dll": {}
+        }
+      },
+      "IdentityServer4.AspNetIdentity/1.0.0-rc1": {
+        "type": "package",
+        "dependencies": {
+          "IdentityServer4": "1.0.0-rc1",
+          "Microsoft.AspNetCore.Identity": "1.0.0"
+        },
+        "compile": {
+          "lib/net452/IdentityServer4.AspNetIdentity.dll": {}
+        },
+        "runtime": {
+          "lib/net452/IdentityServer4.AspNetIdentity.dll": {}
+        }
+      },
       "Libuv/1.9.0": {
         "type": "package",
         "dependencies": {
@@ -71,6 +118,65 @@
           "lib/net451/Microsoft.AspNetCore.Antiforgery.dll": {}
         }
       },
+      "Microsoft.AspNetCore.Authentication/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.DataProtection": "1.0.0",
+          "Microsoft.AspNetCore.Http": "1.0.0",
+          "Microsoft.AspNetCore.Http.Extensions": "1.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Options": "1.0.0",
+          "Microsoft.Extensions.WebEncoders": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Cookies/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication": "1.0.0",
+          "Microsoft.Extensions.Options": "1.0.0",
+          "Microsoft.Extensions.WebEncoders": "1.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.Cookies.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.Cookies.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication.OAuth": "1.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.Google.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.Google.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.OAuth/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication": "1.0.0",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.OAuth.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.OAuth.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Authorization/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -106,6 +212,18 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNetCore.Cryptography.Internal.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Cryptography.KeyDerivation/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Cryptography.Internal": "1.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll": {}
         }
       },
       "Microsoft.AspNetCore.DataProtection/1.0.0": {
@@ -309,6 +427,20 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNetCore.HttpOverrides.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Identity/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
+          "Microsoft.AspNetCore.Cryptography.KeyDerivation": "1.0.0",
+          "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Identity.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Identity.dll": {}
         }
       },
       "Microsoft.AspNetCore.JsonPatch/1.0.0": {
@@ -1171,6 +1303,58 @@
           "lib/netstandard1.0/Microsoft.Extensions.WebEncoders.dll": {}
         }
       },
+      "Microsoft.IdentityModel.Logging/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net451/Microsoft.IdentityModel.Logging.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.IdentityModel.Logging.dll": {}
+        }
+      },
+      "Microsoft.IdentityModel.Protocols/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.IdentityModel.Tokens.Jwt": "5.0.0"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.IdentityModel.Protocols.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.IdentityModel.Protocols.dll": {}
+        }
+      },
+      "Microsoft.IdentityModel.Protocols.OpenIdConnect/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols": "2.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll": {}
+        }
+      },
+      "Microsoft.IdentityModel.Tokens/5.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Logging": "1.0.0",
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "frameworkAssemblies": [
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.IdentityModel.Tokens.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.IdentityModel.Tokens.dll": {}
+        }
+      },
       "Microsoft.Net.Http.Headers/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1565,6 +1749,18 @@
           "lib/net45/_._": {}
         }
       },
+      "System.IdentityModel.Tokens.Jwt/5.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "5.0.0"
+        },
+        "compile": {
+          "lib/net451/System.IdentityModel.Tokens.Jwt.dll": {}
+        },
+        "runtime": {
+          "lib/net451/System.IdentityModel.Tokens.Jwt.dll": {}
+        }
+      },
       "System.IO/4.1.0": {
         "type": "package",
         "frameworkAssemblies": [
@@ -1795,6 +1991,39 @@
         "lib/netcoreapp1.0/dotnet-bundle.runtimeconfig.json"
       ]
     },
+    "IdentityModel/2.0.0-rc3": {
+      "sha512": "YY+QJEQ4FPM8DcdGAD+dcrGX9Xohn1QI8Z2Uwp4l/dnfCFzvclR1pHQdo2/gcCnsQB+hILHPxbCbFB4+bbJRTA==",
+      "type": "package",
+      "path": "IdentityModel/2.0.0-rc3",
+      "files": [
+        "IdentityModel.2.0.0-rc3.nupkg.sha512",
+        "IdentityModel.nuspec",
+        "lib/net45/IdentityModel.dll",
+        "lib/netstandard1.3/IdentityModel.dll"
+      ]
+    },
+    "IdentityServer4/1.0.0-rc1": {
+      "sha512": "tTNdwgbxxwlUJFUeQuvhvEQJ0OqZdAjaud1esn/+g2f0GUjk1kyd4XlK4zHsKgLhOMaBmFfWU/kVKzfyeeetZw==",
+      "type": "package",
+      "path": "IdentityServer4/1.0.0-rc1",
+      "files": [
+        "IdentityServer4.1.0.0-rc1.nupkg.sha512",
+        "IdentityServer4.nuspec",
+        "lib/net452/IdentityServer4.dll",
+        "lib/netstandard1.4/IdentityServer4.dll"
+      ]
+    },
+    "IdentityServer4.AspNetIdentity/1.0.0-rc1": {
+      "sha512": "oF/H51c0CZjB8KQwcJEGmiBVnNGm7kYwbSlt/kyUPMv4B8ZY2/oq0wIrRc6Ly2v/frS12fUxb/eZt0XPZnG6zA==",
+      "type": "package",
+      "path": "IdentityServer4.AspNetIdentity/1.0.0-rc1",
+      "files": [
+        "IdentityServer4.AspNetIdentity.1.0.0-rc1.nupkg.sha512",
+        "IdentityServer4.AspNetIdentity.nuspec",
+        "lib/net452/IdentityServer4.AspNetIdentity.dll",
+        "lib/netstandard1.4/IdentityServer4.AspNetIdentity.dll"
+      ]
+    },
     "Libuv/1.9.0": {
       "sha512": "9Q7AaqtQhS8JDSIvRBt6ODSLWDBI4c8YxNxyCQemWebBFUtBbc6M5Vi5Gz1ZyIUlTW3rZK9bIr5gnVyv0z7a2Q==",
       "type": "package",
@@ -1824,6 +2053,58 @@
         "lib/net451/Microsoft.AspNetCore.Antiforgery.xml",
         "lib/netstandard1.3/Microsoft.AspNetCore.Antiforgery.dll",
         "lib/netstandard1.3/Microsoft.AspNetCore.Antiforgery.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication/1.0.0": {
+      "sha512": "3af/pZSoaIkZPjGPTlpvIXKDA4NCN6O7++iSO4N2rnKjC5OFHnCX5CLzRxO6721kqovIssRPo84q1HvT4IL6GQ==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Authentication/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Authentication.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Authentication.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Authentication.dll",
+        "lib/net451/Microsoft.AspNetCore.Authentication.xml",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.dll",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.Cookies/1.0.0": {
+      "sha512": "zWhEmMwAqLnQIn3eWGlfioBkKngLB/cEqhqw+jAPPrelH8nNNCnHKIoC6ZQf5oSPmpTX9vZU7XEOrpXHFxSQGw==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Authentication.Cookies/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Authentication.Cookies.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Authentication.Cookies.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Authentication.Cookies.dll",
+        "lib/net451/Microsoft.AspNetCore.Authentication.Cookies.xml",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.Cookies.dll",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.Cookies.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.Google/1.0.0": {
+      "sha512": "Y11elEMu4lP5qFnQ0UGbpe8d0uOlaT1KLkgDiRKpPvy1MqmtgPtVjqzvX9GG6+dJ187xY8N7Y1gWlTyAZh7rhg==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Authentication.Google/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Authentication.Google.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Authentication.Google.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Authentication.Google.dll",
+        "lib/net451/Microsoft.AspNetCore.Authentication.Google.xml",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.Google.dll",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.Google.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.OAuth/1.0.0": {
+      "sha512": "QZfUgJPv/jnFCZ+CJOSeAXzhYQVBe864krJcijDfTE0dspuF1+uifRJDaCuHGKSJlnsyOGVGjrBcMZLK3wnCkg==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Authentication.OAuth/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Authentication.OAuth.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Authentication.OAuth.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Authentication.OAuth.dll",
+        "lib/net451/Microsoft.AspNetCore.Authentication.OAuth.xml",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.OAuth.dll",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.OAuth.xml"
       ]
     },
     "Microsoft.AspNetCore.Authorization/1.0.0": {
@@ -1863,6 +2144,19 @@
         "lib/net451/Microsoft.AspNetCore.Cryptography.Internal.xml",
         "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.Internal.dll",
         "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.Internal.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Cryptography.KeyDerivation/1.0.0": {
+      "sha512": "OUBTk5RS7b3+Q9Z7F1jAL9JzdWlkITNpUw8EO5Yu1sP4Rq2jaidXKLiEw7oKFbD1Wmcee2s+U/UyHQfy/og7Sw==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Cryptography.KeyDerivation/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Cryptography.KeyDerivation.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Cryptography.KeyDerivation.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
+        "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.xml",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.KeyDerivation.xml"
       ]
     },
     "Microsoft.AspNetCore.DataProtection/1.0.0": {
@@ -2028,6 +2322,19 @@
         "lib/net451/Microsoft.AspNetCore.HttpOverrides.xml",
         "lib/netstandard1.3/Microsoft.AspNetCore.HttpOverrides.dll",
         "lib/netstandard1.3/Microsoft.AspNetCore.HttpOverrides.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Identity/1.0.0": {
+      "sha512": "qQXsxDocbx3xMPBVBZ2Es6vw5QalV+z9mGXUPbn/XRbjY1viwQjVToE7BrCanqr7q97ds0ciI2AgQhvny0kkqw==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Identity/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Identity.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Identity.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Identity.dll",
+        "lib/net451/Microsoft.AspNetCore.Identity.xml",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Identity.dll",
+        "lib/netstandard1.3/Microsoft.AspNetCore.Identity.xml"
       ]
     },
     "Microsoft.AspNetCore.JsonPatch/1.0.0": {
@@ -2811,6 +3118,58 @@
         "lib/netstandard1.0/Microsoft.Extensions.WebEncoders.xml"
       ]
     },
+    "Microsoft.IdentityModel.Logging/1.0.0": {
+      "sha512": "8lt3q7o9xSLyKfja/D2J67N8EZLwISjXktkwxK275yOrZY16iNCHCWqtDVP1M/DHuC/LWFMoheF3lmaJC9UXQg==",
+      "type": "package",
+      "path": "Microsoft.IdentityModel.Logging/1.0.0",
+      "files": [
+        "Microsoft.IdentityModel.Logging.1.0.0.nupkg.sha512",
+        "Microsoft.IdentityModel.Logging.nuspec",
+        "lib/net451/Microsoft.IdentityModel.Logging.dll",
+        "lib/net451/Microsoft.IdentityModel.Logging.xml",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Logging.dll",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Logging.xml"
+      ]
+    },
+    "Microsoft.IdentityModel.Protocols/2.0.0": {
+      "sha512": "dHV39tCYxj8yMySDOUhNGakFQSNl3PZcweBWevtHyUeX/8UbroL0sQUHNjE38/UE0c4RS43WvWn+GO39R0PqOA==",
+      "type": "package",
+      "path": "Microsoft.IdentityModel.Protocols/2.0.0",
+      "files": [
+        "Microsoft.IdentityModel.Protocols.2.0.0.nupkg.sha512",
+        "Microsoft.IdentityModel.Protocols.nuspec",
+        "lib/net451/Microsoft.IdentityModel.Protocols.dll",
+        "lib/net451/Microsoft.IdentityModel.Protocols.xml",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Protocols.dll",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Protocols.xml"
+      ]
+    },
+    "Microsoft.IdentityModel.Protocols.OpenIdConnect/2.0.0": {
+      "sha512": "0TVkFvDN2fnDt7DelqZ5w7SEwpOiCycNc/CV1ZZjFEBY0Kn4EwG100Lhf7nvylm5CrgiDWYHb6Db8hnDDTpiWg==",
+      "type": "package",
+      "path": "Microsoft.IdentityModel.Protocols.OpenIdConnect/2.0.0",
+      "files": [
+        "Microsoft.IdentityModel.Protocols.OpenIdConnect.2.0.0.nupkg.sha512",
+        "Microsoft.IdentityModel.Protocols.OpenIdConnect.nuspec",
+        "lib/net451/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+        "lib/net451/Microsoft.IdentityModel.Protocols.OpenIdConnect.xml",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Protocols.OpenIdConnect.xml"
+      ]
+    },
+    "Microsoft.IdentityModel.Tokens/5.0.0": {
+      "sha512": "VwNw+fm2nlbkL3GRO8b6WBlqs6M4q9Dft0CAg0TMHUYwuiU+4dciiIlZRC6q/HEcllKUvc0KDXt20n2PGcO1pA==",
+      "type": "package",
+      "path": "Microsoft.IdentityModel.Tokens/5.0.0",
+      "files": [
+        "Microsoft.IdentityModel.Tokens.5.0.0.nupkg.sha512",
+        "Microsoft.IdentityModel.Tokens.nuspec",
+        "lib/net451/Microsoft.IdentityModel.Tokens.dll",
+        "lib/net451/Microsoft.IdentityModel.Tokens.xml",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Tokens.dll",
+        "lib/netstandard1.4/Microsoft.IdentityModel.Tokens.xml"
+      ]
+    },
     "Microsoft.Net.Http.Headers/1.0.0": {
       "sha512": "1lr92itF1fKR2oEQ6gk1IUsuCgp7UMlf/b1sjlAyuDeUnttj39ra59GQHYpomglJX1UVNpi1/cSBbEsXoNeIhw==",
       "type": "package",
@@ -3583,6 +3942,19 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._"
+      ]
+    },
+    "System.IdentityModel.Tokens.Jwt/5.0.0": {
+      "sha512": "Ne69BCr2FPAysLG7pOM/+U/XFwGg849GIML2NuqtfEwBC3l74SaUPN3AmJfHccBcgOSDL3jVLQ3/ZQTtd3g6JA==",
+      "type": "package",
+      "path": "System.IdentityModel.Tokens.Jwt/5.0.0",
+      "files": [
+        "System.IdentityModel.Tokens.Jwt.5.0.0.nupkg.sha512",
+        "System.IdentityModel.Tokens.Jwt.nuspec",
+        "lib/net451/System.IdentityModel.Tokens.Jwt.dll",
+        "lib/net451/System.IdentityModel.Tokens.Jwt.xml",
+        "lib/netstandard1.4/System.IdentityModel.Tokens.Jwt.dll",
+        "lib/netstandard1.4/System.IdentityModel.Tokens.Jwt.xml"
       ]
     },
     "System.IO/4.1.0": {
@@ -4712,6 +5084,8 @@
   "projectFileDependencyGroups": {
     "": [
       "BundlerMinifier.Core >= 2.2.281",
+      "IdentityServer4.AspNetIdentity >= 1.0.0-rc1",
+      "Microsoft.AspNetCore.Authentication.Google >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Hosting >= 1.0.0",
       "Microsoft.AspNetCore.Mvc >= 1.0.0",

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using CheckAppCore.Identity;
+using IdentityServer4;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +10,7 @@ namespace CheckAppCore
 {
     public class Startup
     {
+        private readonly IHostingEnvironment _environment;
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -15,7 +18,10 @@ namespace CheckAppCore
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
+
+            _environment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -23,6 +29,15 @@ namespace CheckAppCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var cert = Certificate.Get(_environment.ContentRootPath);
+
+            services.AddIdentityServer()
+                .SetSigningCredential(cert)
+                .AddInMemoryStores()
+                .AddInMemoryClients(Clients.Get())
+                .AddInMemoryScopes(Scopes.Get())
+                .AddInMemoryUsers(Users.Get());
+
             // Add framework services.
             services.AddMvc();
         }
@@ -43,14 +58,34 @@ namespace CheckAppCore
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
 
-            app.UseMvc(routes =>
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Identity}/{action=Index}/{id?}");
+            //});
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false
             });
+
+            app.UseGoogleAuthentication(new GoogleOptions
+            {
+                AuthenticationScheme = "Google",
+                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+                ClientId = "434483408261-55tc8n0cs4ff1fe21ea8df2o443v2iuc.apps.googleusercontent.com",
+                ClientSecret = "3gcoTrEDPPJ0ukn_aYYT6PWo"
+            });
+
+            app.UseIdentityServer();
+
+            app.UseStaticFiles();
+            app.UseMvcWithDefaultRoute();
         }
     }
 }
