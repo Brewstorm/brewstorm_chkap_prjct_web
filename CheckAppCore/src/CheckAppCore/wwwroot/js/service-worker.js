@@ -1,23 +1,13 @@
 ﻿var cacheName = 'checkAppCache';
-var dataCacheName = 'checkAppCacheData-v1';
+var dataCacheName = 'checkAppCacheData-v1.0.2';
 
 var filesToCache = [
     '/',
     '/js/site.js',
     '/css/site.css',
-    '/images/clear.png',
-    '/images/cloudy-scattered-showers.png',
-    '/images/cloudy.png',
-    '/images/fog.png',
-    '/images/ic_add_white_24px.svg',
-    '/images/ic_refresh_white_24px.svg',
-    '/images/partly-cloudy.png',
-    '/images/rain.png',
-    '/images/scattered-showers.png',
-    '/images/sleet.png',
-    '/images/snow.png',
-    '/images/thunderstorm.png',
-    '/images/wind.png'
+    '/images/ca_logo.png',
+    '/images/ca_marca.png',
+    '/images/bg_home.jpg',
 ];
 
 self.addEventListener('install', function (e) {

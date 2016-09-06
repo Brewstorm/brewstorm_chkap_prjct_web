@@ -15,6 +15,7 @@
     <environment names="Development">
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="manifest" href="/manifest.json">
+        <link rel="import" href="~/lib/paper-button/paper-button.html">
     </environment>
     <environment names="Staging,Production">
         <link rel="manifest" href="/manifest.json">
@@ -26,12 +27,13 @@
 </head>
 <body>
     <header class="header">
-        <h1 class="header__title">CheckApp</h1>
-        @*<button id="butRefresh" class="headerButton"></button>
-        <button id="butAdd" class="headerButton"></button>*@
+        <a href="" style="height: 40px;position: relative;">
+            <img src="~/images/ca_logo.png" style="height: 100%;vertical-align: middle;float: left;"/>
+            <h1 class="header__title">CheckApp</h1>
+        </a>
     </header>
 
-    <div class="main" hidden>
+    <div class="main">
         @RenderBody()
     </div>
 
@@ -56,6 +58,7 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="~/js/service-worker.js" asp-append-version="false"></script>
+        <script src="~/lib/webcomponentsjs/webcomponents-lite.min.js" asp-append-version="false"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
