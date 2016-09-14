@@ -4,29 +4,48 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <!-- Add to home screen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Weather App">
-    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+    <meta name="apple-mobile-web-app-title" content="CheckApp">
+    @*<link rel="apple-touch-icon" href="images/icons/icon-152x152.png">*@
 
     <title>CheckApp - @ViewData["Title"]</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/css/site.css" />
+        <script src="~/js/service-worker.js" asp-append-version="false"></script>
+        <script src="~/lib/webcomponentsjs/webcomponents-lite.min.js" asp-append-version="false"></script>        
+        <script src="~/js/service-worker.js" asp-append-version="false"></script>        
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <link rel="stylesheet" href="~/styles/site.css" />
         <link rel="manifest" href="/manifest.json">
-        <link rel="import" href="~/lib/paper-button/paper-button.html">
+
+        <!-- Because this project uses vulcanize this should be your only html import
+        in this file. All other imports should go in elements.html -->
+        <link rel="import" href="~/elements/elements.html" async>
+
+        <!-- For shared styles, shared-styles.html import in elements.html -->
+        @*<style is="custom-style" include="shared-styles"></style>*@
     </environment>
     <environment names="Staging,Production">
         <link rel="manifest" href="/manifest.json">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/styles/" asp-append-version="true" />
     </environment>
+
+    @RenderSection("scripts", required: false)
 </head>
 <body>
-    <header class="header">
+    <my-app>
+        <div class="main">
+            @RenderBody()
+        </div>
+    </my-app>    
+    @*<header class="header">
         <a href="" style="height: 40px;position: relative;">
             <img src="~/images/ca_logo.png" style="height: 100%;vertical-align: middle;float: left;"/>
             <h1 class="header__title">CheckApp</h1>
@@ -45,20 +64,11 @@
             <div class="dialog-buttons">
             </div>
         </div>
-    </div>
-
-    <div class="loader" style="display:none">
-        <svg viewBox="0 0 32 32" width="32" height="32">
-            <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
-        </svg>
-    </div>
+    </div>*@
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>
-        <script src="~/lib/webcomponentsjs/webcomponents-lite.min.js" asp-append-version="false"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
@@ -71,8 +81,6 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
         <script src="~/js/service-worker.js" asp-append-version="false"></script>
-    </environment>
-
-    @RenderSection("scripts", required: false)
+    </environment>   
 </body>
 </html>
