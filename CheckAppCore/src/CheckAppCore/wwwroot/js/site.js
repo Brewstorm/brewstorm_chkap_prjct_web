@@ -27,7 +27,7 @@ window.Polymer = {
     if (!webComponentsSupported) {
         var script = document.createElement('script');
         script.async = true;
-        script.src = '/lib/webcomponentsjs/webcomponents-lite.min.js';
+        script.src = '/lib/webcomponentsjs/webcomponents.js';
         script.onload = onload;
         document.head.appendChild(script);
     } else {

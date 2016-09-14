@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,8 +15,8 @@
 
     <environment names="Development">
         <script src="~/js/service-worker.js" asp-append-version="false"></script>
-        <script src="~/lib/webcomponentsjs/webcomponents-lite.min.js" asp-append-version="false"></script>        
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>        
+        <script src="~/lib/webcomponentsjs/webcomponents.js" asp-append-version="false"></script>
+        <script src="~/js/service-worker.js" asp-append-version="false"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
 
         <link rel="stylesheet" href="~/styles/site.css" />
@@ -36,35 +36,11 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/styles/" asp-append-version="true" />
     </environment>
-
-    @RenderSection("scripts", required: false)
 </head>
 <body>
-    <my-app>
-        <div class="main">
-            @RenderBody()
-        </div>
-    </my-app>    
-    @*<header class="header">
-        <a href="" style="height: 40px;position: relative;">
-            <img src="~/images/ca_logo.png" style="height: 100%;vertical-align: middle;float: left;"/>
-            <h1 class="header__title">CheckApp</h1>
-        </a>
-    </header>
+    @RenderBody()
 
-    <div class="main">
-        @RenderBody()
-    </div>
-
-    <div class="dialog-container">
-        <div class="dialog">
-            <div class="dialog-title"></div>
-            <div class="dialog-body">
-            </div>
-            <div class="dialog-buttons">
-            </div>
-        </div>
-    </div>*@
+    @RenderSection("scripts", required: false)
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -74,13 +50,17 @@
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
+
+
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+
+
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
         <script src="~/js/service-worker.js" asp-append-version="false"></script>
-    </environment>   
+    </environment>
 </body>
 </html>

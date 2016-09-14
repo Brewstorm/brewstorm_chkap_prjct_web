@@ -4,6 +4,14 @@
     Layout = "";
 }
 
+<app-drawer-layout>
+    <app-drawer>
+        drawer content
+    </app-drawer>
+    <div>
+        main content
+    </div>
+</app-drawer-layout>
 
 <div class="login-page">
     <div class="page-header">
@@ -11,7 +19,7 @@
     </div>
 
     @Html.Partial("_ValidationSummary")
-
+    
     <div class="row">
         <div class="col-sm-6">
             <div class="panel panel-default">

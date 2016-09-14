@@ -1,12 +1,3 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
 <link rel="import" href="../lib/polymer/polymer.html">
 <link rel="import" href="../lib/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../lib/app-layout/app-drawer-layout/app-drawer-layout.html">
@@ -17,43 +8,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../lib/app-route/app-location.html">
 <link rel="import" href="../lib/app-route/app-route.html">
 <link rel="import" href="../lib/iron-pages/iron-pages.html">
+<link rel="import" href="../lib/iron-icons/iron-icons.html">
 <link rel="import" href="../lib/iron-selector/iron-selector.html">
+<link rel="import" href="../lib/paper-styles/paper-styles.html">
 <link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
-<!--<link rel="import" href="my-icons.html">-->
+
+<meta charset="utf-8" content="text/html"/>
+
 <dom-module id="my-app">
     <template>
+        <head>
+            <meta charset="utf-8" />
+        </head>
         <style>
             :host {
                 --app-primary-color: #ffffff;
-                --app-secondary-color: black;
+                --app-secondary-color: #44546a;
                 display: block;
             }
 
             app-header {
-                color: #fff;
+                color: #ffffff;
                 background-color: var(--app-primary-color);
             }
 
-                app-header paper-icon-button {
-                    --paper-icon-button-ink-color: #44546a;
-                }
+            app-toolbar paper-icon-button {
+                --paper-icon-button-ink-color: #44546a;
+            }
 
             .drawer-list {
                 margin: 0 20px;
             }
 
-                .drawer-list a {
-                    display: block;
-                    padding: 0 16px;
-                    text-decoration: none;
-                    color: var(--app-secondary-color);
-                    line-height: 40px;
-                }
+            .drawer-list a {
+                display: block;
+                padding: 0 16px;
+                text-decoration: none;
+                color: var(--app-secondary-color);
+                line-height: 40px;
+            }
 
-                    .drawer-list a.iron-selected {
-                        color: black;
-                        font-weight: bold;
-                    }
+            .drawer-list a.iron-selected {
+                color: black;
+                font-weight: bold;
+            }
 
             .header__title {
                 font-weight: bold;
@@ -69,7 +67,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 -ms-flex: 1;
                 flex: 1;
             }
-
         </style>
         <app-location route="{{route}}"></app-location>
         <app-route route="{{route}}"
@@ -81,6 +78,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-drawer>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="default" href="/default">Home</a>
+                    <a name="perfil" href="/default">Perfil</a>
+                    <a id="historyLabel" name="history" href="/default"></a>
+                    <a name="payment" href="/default">Cobrança</a>
                 </iron-selector>
             </app-drawer>
             <!-- Main content -->
@@ -90,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                         <div main-title>
                             <a href="/home">
-                                <img src="../images/ca_logo.png" style="height: 40px;vertical-align: middle;float: left;" />
+                                <img src="../images/ca_logo.png" style="height: 40px; vertical-align: middle; float: left;"/>
                                 <h1 class="header__title">CheckApp</h1>
                             </a>
                         </div>
@@ -115,11 +115,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     type: String,
                     reflectToAttribute: true,
                     observer: '_pageChanged'
+                },
+                historyLabel: {
+                    type: String,
+                    value: 'Histórico'
                 }
             },
 
+            ready: function () {
+                this.$.historyLabel.textContent = this.historyLabel;
+            },
+
             observers: [
-              '_routePageChanged(routeData.page)'
+                '_routePageChanged(routeData.page)'
             ],
 
             _routePageChanged: function (page) {
