@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="CheckApp">
 
     <!-- Add to home screen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,10 +17,9 @@
     <title>CheckApp - @ViewData["Title"]</title>
 
     <environment names="Development">
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>
-        <script src="~/lib/webcomponentsjs/webcomponents.js" asp-append-version="false"></script>
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/service-worker.js" asp-append-version="false"></script>
+        @*<script src="~/lib/webcomponentsjs/webcomponents.js" asp-append-version="false"></script>*@
 
         <link rel="stylesheet" href="~/styles/site.css" />
         <link rel="manifest" href="/manifest.json">

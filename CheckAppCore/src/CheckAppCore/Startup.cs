@@ -30,7 +30,7 @@ namespace CheckAppCore
         public void ConfigureServices(IServiceCollection services)
         {
             var cert = Certificate.Get(_environment.ContentRootPath);
-
+            
             services.AddIdentityServer()
                 .SetSigningCredential(cert)
                 .AddInMemoryStores()
@@ -39,7 +39,9 @@ namespace CheckAppCore
                 .AddInMemoryUsers(Users.Get());
 
             // Add framework services.
-            services.AddMvc();
+            services.AddMvc(options => {
+                options.RespectBrowserAcceptHeader = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,17 +76,18 @@ namespace CheckAppCore
                 AutomaticChallenge = false
             });
 
-            app.UseGoogleAuthentication(new GoogleOptions
-            {
-                AuthenticationScheme = "Google",
-                SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                ClientId = "434483408261-55tc8n0cs4ff1fe21ea8df2o443v2iuc.apps.googleusercontent.com",
-                ClientSecret = "3gcoTrEDPPJ0ukn_aYYT6PWo"
-            });
+            //app.UseGoogleAuthentication(new GoogleOptions
+            //{
+            //    AuthenticationScheme = "Google",
+            //    SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+            //    ClientId = "434483408261-55tc8n0cs4ff1fe21ea8df2o443v2iuc.apps.googleusercontent.com",
+            //    ClientSecret = "3gcoTrEDPPJ0ukn_aYYT6PWo"
+            //});
 
             app.UseIdentityServer();
 
             app.UseStaticFiles();
+
             app.UseMvcWithDefaultRoute();
         }
     }
