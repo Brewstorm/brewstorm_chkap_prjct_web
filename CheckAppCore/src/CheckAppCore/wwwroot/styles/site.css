@@ -28,7 +28,6 @@ html, body {
   color: #444;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale; 
-  background: url(../images/bg_home.jpg) 100%;
   -webkit-transition: background .5s ease-out;
   -moz-transition: background .5s ease-out;
   -o-transition: background .5s ease-out;
@@ -43,7 +42,7 @@ body {
     font-family: 'Roboto', 'Noto', sans-serif;
     line-height: 1.5;
     min-height: 100vh;
-    background-color: #eeeeee;
+    background-color: rgba(210, 210, 210, 0.6);
       display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;

@@ -1,0 +1,27 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+<!--<link rel="import" href="../lib/paper-button/paper-button.html">-->
+
+<dom-module id="payment-view">
+    <template>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+        </style>
+        <div style="display: -ms-flexbox; display: -webkit-flex; display: flex; -ms-flex-pack: center; -webkit-justify-content: center; justify-content: center;">
+            <div style="display: inline-block; justify-content: center; width: 440px; text-align: center;">
+                <!--<img src="../images/ca_marca.png" style="clear: both; padding: 40px 40px 0 40px;"/>-->
+                <span style="clear: both; display: inherit; font-size: 20px; color: #44546a; padding: 0 0 30px;">Cobrança do Usuário.</span>
+                <!--<a style="text-decoration: none;">
+                    <paper-button raised style="background: #bc4625; color: #ffffff">Experimente</paper-button>
+                </a>-->
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'payment-view'
+        });
+    </script>
+</dom-module>

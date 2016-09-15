@@ -8,43 +8,70 @@
 <link rel="import" href="../lib/app-route/app-location.html">
 <link rel="import" href="../lib/app-route/app-route.html">
 <link rel="import" href="../lib/iron-pages/iron-pages.html">
+<link rel="import" href="../lib/iron-icons/iron-icons.html">
+<link rel="import" href="../lib/iron-icons/social-icons.html">
 <link rel="import" href="../lib/iron-selector/iron-selector.html">
 <link rel="import" href="../lib/paper-styles/paper-styles.html">
+<link rel="import" href="../lib/paper-tabs/paper-tabs.html">
 <link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="my-icons.html">
 
 <dom-module id="my-app">
     <template>
         <style>
             :host {
-                --app-primary-color: #ffffff;
-                --app-secondary-color: #44546a;
-                display: block;
-            }
+                --app-primary-color: #44546a;
+                --app-secondary-color: #ffffff;
+                --app-drawer-content-container: {
+                    background: var(--app-secondary-color);
+                };
+                 display: block;
+             }
 
-            app-header {
-                color: #ffffff;
-                background-color: var(--app-primary-color);
-            }
+             app-header {
+                 color: var(--app-secondary-color);
+                 background-color: var(--app-primary-color);
+             }
 
             app-toolbar paper-icon-button {
                 --paper-icon-button-ink-color: #44546a;
             }
 
+            paper-tabs {
+                width: 100%;
+                position: fixed;
+                bottom: 0;
+                background: #ffffff;
+                --paper-tabs-selection-bar-color: #44546a;
+            }
+
+            paper-tab iron-icon {
+                margin-top: -10px;
+            }
+
+            paper-tab span {
+                font-size: 12px;
+                float: left;
+                position: absolute;
+                top: 28px;
+            }
+
             .drawer-list {
-                margin: 0 20px;
+                margin-top: 20px;
+            }
+
+            .drawer-list span {
+                padding: 0 0 0 10px;
             }
 
             .drawer-list a {
                 display: block;
                 padding: 0 16px;
                 text-decoration: none;
-                color: var(--app-secondary-color);
                 line-height: 40px;
+                color: var(--app-primary-color);
             }
 
             .drawer-list a.iron-selected {
-                color: black;
                 font-weight: bold;
             }
 
@@ -54,7 +81,6 @@
                 margin: 0;
                 vertical-align: middle;
                 float: left;
-                color: #44546a;
                 padding-left: 8px;
                 line-height: 40px;
                 -webkit-box-flex: 1;
@@ -63,40 +89,92 @@
                 flex: 1;
             }
         </style>
-        <app-location route="{{route}}"></app-location>
+        
+        <style is="custom-style">
+            paper-tab[link] a {
+                /* These mixins (from iron-flex-layout) center the link text. */
+                @apply(--layout-horizontal);
+                @apply(--layout-center-center);
+                color: var(--app-primary-color);
+                text-decoration: none;
+            }
+        </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+
         <app-route route="{{route}}"
                    pattern="/:page"
                    data="{{routeData}}"
                    tail="{{subroute}}"></app-route>
+
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
-            <app-drawer>
+            <app-drawer id="appDrawer">
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                    <a name="default" href="/default">Home</a>
-                    <a name="perfil" href="/default">Perfil</a>
-                    <a name="history" href="/default">Histórico</a>
-                    <a name="payment" href="/default">Cobrança</a>
+                    <a name="default" href="#/default">
+                        <iron-icon icon="icons:home"></iron-icon>
+                        <span>Início</span>
+                    </a>
+                    <a name="profile" href="#/profile">
+                        <iron-icon icon="social:person"></iron-icon>
+                        <span>Perfil</span>
+                    </a>
+                    <a name="history" href="#/history">
+                        <iron-icon icon="icons:history"></iron-icon>
+                        <span>Histórico</span>
+                    </a>
+                    <a name="payment" href="#/payment">
+                        <iron-icon icon="icons:credit-card"></iron-icon>
+                        <span>Cobrança</span>
+                    </a>
                 </iron-selector>
             </app-drawer>
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
                 <app-header reveals snaps shadow>
                     <app-toolbar>
-                        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+                        <!--<paper-icon-button icon="menu" drawer-toggle></paper-icon-button>-->
                         <div main-title>
-                            <a href="/default">
-                                <img src="../images/ca_logo.png" style="height: 40px; vertical-align: middle; float: left;"/>
-                                <h1 class="header__title">CheckApp</h1>
-                            </a>
+                            Início
+                            <!--<img src="../images/ca_logo.png" style="height: 40px; vertical-align: middle; float: left;"/>
+                            <h1 class="header__title">CheckApp</h1>-->
                         </div>
                     </app-toolbar>
                 </app-header>
+                <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
+                    <paper-tab name="default" link>
+                        <a href="#/default" class="link" tabindex="-1">
+                            <iron-icon icon="icons:home"></iron-icon>
+                            <span>Início</span>
+                        </a>
+                    </paper-tab>
+                    <paper-tab name="profile" link>
+                        <a href="#/profile" class="link" tabindex="-1">
+                            <iron-icon icon="social:person"></iron-icon>
+                            <span>Perfil</span>
+                        </a>
+                    </paper-tab>
+                    <paper-tab name="history" link>
+                        <a href="#/history" class="link" tabindex="-1">
+                            <iron-icon icon="icons:history"></iron-icon>
+                            <span>Histórico</span>
+                        </a>
+                    </paper-tab>
+                    <paper-tab name="payment" link>
+                        <a href="#/payment" class="link" tabindex="-1">
+                            <iron-icon icon="icons:credit-card"></iron-icon>
+                            <span>Cobrança</span>
+                        </a>
+                    </paper-tab>
+                </paper-tabs>
                 <iron-pages selected="[[page]]"
                             attr-for-selected="name"
                             fallback-selection="view404"
                             role="main">
                     <default-view name="default"></default-view>
-                    <!--<my-view404 name="view404"></my-view404>-->
+                    <profile-view name="profile"></profile-view>
+                    <history-view name="history"></history-view>
+                    <payment-view name="payment"></payment-view>
                 </iron-pages>
             </app-header-layout>
         </app-drawer-layout>
@@ -106,11 +184,20 @@
             is: 'my-app',
 
             properties: {
+                hidetabs: true,
                 page: {
                     type: String,
                     reflectToAttribute: true,
                     observer: '_pageChanged'
                 }
+            },
+
+            ready: function () {
+                var self = this;
+
+                this.$.appDrawer.addEventListener('opened-changed', function (e) {
+                    self.$.tabs.hidden = e.target.opened;
+                });
             },
 
             observers: [
