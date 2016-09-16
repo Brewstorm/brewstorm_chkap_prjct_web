@@ -34,7 +34,7 @@
 
             app-header-layout {
                 background: url('../images/ca_logo_gray.png') 50% no-repeat;
-                background-size: 180px;
+                background-size: 250px;
             }
 
             app-toolbar paper-icon-button {
@@ -61,7 +61,8 @@
             }
 
             .drawer-list {
-                margin-top: 20px;
+                margin-top: 5px;
+                display: block;
             }
 
                 .drawer-list span {
@@ -70,10 +71,10 @@
 
                 .drawer-list a {
                     display: block;
-                    padding: 0 16px;
+                    padding: 0 18px;
                     text-decoration: none;
                     line-height: 40px;
-                    color: var(--app-primary-color);
+                    color: #5d5d5d;
                 }
 
                     .drawer-list a.iron-selected {
@@ -93,6 +94,31 @@
                 -ms-flex: 1;
                 flex: 1;
             }
+
+            #appLogoContainer {
+                height: 62px;
+                width: 100%;
+                border-bottom: rgba(68, 84, 106, 0.5) solid 2px;
+                color: #44546a;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+            }
+
+            #appLogoContainer > img {
+                height: 75%;padding: 10px;
+            }
+
+            #appLogoContainer > span {
+                font-size: 24px;
+            }
+
+            a.iron-selected iron-icon {
+                color: #45699a
+            }
         </style>
 
         <style is="custom-style">
@@ -102,6 +128,11 @@
                 @apply(--layout-center-center);
                 color: var(--app-primary-color);
                 text-decoration: none;
+            }
+
+            .big {
+                --iron-icon-height: 32px;
+                --iron-icon-width: 32px;
             }
         </style>
 
@@ -115,24 +146,25 @@
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
             <app-drawer id="appDrawer">
-                <div style="height: 64px; width: 100%;">
-                    <!-- Inserir Logo -->
+                <div id="appLogoContainer">
+                    <img src="../images/ca_logo.png"/>
+                    <span>CheckApp</span>
                 </div>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="default" href="#/default">
-                        <iron-icon icon="icons:home"></iron-icon>
+                        <iron-icon icon="icons:home" class="big"></iron-icon>
                         <span>Início</span>
                     </a>
                     <a name="profile" href="#/profile">
-                        <iron-icon icon="social:person"></iron-icon>
+                        <iron-icon icon="social:person" class="big"></iron-icon>
                         <span>Perfil</span>
                     </a>
                     <a name="history" href="#/history">
-                        <iron-icon icon="icons:history"></iron-icon>
+                        <iron-icon icon="icons:history" class="big"></iron-icon>
                         <span>Histórico</span>
                     </a>
                     <a name="payment" href="#/payment">
-                        <iron-icon icon="icons:credit-card"></iron-icon>
+                        <iron-icon icon="icons:credit-card" class="big"></iron-icon>
                         <span>Cobrança</span>
                     </a>
                 </iron-selector>
