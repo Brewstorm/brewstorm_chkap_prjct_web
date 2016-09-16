@@ -23,14 +23,19 @@
                 --app-secondary-color: #ffffff;
                 --app-drawer-content-container: {
                     background: var(--app-secondary-color);
-                };
-                 display: block;
-             }
+                }; 
+                display: block;
+            }
 
-             app-header {
-                 color: var(--app-secondary-color);
-                 background-color: var(--app-primary-color);
-             }
+            app-header {
+                color: var(--app-secondary-color);
+                background-color: var(--app-primary-color);
+            }
+
+            app-header-layout {
+                background: url('../images/ca_logo_gray.png') 50% no-repeat;
+                background-size: 180px;
+            }
 
             app-toolbar paper-icon-button {
                 --paper-icon-button-ink-color: #44546a;
@@ -59,21 +64,21 @@
                 margin-top: 20px;
             }
 
-            .drawer-list span {
-                padding: 0 0 0 10px;
-            }
+                .drawer-list span {
+                    padding: 0 0 0 10px;
+                }
 
-            .drawer-list a {
-                display: block;
-                padding: 0 16px;
-                text-decoration: none;
-                line-height: 40px;
-                color: var(--app-primary-color);
-            }
+                .drawer-list a {
+                    display: block;
+                    padding: 0 16px;
+                    text-decoration: none;
+                    line-height: 40px;
+                    color: var(--app-primary-color);
+                }
 
-            .drawer-list a.iron-selected {
-                font-weight: bold;
-            }
+                    .drawer-list a.iron-selected {
+                        font-weight: bold;
+                    }
 
             .header__title {
                 font-weight: bold;
@@ -89,7 +94,7 @@
                 flex: 1;
             }
         </style>
-        
+
         <style is="custom-style">
             paper-tab[link] a {
                 /* These mixins (from iron-flex-layout) center the link text. */
@@ -110,6 +115,9 @@
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
             <app-drawer id="appDrawer">
+                <div style="height: 64px; width: 100%;">
+                    <!-- Inserir Logo -->
+                </div>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="default" href="#/default">
                         <iron-icon icon="icons:home"></iron-icon>
@@ -133,11 +141,8 @@
             <app-header-layout has-scrolling-region>
                 <app-header reveals snaps shadow>
                     <app-toolbar>
-                        <!--<paper-icon-button icon="menu" drawer-toggle></paper-icon-button>-->
                         <div main-title>
                             Início
-                            <!--<img src="../images/ca_logo.png" style="height: 40px; vertical-align: middle; float: left;"/>
-                            <h1 class="header__title">CheckApp</h1>-->
                         </div>
                     </app-toolbar>
                 </app-header>

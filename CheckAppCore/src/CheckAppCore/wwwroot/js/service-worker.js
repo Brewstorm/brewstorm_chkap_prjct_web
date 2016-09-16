@@ -4,7 +4,7 @@ var dataCacheName = 'checkAppCacheData-v1.0.2';
 var filesToCache = [
     '/',
     '/js/site.js',
-    '/css/site.css',
+    '/styles/site.css',
     '/images/ca_logo.png',
     '/images/ca_marca.png',
     '/images/bg_home.jpg',
