@@ -21,7 +21,13 @@
     </template>
     <script>
         Polymer({
-            is: 'profile-view'
+            is: 'profile-view',
+            properties: {
+              description: {
+                type: String,
+                value: 'Perfil'
+              }
+            }
         });
     </script>
 </dom-module>

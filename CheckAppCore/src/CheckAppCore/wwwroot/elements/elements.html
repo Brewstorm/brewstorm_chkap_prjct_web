@@ -23,7 +23,7 @@
                 --app-secondary-color: #ffffff;
                 --app-drawer-content-container: {
                     background: var(--app-secondary-color);
-                }; 
+                };
                 display: block;
             }
 
@@ -173,9 +173,7 @@
             <app-header-layout has-scrolling-region>
                 <app-header reveals snaps shadow>
                     <app-toolbar>
-                        <div main-title>
-                            Início
-                        </div>
+                        <div main-title>{{pageDescription}}</div>
                     </app-toolbar>
                 </app-header>
                 <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
@@ -204,7 +202,8 @@
                         </a>
                     </paper-tab>
                 </paper-tabs>
-                <iron-pages selected="[[page]]"
+                <iron-pages id="appIronPages"
+                            selected="[[page]]"
                             attr-for-selected="name"
                             fallback-selection="view404"
                             role="main">
@@ -222,6 +221,7 @@
 
             properties: {
                 hidetabs: true,
+                pageDescription: '',
                 page: {
                     type: String,
                     reflectToAttribute: true,
@@ -246,9 +246,12 @@
             },
 
             _pageChanged: function (page) {
+                var self = this;
                 // Load page import on demand. Show 404 page if fails
                 var resolvedPageUrl = this.resolveUrl(page + '.html');
-                this.importHref(resolvedPageUrl, null, this._showPage404, true);
+                this.importHref(resolvedPageUrl, function () {
+                  self.pageDescription = self.$.appIronPages.selectedItem.description;
+                }, this._showPage404, true);
             },
 
             _showPage404: function () {

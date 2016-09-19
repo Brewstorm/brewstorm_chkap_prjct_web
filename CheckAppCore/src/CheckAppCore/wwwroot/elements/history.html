@@ -21,7 +21,13 @@
     </template>
     <script>
         Polymer({
-            is: 'history-view'
+            is: 'history-view',
+            properties: {
+              description: {
+                type: String,
+                value: 'Histórico'
+              }
+            }
         });
     </script>
 </dom-module>

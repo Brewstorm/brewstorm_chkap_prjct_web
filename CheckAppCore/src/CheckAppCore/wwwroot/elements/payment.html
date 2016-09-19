@@ -21,7 +21,13 @@
     </template>
     <script>
         Polymer({
-            is: 'payment-view'
+            is: 'payment-view',
+            properties: {
+              description: {
+                type: String,
+                value: 'Cobrança'
+              }
+            }
         });
     </script>
 </dom-module>
