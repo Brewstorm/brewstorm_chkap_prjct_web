@@ -14,6 +14,8 @@
 <link rel="import" href="../lib/paper-styles/paper-styles.html">
 <link rel="import" href="../lib/paper-tabs/paper-tabs.html">
 <link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../lib/iron-image/iron-image.html">
+<link rel="import" href="../lib/paper-toast/paper-toast.html">
 
 <dom-module id="my-app">
     <template>
@@ -108,8 +110,11 @@
                 align-items: center;
             }
 
-            #appLogoContainer > img {
-                height: 75%;padding: 10px;
+            #appLogoContainer .iconLogo {
+                --iron-image-width: 100%;
+                width: 17%;
+                height: 50%;
+                padding: 10px;
             }
 
             #appLogoContainer > span {
@@ -118,6 +123,12 @@
 
             a.iron-selected iron-icon {
                 color: #45699a
+            }
+
+            #toast {
+                --paper-toast-background-color: #b32700;
+                --paper-toast-color: white;
+                box-shadow: none;
             }
         </style>
 
@@ -147,7 +158,7 @@
             <!-- Drawer content -->
             <app-drawer id="appDrawer">
                 <div id="appLogoContainer">
-                    <img src="../images/ca_logo.png"/>
+                    <iron-image sizing="contain" fade src="../images/ca_logo.png" class="iconLogo"></iron-image>
                     <span>CheckApp</span>
                 </div>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
@@ -170,7 +181,7 @@
                 </iron-selector>
             </app-drawer>
             <!-- Main content -->
-            <app-header-layout has-scrolling-region>
+            <app-header-layout id="container" has-scrolling-region>
                 <app-header reveals snaps shadow>
                     <app-toolbar>
                         <div main-title>{{pageDescription}}</div>
@@ -212,6 +223,7 @@
                     <history-view name="history"></history-view>
                     <payment-view name="payment"></payment-view>
                 </iron-pages>
+                <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised opened></paper-toast>
             </app-header-layout>
         </app-drawer-layout>
     </template>
@@ -235,6 +247,8 @@
                 this.$.appDrawer.addEventListener('opened-changed', function (e) {
                     self.$.tabs.hidden = e.target.opened;
                 });
+
+                self.$.toast.fitInto = self.$.container;
             },
 
             observers: [
