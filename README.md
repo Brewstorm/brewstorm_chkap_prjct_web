@@ -11,3 +11,9 @@ Referências de tecnologias utilizadas:
 - [Polymer Project](https://www.polymer-project.org/1.0/start/)
 - [ASP.NET Core 1.0](https://docs.asp.net/en/latest/)
 - [Progressive Web App](https://developers.google.com/web/fundamentals/getting-started/?hl=en)
+ 
+Exemplo de aplicação utilizando ASP.NET Core/Polymer:
+
+- [Parte 1](http://www.fiyazhasan.me/building-apps-with-polymer-and-asp-net-core-part-i/)
+- [Parte 2](http://www.fiyazhasan.me/building-apps-with-polymer-and-asp-net-core-part-ii/)
+- [Parte 3](http://www.fiyazhasan.me/building-apps-with-polymer-and-asp-net-core-part-iii/)
