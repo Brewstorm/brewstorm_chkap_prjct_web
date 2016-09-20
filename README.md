@@ -4,6 +4,7 @@ Para utilizar o projeto CheckAppCore é necessário instalar os seguintes pacote
 
 - [Update 3 do Visual Studio 2015](https://go.microsoft.com/fwlink/?LinkId=691129)
 - [ASP.NET Core 1.0](https://www.microsoft.com/net/core#windows)
+- [Microsoft ASP.NET and Web Tools](https://visualstudiogallery.msdn.microsoft.com/c94a02e9-f2e9-4bad-a952-a63a967e3935)
 
 Referências de tecnologias utilizadas:
 
