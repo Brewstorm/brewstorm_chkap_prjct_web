@@ -69,10 +69,11 @@ namespace CheckAppCore
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
+                //AutomaticChallenge = true,
                 AuthenticationScheme = "Cookie",
                 CookieName = "access_token",
-                TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters)
+                TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters),
+                ReturnUrlParameter = null
             });
 
             // The secret key every token will be signed with.
