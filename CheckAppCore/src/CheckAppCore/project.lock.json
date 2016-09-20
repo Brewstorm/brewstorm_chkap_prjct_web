@@ -2,67 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    ".NETFramework,Version=v4.5.2": {
-      "BundlerMinifier.Core/2.2.281": {
-        "type": "package",
-        "dependencies": {
-          "NUglify": "1.5.1",
-          "Newtonsoft.Json": "9.0.1"
-        },
-        "compile": {
-          "lib/net452/dotnet-bundle.exe": {}
-        },
-        "runtime": {
-          "lib/net452/dotnet-bundle.exe": {}
-        }
-      },
-      "IdentityModel/2.0.0-rc3": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "9.0.1"
-        },
-        "frameworkAssemblies": [
-          "System.Net.Http"
-        ],
-        "compile": {
-          "lib/net45/IdentityModel.dll": {}
-        },
-        "runtime": {
-          "lib/net45/IdentityModel.dll": {}
-        }
-      },
-      "IdentityServer4/1.0.0-rc1": {
-        "type": "package",
-        "dependencies": {
-          "IdentityModel": "2.0.0-rc3",
-          "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
-          "Microsoft.AspNetCore.Cors": "1.0.0",
-          "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
-          "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "2.0.0"
-        },
-        "compile": {
-          "lib/net452/IdentityServer4.dll": {}
-        },
-        "runtime": {
-          "lib/net452/IdentityServer4.dll": {}
-        }
-      },
-      "IdentityServer4.AspNetIdentity/1.0.0-rc1": {
-        "type": "package",
-        "dependencies": {
-          "IdentityServer4": "1.0.0-rc1",
-          "Microsoft.AspNetCore.Identity": "1.0.0"
-        },
-        "compile": {
-          "lib/net452/IdentityServer4.AspNetIdentity.dll": {}
-        },
-        "runtime": {
-          "lib/net452/IdentityServer4.AspNetIdentity.dll": {}
-        }
-      },
+    "DNX,Version=v4.5.1": {
       "Libuv/1.9.0": {
         "type": "package",
         "dependencies": {
@@ -152,6 +92,19 @@
           "lib/net451/Microsoft.AspNetCore.Authentication.Cookies.dll": {}
         }
       },
+      "Microsoft.AspNetCore.Authentication.JwtBearer/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication": "1.0.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "2.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Authorization/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -187,18 +140,6 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNetCore.Cryptography.Internal.dll": {}
-        }
-      },
-      "Microsoft.AspNetCore.Cryptography.KeyDerivation/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Cryptography.Internal": "1.0.0"
-        },
-        "compile": {
-          "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll": {}
         }
       },
       "Microsoft.AspNetCore.DataProtection/1.0.0": {
@@ -404,20 +345,6 @@
           "lib/net451/Microsoft.AspNetCore.HttpOverrides.dll": {}
         }
       },
-      "Microsoft.AspNetCore.Identity/1.0.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
-          "Microsoft.AspNetCore.Cryptography.KeyDerivation": "1.0.0",
-          "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0"
-        },
-        "compile": {
-          "lib/net451/Microsoft.AspNetCore.Identity.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.AspNetCore.Identity.dll": {}
-        }
-      },
       "Microsoft.AspNetCore.JsonPatch/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -477,7 +404,7 @@
           "lib/net451/Microsoft.AspNetCore.Mvc.dll": {}
         }
       },
-      "Microsoft.AspNetCore.Mvc.Abstractions/1.0.0": {
+      "Microsoft.AspNetCore.Mvc.Abstractions/1.0.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Routing.Abstractions": "1.0.0",
@@ -502,13 +429,13 @@
           "lib/net451/Microsoft.AspNetCore.Mvc.ApiExplorer.dll": {}
         }
       },
-      "Microsoft.AspNetCore.Mvc.Core/1.0.0": {
+      "Microsoft.AspNetCore.Mvc.Core/1.0.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Authorization": "1.0.0",
           "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
           "Microsoft.AspNetCore.Http": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.0",
+          "Microsoft.AspNetCore.Mvc.Abstractions": "1.0.1",
           "Microsoft.AspNetCore.Routing": "1.0.0",
           "Microsoft.Extensions.DependencyModel": "1.0.0",
           "Microsoft.Extensions.FileProviders.Abstractions": "1.0.0",
@@ -1358,6 +1285,45 @@
           "lib/netstandard1.0/_._": {}
         }
       },
+      "Microsoft.Owin/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.dll": {}
+        }
+      },
+      "Microsoft.Owin.Security.Cookies/3.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Owin": "3.0.1",
+          "Microsoft.Owin.Security": "3.0.1",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Owin.Security.Cookies.dll": {}
+        }
+      },
       "Microsoft.VisualStudio.Web.BrowserLink.Loader/14.0.0": {
         "type": "package",
         "dependencies": {
@@ -1586,19 +1552,13 @@
           "lib/net45/NuGet.Versioning.dll": {}
         }
       },
-      "NUglify/1.5.1": {
+      "Owin/1.0.0": {
         "type": "package",
-        "frameworkAssemblies": [
-          "System",
-          "System.Core",
-          "System.Xml",
-          "mscorlib"
-        ],
         "compile": {
-          "lib/net40/NUglify.dll": {}
+          "lib/net40/Owin.dll": {}
         },
         "runtime": {
-          "lib/net40/NUglify.dll": {}
+          "lib/net40/Owin.dll": {}
         }
       },
       "System.Buffers/4.0.0": {
@@ -1954,51 +1914,6 @@
     }
   },
   "libraries": {
-    "BundlerMinifier.Core/2.2.281": {
-      "sha512": "cUiOJT4rjubD9tOsLo0ruPqfLEy5GUByj9JZ2fVlU5uR4QYTIN//BpeQfsmBwIU/GWrpVJqYsyX474Bm0U3XHQ==",
-      "type": "package",
-      "path": "BundlerMinifier.Core/2.2.281",
-      "files": [
-        "BundlerMinifier.Core.2.2.281.nupkg.sha512",
-        "BundlerMinifier.Core.nuspec",
-        "lib/net452/dotnet-bundle.exe",
-        "lib/netcoreapp1.0/dotnet-bundle.dll",
-        "lib/netcoreapp1.0/dotnet-bundle.runtimeconfig.json"
-      ]
-    },
-    "IdentityModel/2.0.0-rc3": {
-      "sha512": "YY+QJEQ4FPM8DcdGAD+dcrGX9Xohn1QI8Z2Uwp4l/dnfCFzvclR1pHQdo2/gcCnsQB+hILHPxbCbFB4+bbJRTA==",
-      "type": "package",
-      "path": "IdentityModel/2.0.0-rc3",
-      "files": [
-        "IdentityModel.2.0.0-rc3.nupkg.sha512",
-        "IdentityModel.nuspec",
-        "lib/net45/IdentityModel.dll",
-        "lib/netstandard1.3/IdentityModel.dll"
-      ]
-    },
-    "IdentityServer4/1.0.0-rc1": {
-      "sha512": "tTNdwgbxxwlUJFUeQuvhvEQJ0OqZdAjaud1esn/+g2f0GUjk1kyd4XlK4zHsKgLhOMaBmFfWU/kVKzfyeeetZw==",
-      "type": "package",
-      "path": "IdentityServer4/1.0.0-rc1",
-      "files": [
-        "IdentityServer4.1.0.0-rc1.nupkg.sha512",
-        "IdentityServer4.nuspec",
-        "lib/net452/IdentityServer4.dll",
-        "lib/netstandard1.4/IdentityServer4.dll"
-      ]
-    },
-    "IdentityServer4.AspNetIdentity/1.0.0-rc1": {
-      "sha512": "oF/H51c0CZjB8KQwcJEGmiBVnNGm7kYwbSlt/kyUPMv4B8ZY2/oq0wIrRc6Ly2v/frS12fUxb/eZt0XPZnG6zA==",
-      "type": "package",
-      "path": "IdentityServer4.AspNetIdentity/1.0.0-rc1",
-      "files": [
-        "IdentityServer4.AspNetIdentity.1.0.0-rc1.nupkg.sha512",
-        "IdentityServer4.AspNetIdentity.nuspec",
-        "lib/net452/IdentityServer4.AspNetIdentity.dll",
-        "lib/netstandard1.4/IdentityServer4.AspNetIdentity.dll"
-      ]
-    },
     "Libuv/1.9.0": {
       "sha512": "9Q7AaqtQhS8JDSIvRBt6ODSLWDBI4c8YxNxyCQemWebBFUtBbc6M5Vi5Gz1ZyIUlTW3rZK9bIr5gnVyv0z7a2Q==",
       "type": "package",
@@ -2056,6 +1971,19 @@
         "lib/netstandard1.3/Microsoft.AspNetCore.Authentication.Cookies.xml"
       ]
     },
+    "Microsoft.AspNetCore.Authentication.JwtBearer/1.0.0": {
+      "sha512": "CSZ24QCdMf5ItzaSA9wPe+UX3/JDRY8MQOQ/6gSYfZQ/3dfYXpdqA4Q+EG6ETdGXICWCwOSgG5hSLt7/SivRZg==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Authentication.JwtBearer/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Authentication.JwtBearer.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Authentication.JwtBearer.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+        "lib/net451/Microsoft.AspNetCore.Authentication.JwtBearer.xml",
+        "lib/netstandard1.4/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+        "lib/netstandard1.4/Microsoft.AspNetCore.Authentication.JwtBearer.xml"
+      ]
+    },
     "Microsoft.AspNetCore.Authorization/1.0.0": {
       "sha512": "iVFQ5xHSyxmfWYdl5B/xIFzXgm4SRgYQUKlLFVNGfEhbbjw0Ur2pfVrEvpENrhHFOQ2XAZcuFlGxSIzZwsVrMg==",
       "type": "package",
@@ -2093,19 +2021,6 @@
         "lib/net451/Microsoft.AspNetCore.Cryptography.Internal.xml",
         "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.Internal.dll",
         "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.Internal.xml"
-      ]
-    },
-    "Microsoft.AspNetCore.Cryptography.KeyDerivation/1.0.0": {
-      "sha512": "OUBTk5RS7b3+Q9Z7F1jAL9JzdWlkITNpUw8EO5Yu1sP4Rq2jaidXKLiEw7oKFbD1Wmcee2s+U/UyHQfy/og7Sw==",
-      "type": "package",
-      "path": "Microsoft.AspNetCore.Cryptography.KeyDerivation/1.0.0",
-      "files": [
-        "Microsoft.AspNetCore.Cryptography.KeyDerivation.1.0.0.nupkg.sha512",
-        "Microsoft.AspNetCore.Cryptography.KeyDerivation.nuspec",
-        "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
-        "lib/net451/Microsoft.AspNetCore.Cryptography.KeyDerivation.xml",
-        "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
-        "lib/netstandard1.3/Microsoft.AspNetCore.Cryptography.KeyDerivation.xml"
       ]
     },
     "Microsoft.AspNetCore.DataProtection/1.0.0": {
@@ -2273,19 +2188,6 @@
         "lib/netstandard1.3/Microsoft.AspNetCore.HttpOverrides.xml"
       ]
     },
-    "Microsoft.AspNetCore.Identity/1.0.0": {
-      "sha512": "qQXsxDocbx3xMPBVBZ2Es6vw5QalV+z9mGXUPbn/XRbjY1viwQjVToE7BrCanqr7q97ds0ciI2AgQhvny0kkqw==",
-      "type": "package",
-      "path": "Microsoft.AspNetCore.Identity/1.0.0",
-      "files": [
-        "Microsoft.AspNetCore.Identity.1.0.0.nupkg.sha512",
-        "Microsoft.AspNetCore.Identity.nuspec",
-        "lib/net451/Microsoft.AspNetCore.Identity.dll",
-        "lib/net451/Microsoft.AspNetCore.Identity.xml",
-        "lib/netstandard1.3/Microsoft.AspNetCore.Identity.dll",
-        "lib/netstandard1.3/Microsoft.AspNetCore.Identity.xml"
-      ]
-    },
     "Microsoft.AspNetCore.JsonPatch/1.0.0": {
       "sha512": "WVaSVS+dDlWCR/qerHnBxU9tIeJ9GMA3M5tg4cxH7/cJYZZLnr2zvaFHGB+cRRNCKKTJ0pFRxT7ES8knhgAAaA==",
       "type": "package",
@@ -2323,12 +2225,12 @@
         "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.xml"
       ]
     },
-    "Microsoft.AspNetCore.Mvc.Abstractions/1.0.0": {
-      "sha512": "d7KEexDwxSwVeZv+SDbsMRPl2WuKMVckOCp/KTGuI1NJhd/7GvNGW101iRIC3tC/yym0PaajcWwTZNVfjhyoJw==",
+    "Microsoft.AspNetCore.Mvc.Abstractions/1.0.1": {
+      "sha512": "Xa9XOA/NEIGSUSyAtc0rQrTRJKcxN8rzvBy0QJn2tRAXVeXc0Lbx4/1ia9kxyn3ygbjhF6bO90ZnC3Z3a2cq5g==",
       "type": "package",
-      "path": "Microsoft.AspNetCore.Mvc.Abstractions/1.0.0",
+      "path": "Microsoft.AspNetCore.Mvc.Abstractions/1.0.1",
       "files": [
-        "Microsoft.AspNetCore.Mvc.Abstractions.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Mvc.Abstractions.1.0.1.nupkg.sha512",
         "Microsoft.AspNetCore.Mvc.Abstractions.nuspec",
         "lib/net451/Microsoft.AspNetCore.Mvc.Abstractions.dll",
         "lib/net451/Microsoft.AspNetCore.Mvc.Abstractions.xml",
@@ -2349,12 +2251,12 @@
         "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.ApiExplorer.xml"
       ]
     },
-    "Microsoft.AspNetCore.Mvc.Core/1.0.0": {
-      "sha512": "tjCOZJheOAKStHs4LIcrLsbF/00wEwSinC+vCFpsmdqGVl3/tX9jnID20E1NlkKOW68DOLBavoC23BWFiHa0JA==",
+    "Microsoft.AspNetCore.Mvc.Core/1.0.1": {
+      "sha512": "TfUFH0HYbL3DCGkWE24gUDnHoa3pCr4b6xbUiQTnqIbIXdL79qW8mTtfD+RHmAN5bsf1J1fndJJ84/jKri+kiw==",
       "type": "package",
-      "path": "Microsoft.AspNetCore.Mvc.Core/1.0.0",
+      "path": "Microsoft.AspNetCore.Mvc.Core/1.0.1",
       "files": [
-        "Microsoft.AspNetCore.Mvc.Core.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Mvc.Core.1.0.1.nupkg.sha512",
         "Microsoft.AspNetCore.Mvc.Core.nuspec",
         "lib/net451/Microsoft.AspNetCore.Mvc.Core.dll",
         "lib/net451/Microsoft.AspNetCore.Mvc.Core.xml",
@@ -3143,6 +3045,39 @@
         "runtime.json"
       ]
     },
+    "Microsoft.Owin/3.0.1": {
+      "sha512": "64yZsGN9uRnXNVAyAT4F6KWmdDUJ6yX4uqzxKTdGANKH1oMt0IKZ7THRRa3mXIOo8iSu4tq/DCBUycUY9pXZzw==",
+      "type": "package",
+      "path": "Microsoft.Owin/3.0.1",
+      "files": [
+        "Microsoft.Owin.3.0.1.nupkg.sha512",
+        "Microsoft.Owin.nuspec",
+        "lib/net45/Microsoft.Owin.XML",
+        "lib/net45/Microsoft.Owin.dll"
+      ]
+    },
+    "Microsoft.Owin.Security/3.0.1": {
+      "sha512": "LPoUxaTKzmjs97wDCTtBIoRwp30Jkq9UFnoj+EfMFJv+XxjcvHE/D573LRomA568WhvXoI2cUiwhZFvqfbLMVg==",
+      "type": "package",
+      "path": "Microsoft.Owin.Security/3.0.1",
+      "files": [
+        "Microsoft.Owin.Security.3.0.1.nupkg.sha512",
+        "Microsoft.Owin.Security.nuspec",
+        "lib/net45/Microsoft.Owin.Security.XML",
+        "lib/net45/Microsoft.Owin.Security.dll"
+      ]
+    },
+    "Microsoft.Owin.Security.Cookies/3.0.1": {
+      "sha512": "l2GRNvO4oyxfpmWtfUYvN3fA4jWduE84UCNqWTj6yhYDSE76wI+W022qTTEMr0VoCDiJ0GGYdvAjQm3xbSsB9Q==",
+      "type": "package",
+      "path": "Microsoft.Owin.Security.Cookies/3.0.1",
+      "files": [
+        "Microsoft.Owin.Security.Cookies.3.0.1.nupkg.sha512",
+        "Microsoft.Owin.Security.Cookies.nuspec",
+        "lib/net45/Microsoft.Owin.Security.Cookies.dll",
+        "lib/net45/Microsoft.Owin.Security.Cookies.xml"
+      ]
+    },
     "Microsoft.VisualStudio.Web.BrowserLink.Loader/14.0.0": {
       "sha512": "f01OAOfsctcN7gSa05qYK8AgU1E/BFeZizvszNJMXY3BMJbYSj+3+YqyLunkMSf7LN92kcl7gQsAY9FayEH3ag==",
       "type": "package",
@@ -3364,19 +3299,14 @@
         "lib/netstandard1.0/NuGet.Versioning.xml"
       ]
     },
-    "NUglify/1.5.1": {
-      "sha512": "iYV/OtSs+HgyE/RilY7UvGXYec6r0OJenWlPIdX/IivedVpSSdzxvPvUIyWpiV/6ad7VjantH0/6oaOhAZbaoQ==",
+    "Owin/1.0.0": {
+      "sha512": "OseTFniKmyp76mEzOBwIKGBRS5eMoYNkMKaMXOpxx9jv88+b6mh1rSaw43vjBOItNhaLFG3d0a20PfHyibH5sw==",
       "type": "package",
-      "path": "NUglify/1.5.1",
+      "path": "Owin/1.0.0",
       "files": [
-        "NUglify.1.5.1.nupkg.sha512",
-        "NUglify.nuspec",
-        "lib/net35/NUglify.dll",
-        "lib/net35/NUglify.xml",
-        "lib/net40/NUglify.dll",
-        "lib/net40/NUglify.xml",
-        "lib/netstandard1.3/NUglify.dll",
-        "lib/netstandard1.3/NUglify.xml"
+        "Owin.1.0.0.nupkg.sha512",
+        "Owin.nuspec",
+        "lib/net40/Owin.dll"
       ]
     },
     "System.Buffers/4.0.0": {
@@ -5032,11 +4962,14 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "BundlerMinifier.Core >= 2.2.281",
-      "IdentityServer4.AspNetIdentity >= 1.0.0-rc1",
+      "Microsoft.AspNetCore.Authentication.Cookies >= 1.0.0",
+      "Microsoft.AspNetCore.Authentication.JwtBearer >= 1.0.0",
+      "Microsoft.AspNetCore.Authorization >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Hosting >= 1.0.0",
+      "Microsoft.AspNetCore.Hosting.Abstractions >= 1.0.0",
       "Microsoft.AspNetCore.Mvc >= 1.0.0",
+      "Microsoft.AspNetCore.Mvc.Core >= 1.0.1",
       "Microsoft.AspNetCore.Mvc.Razor >= 1.0.0",
       "Microsoft.AspNetCore.Mvc.ViewFeatures >= 1.0.0",
       "Microsoft.AspNetCore.Razor.Runtime >= 1.0.0",
@@ -5050,9 +4983,11 @@
       "Microsoft.Extensions.Logging.Console >= 1.0.0",
       "Microsoft.Extensions.Logging.Debug >= 1.0.0",
       "Microsoft.Extensions.Options.ConfigurationExtensions >= 1.0.0",
+      "Microsoft.IdentityModel.Tokens >= 5.0.0",
+      "Microsoft.Owin.Security.Cookies >= 3.0.1",
       "Microsoft.VisualStudio.Web.BrowserLink.Loader >= 14.0.0"
     ],
-    ".NETFramework,Version=v4.5.2": []
+    "DNX,Version=v4.5.1": []
   },
   "tools": {
     ".NETCoreApp,Version=v1.0": {

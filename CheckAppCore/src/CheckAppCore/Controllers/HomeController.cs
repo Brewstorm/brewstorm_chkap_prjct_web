@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CheckAppCore.Controllers
 {
@@ -9,6 +10,7 @@ namespace CheckAppCore.Controllers
             return View();
         }
 
+        [Authorize(ActiveAuthenticationSchemes = "Bearer")]
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";

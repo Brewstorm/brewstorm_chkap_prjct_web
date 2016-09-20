@@ -1,16 +1,27 @@
-﻿using CheckAppCore.Identity;
-using IdentityServer4;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.Text;
+using System.Threading.Tasks;
+using CheckAppCore.Providers;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CheckAppCore
 {
-    public class Startup
+    public partial class Startup
     {
-        private readonly IHostingEnvironment _environment;
+        const string TokenAudience = "ExampleAudience";
+        const string TokenIssuer = "ExampleIssuer";
+        
+        private SymmetricSecurityKey _key;
+
+        public IConfigurationRoot Configuration { get; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -20,28 +31,13 @@ namespace CheckAppCore
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
-
-            _environment = env;
         }
-
-        public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var cert = Certificate.Get(_environment.ContentRootPath);
-            
-            services.AddIdentityServer()
-                .SetSigningCredential(cert)
-                .AddInMemoryStores()
-                .AddInMemoryClients(Clients.Get())
-                .AddInMemoryScopes(Scopes.Get())
-                .AddInMemoryUsers(Users.Get());
-
             // Add framework services.
-            services.AddMvc(options => {
-                options.RespectBrowserAcceptHeader = true;
-            });
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,45 +46,63 @@ namespace CheckAppCore
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
+            var secretKey = "mysupersecret_secretkey!123";
+            _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
 
-            //app.UseStaticFiles();
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey = _key,
+                ValidAudience = TokenAudience,
+                ValidIssuer = TokenIssuer,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
 
-            //app.UseMvc(routes =>
+            //app.UseJwtBearerAuthentication(new JwtBearerOptions
             //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "{controller=Identity}/{action=Index}/{id?}");
+            //    AutomaticAuthenticate = true,
+            //    AutomaticChallenge = true,
+            //    TokenValidationParameters = tokenValidationParameters
             //});
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                AutomaticAuthenticate = false,
-                AutomaticChallenge = false
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                AuthenticationScheme = "Cookie",
+                CookieName = "access_token",
+                TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters)
             });
 
-            //app.UseGoogleAuthentication(new GoogleOptions
-            //{
-            //    AuthenticationScheme = "Google",
-            //    SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
-            //    ClientId = "434483408261-55tc8n0cs4ff1fe21ea8df2o443v2iuc.apps.googleusercontent.com",
-            //    ClientSecret = "3gcoTrEDPPJ0ukn_aYYT6PWo"
-            //});
+            // The secret key every token will be signed with.
+            // Keep this safe on the server!
+            var signingCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
 
-            app.UseIdentityServer();
+            app.UseSimpleTokenProvider(new TokenProviderOptions
+            {
+                Path = "/api/token",
+                Audience = "ExampleAudience",
+                Issuer = "ExampleIssuer",
+                SigningCredentials = signingCredentials,
+                IdentityResolver = GetIdentity
+            });
 
             app.UseStaticFiles();
 
             app.UseMvcWithDefaultRoute();
+        }
+
+        private Task<ClaimsIdentity> GetIdentity(string username, string password)
+        {
+            // Don't do this in production, obviously!
+            if (username == "TEST" && password == "TEST123")
+            {
+                return Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
+            }
+
+            // Credentials are invalid, or account doesn't exist
+            return Task.FromResult<ClaimsIdentity>(null);
         }
     }
 }

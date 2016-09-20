@@ -16,6 +16,8 @@
 <link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../lib/iron-image/iron-image.html">
 <link rel="import" href="../lib/paper-toast/paper-toast.html">
+<link rel="import" href="../lib/iron-ajax/iron-ajax.html">
+<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">
 
 <dom-module id="my-app">
     <template>
@@ -153,6 +155,14 @@
                    pattern="/:page"
                    data="{{routeData}}"
                    tail="{{subroute}}"></app-route>
+        
+        <iron-ajax id="tokenService"
+                   url="/api/token"
+                   method="POST"
+                   content-type="application/x-www-form-urlencoded"
+                   on-response="updateTokenData"></iron-ajax>
+        
+        <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
 
         <app-drawer-layout fullbleed>
             <!-- Drawer content -->
@@ -223,7 +233,7 @@
                     <history-view name="history"></history-view>
                     <payment-view name="payment"></payment-view>
                 </iron-pages>
-                <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised opened></paper-toast>
+                <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised></paper-toast>
             </app-header-layout>
         </app-drawer-layout>
     </template>
@@ -234,6 +244,11 @@
             properties: {
                 hidetabs: true,
                 pageDescription: '',
+                tokenData: {
+                    type: Object,
+                    value: {},
+                    observer: '_tokenChanged'
+                },
                 page: {
                     type: String,
                     reflectToAttribute: true,
@@ -241,14 +256,26 @@
                 }
             },
 
-            ready: function () {
+            ready: function() {
                 var self = this;
 
-                this.$.appDrawer.addEventListener('opened-changed', function (e) {
-                    self.$.tabs.hidden = e.target.opened;
-                });
+                this.$.appDrawer.addEventListener('opened-changed',
+                    function(e) {
+                        self.$.tabs.hidden = e.target.opened;
+                    });
 
                 self.$.toast.fitInto = self.$.container;
+
+                this.getTokenData();
+            },
+
+            getTokenData: function() {
+                this.$.tokenService.body = {"username":"TEST", "password":"TEST123"};
+                this.$.tokenService.generateRequest();
+            },
+
+            updateTokenData: function(theResponse) {
+                this.tokenData = theResponse.detail.response;
             },
 
             observers: [
@@ -257,6 +284,20 @@
 
             _routePageChanged: function (page) {
                 this.page = page || 'default';
+            },
+
+            _tokenChanged: function (token) {
+                if (Object.keys(token).length === 0)
+                    this.$.toast.show();
+                else {
+
+                    this.$.acc_token.value = token.access_token;
+                    this.$.acc_token.time = token.expires_in;
+
+                    this.$.acc_token.createCookie();
+
+                    this.$.toast.close();
+                }
             },
 
             _pageChanged: function (page) {

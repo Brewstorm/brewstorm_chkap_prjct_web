@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "BundlerMinifier.Core": "2.2.281",
-    "IdentityServer4.AspNetIdentity": "1.0.0-rc1",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.0.0",
@@ -18,7 +16,14 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0"
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0",
+    "Microsoft.AspNetCore.Authorization": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0",
+    "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.Core": "1.0.1",
+    "Microsoft.IdentityModel.Tokens": "5.0.0",
+    "Microsoft.Owin.Security.Cookies": "3.0.1",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0"
   },
 
   "tools": {
@@ -28,7 +33,7 @@
   },
 
   "frameworks": {
-    "net452": { }
+    "dnx451": {}
   },
 
   "buildOptions": {
