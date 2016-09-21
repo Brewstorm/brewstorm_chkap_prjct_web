@@ -6,32 +6,21 @@
             :host {
                 display: block;
                 padding: 10px;
+                text-align: center;
             }
         </style>
-        <div hidden="{{!isLoggedIn}}">
-            Início
-        </div>
-        <div hidden="{{isLoggedIn}}">
-            Você não está logado.
+        <div>
+            Seja Bem-Vindo!
         </div>
     </template>
     <script>
         Polymer({
             is: 'default-view',
             properties: {
-                isLoggedIn: {
-                    type: Boolean,
-                    value: false,
-                    reflectToAttribute: true,
-                    observer: '_isLoggedInChanged'
-                },
                 description: {
                     type: String,
                     value: 'Início'
                 }
-            },
-
-            _isLoggedInChanged: function(value) {
             }
         });
     </script>

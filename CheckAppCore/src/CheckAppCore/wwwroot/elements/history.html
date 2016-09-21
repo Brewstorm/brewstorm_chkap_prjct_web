@@ -9,30 +9,18 @@
                 padding: 10px;
             }
         </style>
-        <div hidden="{{!isLoggedIn}}">
+        <div>
             Histórico
-        </div>
-        <div hidden="{{isLoggedIn}}">
-            Você não está logado.
         </div>
     </template>
     <script>
         Polymer({
             is: 'history-view',
             properties: {
-                isLoggedIn: {
-                    type: Boolean,
-                    value: false,
-                    reflectToAttribute: true,
-                    observer: '_isLoggedInChanged'
-                },
                 description: {
                     type: String,
                     value: 'Histórico'
                 }
-            },
-
-            _isLoggedInChanged: function (value) {
             }
         });
     </script>

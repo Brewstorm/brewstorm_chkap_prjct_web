@@ -1,0 +1,204 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+<link rel="import" href="../lib/paper-material/paper-material.html">
+<link rel="import" href="../lib/paper-input/paper-input.html">
+<link rel="import" href="../lib/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../lib/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../lib/neon-animation/neon-animation-runner-behavior.html">
+
+<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">
+
+<!--
+An element demonstrating neon-animation.
+Example:
+    <login-panel></login-panel>
+@element login-panel
+@demo demo/index.html
+-->
+
+<dom-module id="login-page">
+    <style>
+        :host {
+            display: none;
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            background: #ffffff;
+            text-align: left;
+        }
+
+        paper-material {
+            padding: 16px;
+            width: 300px;
+        }
+
+        .iconLogo {
+            --iron-image-width: 100%;
+            width: 100%;
+            height: 95px;
+            margin-top: 10px;
+        }
+
+        #btnLogin {
+            background: #44546a;
+            color: #ffffff;
+            width: 100%;
+            margin: 30px 0 10px;
+        }
+
+        .bottomLoginPage {
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .bottomLoginPage td{
+            text-align: left;
+        }
+
+        a,
+        a:active,
+        a:visited {
+            color: #44546a;
+            /*text-decoration: none;*/
+        }
+
+        paper-input-error {
+            padding-top: 10px;
+        }
+    </style>
+    <template>
+        <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
+        
+        <iron-ajax id="tokenService"
+                   url="/api/token"
+                   method="POST"
+                   content-type="application/x-www-form-urlencoded"
+                   on-response="updateTokenData"
+                   on-error="loginError"></iron-ajax>
+
+        <paper-material elevation="1">
+            <iron-image sizing="contain" fade src="../images/ca_marca.png" class="iconLogo"></iron-image>
+            <div>
+                <paper-input id="loginUsername" label="Usuário" autofocus value="TEST"></paper-input>
+            </div>
+            <div>
+                <paper-input-container id="loginPasswordContainer">
+                    <label>Senha</label>
+                    <input is="iron-input" id="loginPassword" type="password" value="TEST123">
+                    <paper-input-error>Usuário ou Senha inválido.</paper-input-error>
+                </paper-input-container>
+            </div>
+            <div>
+                <paper-button id="btnLogin" on-tap="getTokenData">Entrar</paper-button>
+            </div>
+            <div class="bottomLoginPage">
+                <table>
+                    <tr>
+                        <td><a href="#/forgot">Esqueci a senha</a></td>
+                    </tr>
+                    <tr>
+                        <td>Não possui conta? <a href="#/register">Cadastre-se</a></td>
+                    </tr>
+                </table>
+            </div>
+        </paper-material>
+    </template>
+    <script>
+        Polymer({
+            is: 'login-page',
+            behaviors: [
+                Polymer.NeonAnimationRunnerBehavior
+            ],
+            properties: {
+                opened: {
+                    type: Boolean
+                },
+                isLoggedIn: {
+                    type: Boolean,
+                    notify: true,
+                    observer: '_isLoggedInChanged'
+                },
+                tokenData: {
+                    type: Object,
+                    value: {},
+                    observer: '_tokenChanged'
+                },
+                animationConfig: {
+                    value: function () {
+                        return {
+                            'entry': {
+                                name: 'fade-in-animation',
+                                node: this,
+                                timing: { duration: 500 }
+                            },
+                            'exit': {
+                                name: 'fade-out-animation',
+                                node: this
+                            }
+                        }
+                    }
+                }
+            },
+            listeners: {
+                'neon-animation-finish': '_onNeonAnimationFinish'
+            },
+            show: function () {
+                this.opened = true;
+                this.style.display = 'inline-block';
+                this.cancelAnimation();
+                this.playAnimation('entry');
+            },
+            hide: function () {
+                this.opened = false;
+                this.cancelAnimation();
+                this.playAnimation('exit');
+            },
+
+            getTokenData: function () {
+                this.$.tokenService.body = { "username": this.$.loginUsername.value, "password": this.$.loginPassword.value };
+                this.$.tokenService.generateRequest();
+            },
+
+            updateTokenData: function (theResponse) {
+                this.tokenData = theResponse.detail.response;
+            },
+
+            _onNeonAnimationFinish: function () {
+                if (!this.opened) {
+                    this.style.display = 'none';
+                }
+            },
+            _tokenChanged: function (token) {
+                if (Object.keys(token).length === 0) {
+                    this.isLoggedIn = false;
+                } else {
+                    this.$.acc_token.value = token.access_token;
+                    this.$.acc_token.time = token.expires_in;
+                    this.$.acc_token.createCookie();
+
+                    this.isLoggedIn = true;
+                }
+            },
+            clearLoginFields: function() {
+                this.$.loginUsername.value = this.$.loginPassword.bindValue = '';
+            },
+            loginError: function () {
+                var self = this;
+                this.$.loginUsername.invalid = this.$.loginPasswordContainer.invalid = true;
+
+                setTimeout(function() {
+                    self.$.loginUsername.invalid = self.$.loginPasswordContainer.invalid = false;
+                }, 5000);
+            },
+            logout: function() {
+                this.tokenData = {};
+                this.$.acc_token.eraseCookie();
+            },
+            _isLoggedInChanged: function (isLoggedIn) {
+                if (isLoggedIn) {
+                    this.clearLoginFields();
+                    this.hide();
+                }
+                else
+                    this.show();
+            }
+        });
+    </script>
+</dom-module>
