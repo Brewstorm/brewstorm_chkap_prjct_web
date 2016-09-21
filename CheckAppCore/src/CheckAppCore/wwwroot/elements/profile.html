@@ -1,5 +1,4 @@
 ﻿<link rel="import" href="../lib/polymer/polymer.html">
-<!--<link rel="import" href="../lib/paper-button/paper-button.html">-->
 
 <dom-module id="profile-view">
     <template>
@@ -9,30 +8,18 @@
                 padding: 10px;
             }
         </style>
-        <div hidden="{{!isLoggedIn}}">
+        <div>
             Perfil
-        </div>
-        <div hidden="{{isLoggedIn}}">
-            Você não está logado.
         </div>
     </template>
     <script>
         Polymer({
             is: 'profile-view',
             properties: {
-                isLoggedIn: {
-                    type: Boolean,
-                    value: false,
-                    reflectToAttribute: true,
-                    observer: '_isLoggedInChanged'
-                },
                 description: {
                     type: String,
                     value: 'Perfil'
                 }
-            },
-            
-            _isLoggedInChanged: function (value) {
             }
         });
     </script>

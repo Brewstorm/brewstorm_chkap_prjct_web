@@ -1,4 +1,8 @@
 ﻿<link rel="import" href="../lib/polymer/polymer.html">
+<link rel="import" href="../lib/paper-listbox/paper-listbox.html">
+<link rel="import" href="../lib/paper-item/paper-item.html">
+<link rel="import" href="../lib/paper-button/paper-button.html">
+<link rel="import" href="../lib/iron-icon/iron-icon.html">
 
 <dom-module id="default-view">
     <template>
@@ -8,9 +12,31 @@
                 padding: 10px;
                 text-align: center;
             }
+
+            paper-listbox paper-button {
+                width: 97%;
+                padding: 15px 23%;
+                justify-content: flex-start;
+            }
+            paper-button iron-icon{
+                margin: 0 10px;
+            }
         </style>
-        <div>
-            Seja Bem-Vindo!
+        <div id="container">
+            <paper-listbox>
+                <paper-button>
+                    <iron-icon icon="check"></iron-icon>Consulta
+                </paper-button>
+                <paper-button>
+                    <iron-icon icon="check"></iron-icon>Emergência
+                </paper-button>
+                <paper-button>
+                    <iron-icon icon="check"></iron-icon>Exames
+                </paper-button>
+                <paper-button>
+                    <iron-icon icon="check"></iron-icon>Medicamentos
+                </paper-button>
+            </paper-listbox>
         </div>
     </template>
     <script>

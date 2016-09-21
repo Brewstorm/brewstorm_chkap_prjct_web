@@ -1,0 +1,45 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+<link rel="import" href="../lib/paper-button/paper-button.html">
+
+<dom-module id="settings-view">
+    <template>
+        <style>
+            :host {
+                --app-primary-color: #44546a;
+                --app-secondary-color: #ffffff;
+                --app-third-color: #b32700;
+                display: block;
+                padding: 10px;
+            }
+
+            #container {
+                text-align: center;
+            }
+
+            #btnLogout {
+                color: white;
+                background-color: var(--app-third-color);
+                height: 35px;
+                font-size: 14px;
+                min-width: 30px;
+            }
+        </style>
+        <div id="container">
+            <paper-button id="btnLogout" on-tap="logoutAction" raised>Desconectar</paper-button>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'settings-view',
+            properties: {
+                description: {
+                    type: String,
+                    value: 'Configurações'
+                }
+            },
+            logoutAction: function() {
+                this.domHost.logoutAction();
+            }
+        });
+    </script>
+</dom-module>

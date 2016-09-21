@@ -18,7 +18,9 @@
     "iron-ajax": "PolymerElements/iron-ajax#^1.0.0",
     "polymer-cookie": "andreasonny83/polymer-cookie#^0.1.0",
     "paper-elements": "PolymerElements/paper-elements#^1.0.0",
-    "neon-elements": "PolymerElements/neon-elements#^1.0.0"
+    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "paper-listbox": "PolymerElements/paper-listbox#^1.0.0",
+    "paper-item": "PolymerElements/paper-item#^1.0.0"
   },
   "resolutions": {
     "polymer": "^1.2.1"

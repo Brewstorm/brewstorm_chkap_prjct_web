@@ -121,7 +121,6 @@ Example:
                 },
                 tokenData: {
                     type: Object,
-                    value: {},
                     observer: '_tokenChanged'
                 },
                 animationConfig: {
@@ -143,7 +142,15 @@ Example:
             listeners: {
                 'neon-animation-finish': '_onNeonAnimationFinish'
             },
+            ready: function () {
+                var accessToken = this.$.acc_token.readCookie();
+                
+                if (accessToken != '') {
+                    this.isLoggedIn = true;
+                }
+            },
             show: function () {
+                console.log('show');
                 this.opened = true;
                 this.style.display = 'inline-block';
                 this.cancelAnimation();
@@ -151,6 +158,7 @@ Example:
             },
             hide: function () {
                 this.opened = false;
+                this.clearLoginFields();
                 this.cancelAnimation();
                 this.playAnimation('exit');
             },
@@ -194,14 +202,14 @@ Example:
             logout: function() {
                 this.tokenData = {};
                 this.$.acc_token.eraseCookie();
+                this.show();
             },
             _isLoggedInChanged: function (isLoggedIn) {
                 if (isLoggedIn) {
-                    this.clearLoginFields();
                     this.hide();
-                }
-                else
+                } else {
                     this.show();
+                }
             }
         });
     </script>
