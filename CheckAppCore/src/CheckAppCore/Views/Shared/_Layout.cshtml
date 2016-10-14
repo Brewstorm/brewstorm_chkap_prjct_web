@@ -29,11 +29,15 @@
 
     </environment>
     <environment names="Staging,Production">
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/service-worker.js" asp-append-version="false"></script>
+
+        <link rel="stylesheet" href="~/styles/site.css" />
         <link rel="manifest" href="/manifest.json">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/styles/" asp-append-version="true" />
+
+        <!-- Because this project uses vulcanize this should be your only html import
+    in this file. All other imports should go in elements.html -->
+        <link rel="import" href="~/elements/checkapp.html" async>
     </environment>
 </head>
 <body>
@@ -58,8 +62,6 @@
 
 
         </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>
     </environment>
 </body>
 </html>

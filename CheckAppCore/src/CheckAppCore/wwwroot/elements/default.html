@@ -13,17 +13,34 @@
                 text-align: center;
             }
 
+            .flex-center-justified {
+                @apply(--layout-horizontal);
+                @apply(--layout-center-justified);
+              }
+
+            .flex-start-justified {
+                @apply(--layout-horizontal);
+                @apply(--layout-start-justified);
+              }
+
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                width: 100%;
+              }
+
             paper-listbox paper-button {
-                width: 97%;
-                padding: 15px 23%;
-                justify-content: flex-start;
+                /*width: 97%;*/
+                /*padding: 15px 23%;*/
+                /*justify-content: flex-start;*/
             }
-            paper-button iron-icon{
-                margin: 0 10px;
+
+            paper-button iron-icon {
+                margin: 0 20px 0 15px;
             }
         </style>
-        <div id="container">
-            <paper-listbox>
+        <div id="container" class="container flex-center-justified">
+            <paper-listbox id="menu" class="flex-start-justified flex-wrap">
                 <paper-button>
                     <iron-icon icon="check"></iron-icon>Consulta
                 </paper-button>
