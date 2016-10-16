@@ -11,6 +11,19 @@
                  display: block;
              }
 
+            .checkapp-page {
+                 padding: 10px;
+                 width: 100%;
+                 background-color: var(--app-secondary-color);
+            }
+
+            @media only screen and (min-width: 850px) {
+                .checkapp-page {
+                    margin-top: 25px;
+                    width: 65%;
+                }
+            }
+
              app-header {
                  color: var(--app-secondary-color);
                  background-color: var(--app-primary-color);
@@ -140,6 +153,27 @@
             .login-container {
                 text-align: center;
                 margin-top: 2%;
+            }
+
+            .flex-center-justified {
+                @apply(--layout-horizontal);
+                @apply(--layout-center-justified);
+              }
+
+            .flex-start-justified {
+                @apply(--layout-horizontal);
+                @apply(--layout-start-justified);
+              }
+
+            .flex-wrap {
+                @apply(--layout-horizontal);
+                @apply(--layout-wrap);
+                width: 100%;
+              }
+
+            .btn-primary {
+                background-color: var(--app-primary-color);
+                color: var(--app-secondary-color)
             }
         </style>
     </template>

@@ -24,110 +24,116 @@
 <link rel="import" href="../lib/neon-animation/neon-animation-runner-behavior.html">
 
 <link rel="import" href="login.html">
+<link rel="import" href="consult.html">
+<link rel="import" href="default.html">
+<link rel="import" href="history.html">
+<link rel="import" href="profile.html">
+<link rel="import" href="settings.html">
 
 <!--styles-->
 <link rel="import" href="../styles/checkapp-styles.html">
 
 <dom-module id="check-app">
-    <template>
-        <style include="checkapp-styles"></style>
+<template>
+    <style include="checkapp-styles"></style>
 
-        <app-location route="{{route}}" use-hash-as-path></app-location>
+    <app-location route="{{route}}" use-hash-as-path></app-location>
 
-        <app-route route="{{route}}"
-                   pattern="/:page"
-                   data="{{routeData}}"
-                   tail="{{subroute}}"></app-route>
+    <app-route route="{{route}}"
+               pattern="/:page"
+               data="{{routeData}}"
+               tail="{{subroute}}"></app-route>
 
-        <iron-ajax id="tokenService"
-                   url="/api/token"
-                   method="POST"
-                   content-type="application/x-www-form-urlencoded"
-                   on-response="updateTokenData"></iron-ajax>
+    <iron-ajax id="tokenService"
+               url="/api/token"
+               method="POST"
+               content-type="application/x-www-form-urlencoded"
+               on-response="updateTokenData"></iron-ajax>
 
-        <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
-        
-        <iron-media-query query="(min-width:640px)"
-                          on-query-matches-changed="_onQueryMatchesChanged"></iron-media-query>
+    <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
 
-        <div class="login-container">
-            <login-page id="appLogin"></login-page>
-        </div>
+    <iron-media-query query="(min-width:640px)"
+                      on-query-matches-changed="_onQueryMatchesChanged"></iron-media-query>
 
-        <app-drawer-layout id="appDrawerLayout" fullbleed >
-            <!-- Drawer content -->
-            <app-drawer id="appDrawer">
-                <div id="appLogoContainer">
-                    <iron-image sizing="contain" fade src="../images/ca_logo.png" class="iconLogo"></iron-image>
-                    <span>CheckApp</span>
-                </div>
-                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                    <a name="default" href="#/default">
-                        <iron-icon icon="icons:home" class="big"></iron-icon>
+    <div class="login-container">
+        <login-page id="appLogin"></login-page>
+    </div>
+
+    <app-drawer-layout id="appDrawerLayout" fullbleed>
+        <!-- Drawer content -->
+        <app-drawer id="appDrawer">
+            <div id="appLogoContainer">
+                <iron-image sizing="contain" fade src="../images/ca_logo.png" class="iconLogo"></iron-image>
+                <span>CheckApp</span>
+            </div>
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                <a name="default" href="#/default">
+                    <iron-icon icon="icons:home" class="big"></iron-icon>
+                    <span>Início</span>
+                </a>
+                <a name="profile" href="#/profile">
+                    <iron-icon icon="social:person" class="big"></iron-icon>
+                    <span>Perfil</span>
+                </a>
+                <a name="history" href="#/history">
+                    <iron-icon icon="icons:history" class="big"></iron-icon>
+                    <span>Histórico</span>
+                </a>
+                <a name="settings" href="#/settings">
+                    <iron-icon icon="icons:settings" class="big"></iron-icon>
+                    <span>Configurações</span>
+                </a>
+            </iron-selector>
+        </app-drawer>
+        <!-- Main content -->
+        <app-header-layout id="container" has-scrolling-region>
+            <app-header reveals snaps shadow>
+                <app-toolbar>
+                    <div id="pageDescriptionLabel" main-title>{{pageDescription}}</div>
+                    <!--<paper-button id="btnLogout" on-tap="logoutAction">Sair</paper-button>-->
+                </app-toolbar>
+            </app-header>
+            <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
+                <paper-tab name="default" link>
+                    <a href="#/default" class="link" tabindex="-1">
+                        <iron-icon icon="icons:home"></iron-icon>
                         <span>Início</span>
                     </a>
-                    <a name="profile" href="#/profile">
-                        <iron-icon icon="social:person" class="big"></iron-icon>
+                </paper-tab>
+                <paper-tab name="profile" link>
+                    <a href="#/profile" class="link" tabindex="-1">
+                        <iron-icon icon="social:person"></iron-icon>
                         <span>Perfil</span>
                     </a>
-                    <a name="history" href="#/history">
-                        <iron-icon icon="icons:history" class="big"></iron-icon>
+                </paper-tab>
+                <paper-tab name="history" link>
+                    <a href="#/history" class="link" tabindex="-1">
+                        <iron-icon icon="icons:history"></iron-icon>
                         <span>Histórico</span>
                     </a>
-                    <a name="settings" href="#/settings">
-                        <iron-icon icon="icons:settings" class="big"></iron-icon>
+                </paper-tab>
+                <paper-tab name="settings" link>
+                    <a href="#/settings" class="link" tabindex="-1">
+                        <iron-icon icon="icons:settings"></iron-icon>
                         <span>Configurações</span>
                     </a>
-                </iron-selector>
-            </app-drawer>
-            <!-- Main content -->
-            <app-header-layout id="container" has-scrolling-region>
-                <app-header reveals snaps shadow>
-                    <app-toolbar>
-                        <div id="pageDescriptionLabel" main-title>{{pageDescription}}</div>
-                        <!--<paper-button id="btnLogout" on-tap="logoutAction">Sair</paper-button>-->
-                    </app-toolbar>
-                </app-header>
-                <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
-                    <paper-tab name="default" link>
-                        <a href="#/default" class="link" tabindex="-1">
-                            <iron-icon icon="icons:home"></iron-icon>
-                            <span>Início</span>
-                        </a>
-                    </paper-tab>
-                    <paper-tab name="profile" link>
-                        <a href="#/profile" class="link" tabindex="-1">
-                            <iron-icon icon="social:person"></iron-icon>
-                            <span>Perfil</span>
-                        </a>
-                    </paper-tab>
-                    <paper-tab name="history" link>
-                        <a href="#/history" class="link" tabindex="-1">
-                            <iron-icon icon="icons:history"></iron-icon>
-                            <span>Histórico</span>
-                        </a>
-                    </paper-tab>
-                    <paper-tab name="settings" link>
-                        <a href="#/settings" class="link" tabindex="-1">
-                            <iron-icon icon="icons:settings"></iron-icon>
-                            <span>Configurações</span>
-                        </a>
-                    </paper-tab>
-                </paper-tabs>
-                <iron-pages id="appIronPages"
-                            selected="[[page]]"
-                            attr-for-selected="name"
-                            fallback-selection="view404"
-                            role="main">
-                    <default-view name="default"></default-view>
-                    <profile-view name="profile"></profile-view>
-                    <history-view name="history"></history-view>
-                    <settings-view name="settings"></settings-view>
-                </iron-pages>
-                <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised></paper-toast>
-            </app-header-layout>
-        </app-drawer-layout>
-    </template>
+                </paper-tab>
+            </paper-tabs>
+            <iron-pages id="appIronPages"
+                        selected="[[page]]"
+                        attr-for-selected="name"
+                        fallback-selection="view404"
+                        role="main">
+                <default-view name="default"></default-view>
+                <profile-view name="profile"></profile-view>
+                <history-view name="history"></history-view>
+                <settings-view name="settings"></settings-view>
+                <consult-view name="consult"></consult-view>
+            </iron-pages>
+            <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised></paper-toast>
+        </app-header-layout>
+    </app-drawer-layout>
+</template>
     <script>
         Polymer({
             is: 'check-app',
@@ -271,12 +277,12 @@
             },
 
             _pageChanged: function (page) {
-                var self = this;
                 // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl(page + '.html');
-                this.importHref(resolvedPageUrl, function () {
-                    self.setPageDescription();
-                }, this._showPage404, true);
+                this.setPageDescription();
+                //var resolvedPageUrl = this.resolveUrl(page + '.html');
+                //Polymer.Base.importHref(resolvedPageUrl, function () {
+                //    self.setPageDescription();
+                //}, this._showPage404, true);
             },
 
             _showPage404: function () {

@@ -6,7 +6,7 @@
     "jquery": "2.2.0",
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "polymer": "Polymer/polymer#^1.6.0",
+    "polymer": "1.7.0",
     "paper-button": "PolymerElements/paper-button#^1.0.0",
     "paper-tabs": "PolymerElements/paper-tabs#^1.6.0",
     "app-layout": "PolymerElements/app-layout#^0.10.0",
@@ -21,9 +21,14 @@
     "neon-elements": "PolymerElements/neon-elements#^1.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^1.0.0",
     "paper-item": "PolymerElements/paper-item#^1.0.0",
-    "web-animations-js": "2.2.1"
+    "web-animations-js": "2.2.1",
+    "google-map": "GoogleWebComponents/google-map",
+    "geo-location": "ebidel/geo-location",
+    "paper-autocomplete": "ellipticaljs/paper-autocomplete"
   },
   "resolutions": {
-    "polymer": "^1.2.1"
+    "polymer": "^1.2.1",
+    "webcomponentsjs": "0.7.22",
+    "google-apis": "^1.1.1"
   }
 }

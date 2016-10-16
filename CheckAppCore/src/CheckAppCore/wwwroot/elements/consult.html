@@ -1,0 +1,86 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+<link rel="import" href="../lib/google-map/google-map.html">
+<link rel="import" href="../lib/geo-location/geo-location.html">
+<link rel="import" href="../lib/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../lib/paper-button/paper-button.html">
+
+<dom-module id="consult-view">
+    <template>
+        <style include="checkapp-styles"></style>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            google-map {
+                height: 300px;
+            }
+
+            .continueBtnContainer {
+                padding-top: 10px;
+            }
+        </style>
+        <div id="container" class="flex-center-justified">
+            <paper-material elevation="2" class="checkapp-page">
+                <paper-autocomplete label="Informe o endereço" id="inputLocal" no-label-float="true" text="{{searchValue}}"></paper-autocomplete>
+
+                <google-map-search id="mapSearch" map="[[map]]" query="{{searchValue}}" results="{{results}}" types="cities" global-search>
+                </google-map-search>
+
+                <geo-location latitude="{{lat}}"
+                              longitude="{{lng}}">
+                </geo-location>
+
+                <google-map id="mapaLocal" map="{{map}}" latitude="[[lat]]" longitude="[[lng]]" api-key="{{GMapsKey}}" additional-map-options="{{additionalMapOptions}}" zoom="15" fit-to-markers disable-street-view-control>
+                    <google-map-marker latitude="[[lat]]" longitude="[[lng]]">
+                    </google-map-marker>
+                </google-map>
+
+                <div class="flex-center-justified continueBtnContainer">
+                    <paper-button raised class="btn-primary">Continuar</paper-button>
+                </div>
+
+            </paper-material>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'consult-view',
+            properties: {
+                description: {
+                    type: String,
+                    value: 'Consulta'
+                },
+                GMapsKey: {
+                    value: 'AIzaSyAXbp9LT7myZKAPGdNhPcoY6USbgy8_fG8'
+                },
+                teste: {
+                    value: ['lugar', 'lugar2', 'outro', 'aquele']
+                },
+                searchValue: {
+                    type: String,
+                    value: ''
+                },
+                additionalMapOptions: {
+
+                }
+            },
+            attached: function () {
+                var _this = this;
+                
+                this.$.inputLocal.addEventListener('keyup', function (e) {
+                    var mapSearch = _this.$["mapSearch"];
+                    mapSearch.search();
+
+                    console.log(_this.results);
+                });
+            },
+            ready: function () {
+                var _this = this;
+                this.$.inputLocal.source = this.teste;
+
+            }
+        });
+    </script>
+</dom-module>

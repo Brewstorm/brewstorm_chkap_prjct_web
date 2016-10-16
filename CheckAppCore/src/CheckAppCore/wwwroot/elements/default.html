@@ -3,9 +3,12 @@
 <link rel="import" href="../lib/paper-item/paper-item.html">
 <link rel="import" href="../lib/paper-button/paper-button.html">
 <link rel="import" href="../lib/iron-icon/iron-icon.html">
+<link rel="import" href="../lib/iron-icons/maps-icons.html">
+<link rel="import" href="../lib/paper-spinner/paper-spinner-lite.html">
 
 <dom-module id="default-view">
     <template>
+        <style include="checkapp-styles"></style>
         <style>
             :host {
                 display: block;
@@ -17,21 +20,12 @@
                 margin-top: 35px;
             }
 
-            .flex-center-justified {
-                @apply(--layout-horizontal);
-                @apply(--layout-center-justified);
-              }
-
-            .flex-start-justified {
+            .container-alignment {
                 @apply(--layout-horizontal);
                 @apply(--layout-start-justified);
-              }
-
-            .flex-wrap {
-                @apply(--layout-horizontal);
                 @apply(--layout-wrap);
                 width: 100%;
-              }
+            }
 
             paper-listbox paper-button {
                 /*width: 97%;*/
@@ -39,23 +33,49 @@
                 /*justify-content: flex-start;*/
             }
 
+            .big {
+                --iron-icon-height: 32px;
+                --iron-icon-width: 32px;
+            }
+            
+            @media only screen and (min-width: 850px) {
+                #menu {
+                    width: 65%;
+                }
+
+                .container-alignment {
+                    @apply(--layout-horizontal);
+                    @apply(--layout-center-justified);
+                    @apply(--layout-wrap);
+                    width: 100%;
+                }
+            }
+
             paper-button iron-icon {
                 margin: 0 20px 0 15px;
+                color: var(--app-primary-color);
+            }
+
+            #loadingSpinner {
+                --paper-spinner-color: var(--app-third-color);
             }
         </style>
         <div id="container" class="container flex-center-justified">
-            <paper-listbox id="menu" class="flex-start-justified flex-wrap">
-                <paper-button>
-                    <iron-icon icon="check"></iron-icon>Consulta
+
+            <!--<paper-spinner-lite id="loadingSpinner" active hidden></paper-spinner-lite>-->
+
+            <paper-listbox id="menu" class="container-alignment">
+                <paper-button noink on-click="consultaClick">
+                    <iron-icon icon="perm-contact-calendar" class="big"></iron-icon>Consulta
                 </paper-button>
-                <paper-button>
-                    <iron-icon icon="check"></iron-icon>Emergência
+                <paper-button noink>
+                    <iron-icon icon="maps:local-hospital" class="big"></iron-icon>Emergência
                 </paper-button>
-                <paper-button>
-                    <iron-icon icon="check"></iron-icon>Exames
+                <paper-button noink>
+                    <iron-icon icon="content-paste" class="big"></iron-icon>Exames
                 </paper-button>
-                <paper-button>
-                    <iron-icon icon="check"></iron-icon>Medicamentos
+                <paper-button noink>
+                    <iron-icon icon="check" class="big"></iron-icon>Medicamentos
                 </paper-button>
             </paper-listbox>
         </div>
@@ -68,6 +88,9 @@
                     type: String,
                     value: 'Início'
                 }
+            },
+            consultaClick: function () {
+                location.hash = '/consult';
             }
         });
     </script>
