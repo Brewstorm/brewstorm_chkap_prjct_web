@@ -19,6 +19,7 @@
     <environment names="Development">
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="~/js/service-worker.js" asp-append-version="false"></script>
+        <script src="lib/webcomponentsjs/webcomponents-lite.js"></script>
 
         <link rel="stylesheet" href="~/styles/site.css" />
         <link rel="manifest" href="/manifest.json">
@@ -36,11 +37,16 @@
         <link rel="manifest" href="/manifest.json">
 
         <!-- Because this project uses vulcanize this should be your only html import
-    in this file. All other imports should go in elements.html -->
-        <link rel="import" href="~/elements/checkapp.html" async>
+            in this file. All other imports should go in elements.html -->
+        <link rel="import" href="~/elements/checkapp.html">
+
+
     </environment>
 </head>
 <body>
+
+    <check-app></check-app>
+
     @RenderBody()
 
     @RenderSection("scripts", required: false)
@@ -55,10 +61,12 @@
                 asp-fallback-test="window.jQuery">
 
 
+
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+
 
 
         </script>

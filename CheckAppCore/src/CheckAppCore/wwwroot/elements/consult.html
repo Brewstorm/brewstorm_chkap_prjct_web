@@ -1,8 +1,11 @@
 ﻿<link rel="import" href="../lib/polymer/polymer.html">
-<link rel="import" href="../lib/google-map/google-map.html">
-<link rel="import" href="../lib/geo-location/geo-location.html">
+
 <link rel="import" href="../lib/paper-autocomplete/paper-autocomplete.html">
 <link rel="import" href="../lib/paper-button/paper-button.html">
+<link rel="import" href="../lib/google-map/google-map.html">
+<link rel="import" href="../lib/google-map/google-map-search.html">
+<link rel="import" href="../lib/google-map/google-map-marker.html">
+<link rel="import" href="../lib/geo-location/geo-location.html">
 
 <dom-module id="consult-view">
     <template>
@@ -21,66 +24,159 @@
                 padding-top: 10px;
             }
         </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/consult/:cityId" data="{{routeData}}" active="{{hasCity}}"></app-route>
+
         <div id="container" class="flex-center-justified">
+
             <paper-material elevation="2" class="checkapp-page">
-                <paper-autocomplete label="Informe o endereço" id="inputLocal" no-label-float="true" text="{{searchValue}}"></paper-autocomplete>
+                <div hidden$="{{hasCity}}">
 
-                <google-map-search id="mapSearch" map="[[map]]" query="{{searchValue}}" results="{{results}}" types="cities" global-search>
-                </google-map-search>
+                    <paper-autocomplete label="Informe sua cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}"></paper-autocomplete>
 
-                <geo-location latitude="{{lat}}"
-                              longitude="{{lng}}">
-                </geo-location>
+                    <geo-location latitude="{{lat}}"
+                                  longitude="{{lng}}">
+                    </geo-location>
 
-                <google-map id="mapaLocal" map="{{map}}" latitude="[[lat]]" longitude="[[lng]]" api-key="{{GMapsKey}}" additional-map-options="{{additionalMapOptions}}" zoom="15" fit-to-markers disable-street-view-control>
-                    <google-map-marker latitude="[[lat]]" longitude="[[lng]]">
-                    </google-map-marker>
-                </google-map>
+                    <google-map-search id="mapSearch" map="[[map]]" types="cities" global-search>
+                    </google-map-search>
 
-                <div class="flex-center-justified continueBtnContainer">
-                    <paper-button raised class="btn-primary">Continuar</paper-button>
+                    <google-map id="mapaLocal" map="{{map}}" latitude="[[lat]]" longitude="[[lng]]" api-key="{{GMapsKey}}"
+                                language="pt-BR" zoom="10" fit-to-markers disable-street-view-control>
+                        <google-map-marker id="mapMarker" latitude="[[lat]]" longitude="[[lng]]">
+                        </google-map-marker>
+                    </google-map>
+
+                    <div class="flex-center-justified continueBtnContainer">
+                        <paper-button raised class="primary" on-tap="confirmCity" disabled$="{{!canConfirmPlace}}">Confirmar</paper-button>
+                    </div>
+
                 </div>
+                <div hidden$="{{!hasCity}}">
+                    <div class="flex-center-justified">
+                        Cidade: [[cityName]]
+                        <paper-button on-tap="clearCity" class="primary small">Alterar</paper-button>
+                    </div>
 
+
+                    <iron-ajax id="appointmentSearchAjax"
+                               url="/appointmenttype"
+                               handle-as="json"
+                               loading="{{loadingAppointmentTypes}}"
+                               last-response="{{appointmentTypesList}}"></iron-ajax>
+
+                    <template is="dom-if" if="{{loadingAppointmentTypes}}">
+                        <div class="flex-center-justified">
+                            <paper-spinner-lite active></paper-spinner-lite>
+                        </div>
+                    </template>
+
+                    <paper-listbox hidden$="{{loadingAppointmentTypes}}" style="height: 300px; overflow: auto;">
+                        <template is="dom-repeat" items="{{appointmentTypesList}}">
+                            <paper-item>{{item.name}}</paper-item>
+                        </template>
+                    </paper-listbox>
+
+                    <div class="flex-center-justified continueBtnContainer">
+                        <paper-button raised class="primary">Avançar</paper-button>
+                    </div>
+                </div>
             </paper-material>
         </div>
     </template>
     <script>
-        Polymer({
-            is: 'consult-view',
-            properties: {
-                description: {
-                    type: String,
-                    value: 'Consulta'
+        (function () {
+            Polymer({
+                is: 'consult-view',
+                properties: {
+                    description: {
+                        type: String,
+                        value: 'Consulta'
+                    },
+                    GMapsKey: {
+                        value: 'AIzaSyC5KDW7xupwDTw9hXB5cfxo9ezYq1PdUOA'
+                    },
+                    routeData: {
+                        type: Object,
+                        notify: true
+                    },
+                    canConfirmPlace: false
                 },
-                GMapsKey: {
-                    value: 'AIzaSyAXbp9LT7myZKAPGdNhPcoY6USbgy8_fG8'
-                },
-                teste: {
-                    value: ['lugar', 'lugar2', 'outro', 'aquele']
-                },
-                searchValue: {
-                    type: String,
-                    value: ''
-                },
-                additionalMapOptions: {
+                observers: [
+                    '_routePageChanged(routeData.cityId)'
+                ],
+                attached: function () {
+                    var _this = this;
 
+                    this.$.mapSearch.addEventListener('google-map-search-results',
+                        function (results) {
+                            _this.$.inputLocal.suggestions(results.detail.map(function (adrr) {
+                                return {
+                                    text: adrr.name,
+                                    value: { id: adrr.place_id, lat: adrr.latitude, lng: adrr.longitude }
+                                };
+                            }));
+                        });
+
+                    this.$.inputLocal.addEventListener('autocomplete-change', function (e) {
+                        _this.$.mapSearch.query = e.detail.option.text;
+                        _this.$.mapSearch.search();
+                    });
+
+                    this.$.inputLocal.addEventListener('autocomplete-selected', function (e) {
+                        if (e.detail.value) {
+                            _this.cityId = e.detail.value.id;
+                            _this.cityName = e.detail.text;
+                            _this.lat = e.detail.value.lat;
+                            _this.lng = e.detail.value.lng;
+                            _this.canConfirmPlace = true;
+                        }
+                    });
+
+                    this.$.mapaLocal.addEventListener('google-map-ready',
+                        function () {
+                            _this.initializeMap();
+                        });
+                },
+                _routePageChanged: function () {
+                    this.$.appointmentSearchAjax.generateRequest();
+                },
+                confirmCity: function () {
+                    this.set('route.path', '/consult/' + this.cityId);
+                },
+                clearCity: function () {
+                    this.set('route.path', '/consult');
+                    this.searchValue = '';
+
+                    this.$.inputLocal.$.input.focus();
+                    this.canConfirmPlace = false;
+                },
+                initializeMap: function () {
+                    var _this = this;
+
+                    this.async(function () {
+
+                        var request = {
+                            location: this.map.getCenter(),
+                            radius: '500',
+                            types: 'cities'
+                        };
+
+                        var service = new google.maps.places.PlacesService(this.map);
+                        service.nearbySearch(request,
+                            function (results, status) {
+                                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                                    _this.cityId = results[0].place_id;
+                                    _this.cityName = results[0].name;
+                                    _this.searchValue = results[0].name;
+                                    _this.canConfirmPlace = true;
+                                }
+                            });
+
+                    }, 500);
                 }
-            },
-            attached: function () {
-                var _this = this;
-                
-                this.$.inputLocal.addEventListener('keyup', function (e) {
-                    var mapSearch = _this.$["mapSearch"];
-                    mapSearch.search();
-
-                    console.log(_this.results);
-                });
-            },
-            ready: function () {
-                var _this = this;
-                this.$.inputLocal.source = this.teste;
-
-            }
-        });
+            });
+        })();
     </script>
 </dom-module>

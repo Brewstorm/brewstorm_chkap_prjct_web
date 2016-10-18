@@ -8,8 +8,10 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
+using CheckAppCore.Data;
 using CheckAppCore.Providers;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace CheckAppCore
 {
@@ -38,10 +40,13 @@ namespace CheckAppCore
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddDbContext<CheckAppContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, CheckAppContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -92,6 +97,8 @@ namespace CheckAppCore
             app.UseStaticFiles();
 
             app.UseMvcWithDefaultRoute();
+
+            DbInitializer.Initialize(context);
         }
 
         private Task<ClaimsIdentity> GetIdentity(string username, string password)

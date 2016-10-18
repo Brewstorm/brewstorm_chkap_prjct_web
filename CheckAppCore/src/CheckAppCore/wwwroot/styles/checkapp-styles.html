@@ -171,9 +171,47 @@
                 width: 100%;
               }
 
-            .btn-primary {
+            paper-button.primary {
+                --paper-button-ink-color: var(--app-primary-color);
                 background-color: var(--app-primary-color);
-                color: var(--app-secondary-color)
+                color: white !important;
+
+                --paper-button-raised-keyboard-focus: {
+                  background-color: var(--app-primary-color) !important;
+                  color: white !important;
+                }
+              }
+
+            paper-button.small {
+                padding: 0;
+            }
+
+            paper-button.primary {
+                --paper-button-ink-color: var(--app-primary-color);
+                /* These could also be individually defined for each of the
+                  specific css classes, but we'll just do it once as an example */
+                --paper-button-flat-keyboard-focus: {
+                  background-color: var(--app-primary-color);
+                  color: white !important;
+                };
+                --paper-button-raised-keyboard-focus: {
+                  background-color: var(--app-primary-color) !important;
+                  color: white !important;
+                };
+              }
+
+              paper-button.primary:hover {
+                background-color: var(--app-primary-color);
+              }
+
+            paper-button.primary[noink] {
+                background-color: 'none';
+            }
+
+            paper-button[disabled],
+            paper-button.disabled {
+                background: #eaeaea;
+                color: #a8a8a8;
             }
         </style>
     </template>
