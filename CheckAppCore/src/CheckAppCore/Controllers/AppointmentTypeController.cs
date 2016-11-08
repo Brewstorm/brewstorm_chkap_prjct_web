@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using CheckAppCore.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,20 @@ namespace CheckAppCore.Controllers
         public async Task<IActionResult> Index()
         {
             return new JsonResult(await _context.AppointmentTypes.ToListAsync());
+        }
+
+        public async Task<IActionResult> GetProfessionals([FromQuery] int? appTypeId)
+        {
+            if (appTypeId.HasValue)
+            {
+                return new JsonResult(await _context.ProfessionalsAppointmentTypes
+                                                    .Include(p => p.Professional)
+                                                    .Where(o => o.AppointmentType.ID == appTypeId.Value)
+                                                    .Select(pat => pat.Professional)
+                                                    .ToListAsync());
+            }
+
+            return new EmptyResult();
         }
     }
 }

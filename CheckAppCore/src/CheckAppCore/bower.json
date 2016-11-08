@@ -24,11 +24,11 @@
     "web-animations-js": "2.2.1",
     "google-map": "GoogleWebComponents/google-map",
     "geo-location": "ebidel/geo-location",
-    "paper-autocomplete": "ellipticaljs/paper-autocomplete"
+    "paper-autocomplete": "ellipticaljs/paper-autocomplete",
+    "iron-list": "PolymerElements/iron-list"
   },
   "resolutions": {
     "polymer": "^1.2.1",
-    "webcomponentsjs": "0.7.22",
-    "google-apis": "^1.1.1"
+    "webcomponentsjs": "0.7.22"
   }
 }

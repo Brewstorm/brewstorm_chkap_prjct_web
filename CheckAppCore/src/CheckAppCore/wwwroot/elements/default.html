@@ -65,13 +65,13 @@
             <!--<paper-spinner-lite id="loadingSpinner" active hidden></paper-spinner-lite>-->
 
             <paper-listbox id="menu" class="container-alignment">
-                <paper-button noink on-click="consultaClick">
+                <paper-button noink on-tap="consultaClick">
                     <iron-icon icon="perm-contact-calendar" class="big"></iron-icon>Consulta
                 </paper-button>
                 <paper-button noink>
                     <iron-icon icon="maps:local-hospital" class="big"></iron-icon>Emergência
                 </paper-button>
-                <paper-button noink>
+                <paper-button noink on-tap="examinationsClick">
                     <iron-icon icon="content-paste" class="big"></iron-icon>Exames
                 </paper-button>
                 <paper-button noink>
@@ -91,6 +91,9 @@
             },
             consultaClick: function () {
                 location.hash = '/consult';
+            },
+            examinationsClick: function() {
+                location.hash = '/examinations';
             }
         });
     </script>

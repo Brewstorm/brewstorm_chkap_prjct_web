@@ -25,6 +25,7 @@
 
 <link rel="import" href="login.html">
 <link rel="import" href="consult.html">
+<link rel="import" href="examinations.html">
 <link rel="import" href="default.html">
 <link rel="import" href="history.html">
 <link rel="import" href="profile.html">
@@ -89,7 +90,10 @@
             <app-header-layout id="container" has-scrolling-region>
                 <app-header reveals snaps shadow>
                     <app-toolbar>
-                        <div id="pageDescriptionLabel" main-title>{{pageDescription}}</div>
+                        <div id="pageDescriptionLabel" main-title>
+                            <!--<paper-icon-button icon="arrow-back"></paper-icon-button>-->
+                            {{pageDescription}}
+                        </div>
                     </app-toolbar>
                 </app-header>
                 <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
@@ -128,6 +132,7 @@
                     <history-view name="history"></history-view>
                     <settings-view name="settings"></settings-view>
                     <consult-view name="consult"></consult-view>
+                    <examinations-view name="examinations"></examinations-view>
                 </iron-pages>
                 <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised></paper-toast>
             </app-header-layout>

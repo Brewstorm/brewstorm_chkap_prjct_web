@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CheckAppCore.Models
 {
-    public class AppointmentType
+    public class Professional
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public string NumeroCRM { get; set; }
         public ICollection<ProfessionalAppointmentType> ProfessionalAppointmentTypes { get; set; }
     }
 }

@@ -1,0 +1,176 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+
+<link rel="import" href="../lib/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../lib/paper-button/paper-button.html">
+<link rel="import" href="../lib/iron-list/iron-list.html">
+<link rel="import" href="../lib/iron-image/iron-image.html">
+
+<dom-module id="examinations-view">
+    <template>
+        <style include="checkapp-styles"></style>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            #list {
+                --iron-list-items-container: {
+                  max-width: 800px;
+                  margin: 10px auto;
+                };
+              }
+              
+            .group-header,
+              .group-item {
+                padding: 5px 20px;
+                background-color: white;
+                font-size: 20px;
+              }
+              .group-item {
+                @apply(--layout-horizontal);
+              }
+              .group-header {
+                font-weight: bold;
+                color: #333;
+                margin-top: 20px;
+              }
+              .group-header:before {
+                content: '';
+                border-top: 1px solid #ddd;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+              }
+              .avatar {
+                height: 50px;
+                width: 50px;
+                border-radius: 20px;
+                box-sizing: border-box;
+                background-color: #DDD;
+                margin-right: 16px;
+              }
+              .pad {
+                line-height: 25px;
+              }
+              .pad span {
+                display: -webkit-box;
+              }
+              .secondary {
+                color: gray;
+                font-size: 15px;
+              }
+              .state-list {
+                width: 250px;
+                height: 80vh;
+                color: black;
+              }
+
+              #dateSelected {
+                text-align: center;
+                padding: 20px;
+                font-weight: bold;
+              }
+
+              #horarios paper-material {
+                background: var(--app-primary-color);
+                color: white;
+                padding: 10px;
+                cursor: pointer;
+              }
+
+              .item-horario {
+                  text-align: center;
+                  padding: 5px 0;
+              }
+
+              .selected {
+                  background: var(--app-third-color) !important;
+              }
+        </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/consult/:cityId" data="{{routeData}}" active="{{hasCity}}"></app-route>
+
+        <div id="container" class="flex-center-justified">
+
+            <paper-material elevation="2" class="checkapp-page">
+                <iron-list id="list" items="{{medicos}}" scroll-target="document">
+                    <template>
+                        <div>
+                            <div class="group-item">
+                                <iron-image class="avatar" sizing="contain" src="[[item.image]]"></iron-image>
+                                <div class="pad">
+                                    <span class="primary">[[item.local]]</span>
+                                    <span class="secondary">[[item.endereco_rua]]</span>
+                                    <span class="secondary">[[item.endereco]]</span>
+                                    <span class="secondary">[[item.examination]]</span>
+                                    <span class="secondary">[[item.valor]]</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </iron-list>
+                
+                <div id="dateSelected">20/10/2016</div>
+                
+                <iron-list id="horarios" items="{{horarios}}" scroll-target="document">
+                    <template>
+                        
+                        <div class="item-horario" on-tap="confirmAgendamento">
+                            <paper-material elevation="1">[[item]]</paper-material>
+                        </div>
+                        
+                    </template>
+                </iron-list>
+
+            </paper-material>
+        </div>
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'examinations-view',
+                properties: {
+                    description: {
+                        type: String,
+                        value: 'Exames'
+                    },
+                    medicos: {
+                        type: Array,
+                        value: [
+                            {
+                                "index": 0,
+                                "image": 'https://s-media-cache-ak0.pinimg.com/originals/ab/6f/7d/ab6f7df44f4d82fe89e23ab7084270c6.jpg',
+                                "local": 'Clínica Odontológica',
+                                "endereco_rua": 'Rua Prudente de Moraes, 25',
+                                "endereco": 'Santo Antônio. Joinvile/SC',
+                                'examination': 'Limpeza',
+                                'valor': 'Valor: R$ 50,00'
+                            }
+                        ]
+                    },
+                    horarios: {
+                        type: Array,
+                        value: [ "14:00","14:30","15:00"]
+                    }
+                },
+                attached: function () {
+                    
+                },
+                confirmAgendamento: function (e) {
+                    e.target.classList.add('selected');
+                    var confirmed = confirm('Deseja confirmar o horário do exame para as ' + e.target.innerText + '?');
+
+                    if (confirmed) {
+                        alert('Confirmado!');
+                    } else {
+                        e.target.classList.remove('selected');
+                    }
+                    
+                }
+            });
+        })();
+    </script>
+</dom-module>

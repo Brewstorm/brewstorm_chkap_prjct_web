@@ -5,6 +5,8 @@
 <link rel="import" href="../lib/google-map/google-map.html">
 <link rel="import" href="../lib/google-map/google-map-search.html">
 <link rel="import" href="../lib/google-map/google-map-marker.html">
+<link rel="import" href="../lib/iron-icon/iron-icon.html">
+<link rel="import" href="../lib/iron-icons/maps-icons.html">
 <link rel="import" href="../lib/geo-location/geo-location.html">
 
 <dom-module id="consult-view">
@@ -23,20 +25,49 @@
             .continueBtnContainer {
                 padding-top: 10px;
             }
+
+            .simpleBtn {
+                width: 100%;
+                text-transform: initial;
+                font-size: 13px;
+            }
+            .simpleBtn span {
+                padding-left: 5px;
+            }
         </style>
 
+        <iron-ajax id="appointmentSearchAjax"
+                   url="/appointmenttype"
+                   handle-as="json"
+                   loading="{{loadingAppointmentTypes}}"
+                   last-response="{{appointmentTypesList}}"></iron-ajax>
+
+        <iron-ajax id="appointmentProfesionalsAjax"
+                   url="/appointmenttype/getprofessionals"
+                   handle-as="json"
+                   loading="{{loadingAppointmentProfessionals}}"
+                   last-response="{{appointmentTypeProfessionalsList}}"></iron-ajax>
+
         <app-location route="{{route}}" use-hash-as-path></app-location>
-        <app-route route="{{route}}" pattern="/consult/:cityId" data="{{routeData}}" active="{{hasCity}}"></app-route>
+        <app-route route="{{route}}" pattern="/consult" data="{{routeData}}" tail="{{routeConsult}}" active="{{hasConsult}}"></app-route>
+        <app-route route="{{routeConsult}}" pattern="/:cityId" data="{{routeCityData}}" tail="{{routeCity}}" active="{{hasCity}}"></app-route>
+        <app-route route="{{routeCity}}" pattern="/:appType" data="{{routeAppTypeData}}" active="{{hasAppType}}"></app-route>
 
         <div id="container" class="flex-center-justified">
 
             <paper-material elevation="2" class="checkapp-page">
-                <div hidden$="{{hasCity}}">
+                <div hidden$="{{_hiddenMapSelection(hasConsult, hasCity, hasAppType)}}">
 
-                    <paper-autocomplete label="Informe sua cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}"></paper-autocomplete>
+                    <div class="flex-center-justified">
+                        <paper-button raised class="primary simpleBtn" on-tap="setCurrentLocation">
+                            <iron-icon icon="maps:my-location"></iron-icon>
+                            <span>Usar minha localização atual</span>
+                        </paper-button>
+                    </div>
 
-                    <geo-location latitude="{{lat}}"
-                                  longitude="{{lng}}">
+                    <paper-autocomplete label="Pesquisar cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}"></paper-autocomplete>
+
+                    <geo-location id="geoLocation">
                     </geo-location>
 
                     <google-map-search id="mapSearch" map="[[map]]" types="cities" global-search>
@@ -53,18 +84,14 @@
                     </div>
 
                 </div>
-                <div hidden$="{{!hasCity}}">
+                <div hidden$="{{_hiddenAppType(hasConsult, hasCity, hasAppType)}}">
                     <div class="flex-center-justified">
-                        Cidade: [[cityName]]
-                        <paper-button on-tap="clearCity" class="primary small">Alterar</paper-button>
+                        [[cityName]]
                     </div>
 
-
-                    <iron-ajax id="appointmentSearchAjax"
-                               url="/appointmenttype"
-                               handle-as="json"
-                               loading="{{loadingAppointmentTypes}}"
-                               last-response="{{appointmentTypesList}}"></iron-ajax>
+                    <div class="flex-center-justified">
+                        <paper-button on-tap="clearCity" class="primary small">Alterar</paper-button>
+                    </div>
 
                     <template is="dom-if" if="{{loadingAppointmentTypes}}">
                         <div class="flex-center-justified">
@@ -72,14 +99,33 @@
                         </div>
                     </template>
 
-                    <paper-listbox hidden$="{{loadingAppointmentTypes}}" style="height: 300px; overflow: auto;">
+                    <paper-listbox hidden$="{{loadingAppointmentTypes}}" selected="{{appTypeSelectedId}}" attr-for-selected="id" style="height: 300px; overflow: auto;">
                         <template is="dom-repeat" items="{{appointmentTypesList}}">
-                            <paper-item>{{item.name}}</paper-item>
+                            <paper-item id="[[item.id]]">{{item.name}}</paper-item>
                         </template>
                     </paper-listbox>
 
                     <div class="flex-center-justified continueBtnContainer">
-                        <paper-button raised class="primary">Avançar</paper-button>
+                        <paper-button raised class="primary" disabled$="[[!_isValidAppointment(appTypeSelectedId)]]" on-tap="confirmAppType">Avançar</paper-button>
+                    </div>
+                </div>
+                <div hidden$="{{_hiddenProfessional(hasConsult, hasCity, hasAppType)}}">
+                    Médicos relacionados:
+
+                    <template is="dom-if" if="{{loadingAppointmentProfessionals}}">
+                        <div class="flex-center-justified">
+                            <paper-spinner-lite active></paper-spinner-lite>
+                        </div>
+                    </template>
+
+                    <paper-listbox hidden$="{{loadingAppointmentTypes}}" selected="{{professionalSelectedId}}" attr-for-selected="id" style="height: 300px; overflow: auto;">
+                        <template is="dom-repeat" items="{{appointmentTypeProfessionalsList}}">
+                            <paper-item id="[[item.id]]">{{item.name}}</paper-item>
+                        </template>
+                    </paper-listbox>
+
+                    <div class="flex-center-justified continueBtnContainer">
+                        <paper-button raised class="primary" disabled$="[[!_isValidProfessional(professionalSelectedId)]]" on-tap="confirmProfessional">Avançar</paper-button>
                     </div>
                 </div>
             </paper-material>
@@ -101,10 +147,14 @@
                         type: Object,
                         notify: true
                     },
-                    canConfirmPlace: false
+                    canConfirmPlace: false,
+                    appTypeSelectedId: 0,
+                    professionalSelectedId: 0
                 },
                 observers: [
-                    '_routePageChanged(routeData.cityId)'
+                    '_routePageChanged(routeData)',
+                    '_routePageCityChanged(routeCityData.cityId)',
+                    '_routePageAppTypeChanged(routeAppTypeData.appType)'
                 ],
                 attached: function () {
                     var _this = this;
@@ -140,10 +190,35 @@
                         });
                 },
                 _routePageChanged: function () {
+                    this.searchValue = '';
+                    this.$.inputLocal.$.input.focus();
+                    this.canConfirmPlace = false;
+                },
+                _routePageCityChanged: function () {
+                    this.appTypeSelectedId = 0;
+                    console.log('searching apptype');
                     this.$.appointmentSearchAjax.generateRequest();
+                },
+                _routePageAppTypeChanged: function () {
+                    this.professionalSelectedId = 0;
+                    console.log('searching doctors');
+                    this.$.appointmentProfesionalsAjax.params.appTypeId = this.routeAppTypeData.appType;
+                    this.$.appointmentProfesionalsAjax.generateRequest();
                 },
                 confirmCity: function () {
                     this.set('route.path', '/consult/' + this.cityId);
+                },
+                confirmAppType: function () {
+                    this.set('route.path', '/consult/' + this.cityId + '/' + this.appTypeSelectedId);
+                },
+                confirmProfessional: function () {
+                    this.set('route.path', '/professional/' + this.professionalSelectedId);
+                },
+                _isValidAppointment: function (selectedValue) {
+                    return selectedValue !== 0;
+                },
+                _isValidProfessional: function (selectedValue) {
+                    return selectedValue !== 0;
                 },
                 clearCity: function () {
                     this.set('route.path', '/consult');
@@ -152,29 +227,46 @@
                     this.$.inputLocal.$.input.focus();
                     this.canConfirmPlace = false;
                 },
+                setCurrentLocation: function () {
+                    var _this = this;
+
+                    var request = {
+                        location: this.map.getCenter(),
+                        radius: '500',
+                        types: 'cities'
+                    };
+
+                    this.lat = this.$.geoLocation.latitude;
+                    this.lng = this.$.geoLocation.longitude;
+
+                    var service = new google.maps.places.PlacesService(this.map);
+                    service.nearbySearch(request,
+                        function (results, status) {
+                            if (status == google.maps.places.PlacesServiceStatus.OK) {
+                                _this.cityId = results[0].place_id;
+                                _this.cityName = results[0].name;
+                                _this.searchValue = results[0].name;
+                                _this.canConfirmPlace = true;
+                            }
+                        });
+                },
                 initializeMap: function () {
                     var _this = this;
 
                     this.async(function () {
 
-                        var request = {
-                            location: this.map.getCenter(),
-                            radius: '500',
-                            types: 'cities'
-                        };
-
-                        var service = new google.maps.places.PlacesService(this.map);
-                        service.nearbySearch(request,
-                            function (results, status) {
-                                if (status == google.maps.places.PlacesServiceStatus.OK) {
-                                    _this.cityId = results[0].place_id;
-                                    _this.cityName = results[0].name;
-                                    _this.searchValue = results[0].name;
-                                    _this.canConfirmPlace = true;
-                                }
-                            });
+                        
 
                     }, 500);
+                },
+                _hiddenMapSelection: function (hasConsult, hasCity, hasAppType) {
+                    return hasCity;
+                },
+                _hiddenAppType: function (hasConsult, hasCity, hasAppType) {
+                    return !hasCity || hasAppType;
+                },
+                _hiddenProfessional: function (hasConsult, hasCity, hasAppType) {
+                    return !hasCity || (!hasAppType && hasCity);
                 }
             });
         })();
