@@ -44,7 +44,7 @@
         <app-route route="{{route}}"
                    pattern="/:page"
                    data="{{routeData}}"
-                   tail="{{subroute}}"></app-route>
+                   tail="{{subroute}}" active="{{activeRoute}}"></app-route>
 
         <iron-ajax id="tokenService"
                    url="/api/token"
@@ -54,8 +54,7 @@
 
         <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
 
-        <iron-media-query query="(min-width:640px)"
-                          on-query-matches-changed="_onQueryMatchesChanged"></iron-media-query>
+        <iron-media-query id="ironMediaQuery" query="(min-width:640px)" on-query-matches-changed="_onQueryMatchesChanged"></iron-media-query>
 
         <div class="login-container">
             <login-page id="appLogin"></login-page>
@@ -91,14 +90,15 @@
             <app-header-layout id="container" has-scrolling-region>
                 <app-header reveals snaps shadow>
                     <app-toolbar>
+                        <paper-icon-button icon="arrow-back" on-tap="_historyBack" hidden$="{{hiddenHistoryBack}}"></paper-icon-button>
                         <div id="pageDescriptionLabel" main-title>
-                            <!--<paper-icon-button icon="arrow-back"></paper-icon-button>-->
                             {{pageDescription}}
                         </div>
                     </app-toolbar>
                 </app-header>
                 <iron-pages id="appIronPages"
                             selected="[[page]]"
+                            selected-item="{{selectedPage}}"
                             attr-for-selected="name"
                             fallback-selection="view404"
                             role="main">
@@ -150,6 +150,11 @@
                 properties: {
                     hidetabs: true,
                     pageDescription: '',
+                    hiddenHistoryBack: true,
+                    selectedPage: {
+                        notify: true,
+                        observer: '_selectedPageChanged'
+                    },
                     isLoggedIn: {
                         type: Boolean,
                         notify: true,
@@ -161,8 +166,7 @@
                     },
                     page: {
                         type: String,
-                        reflectToAttribute: true,
-                        observer: '_pageChanged'
+                        reflectToAttribute: true
                     },
                     animationConfig: {
                         value: function () {
@@ -180,7 +184,12 @@
                         }
                     }
                 },
-
+                _historyBack : function() {
+                    window.history.back();
+                },
+                _hiddenBackButton: function(isActive) {
+                    return isActive;
+                },
                 ready: function () {
                     var self = this;
 
@@ -188,13 +197,6 @@
                         function (e) {
                             self.$.tabs.hidden = e.detail.value || !self.isLoggedIn;
                         });
-
-                    //if()
-                    //    this.$.appIronPages.selectedItem.addEventListener('description-changed',
-                    //        function () {
-                    //            self.setPageDescription();
-                    //        });
-
 
                     this.$.appLogin.addEventListener('is-logged-in-changed',
                         function (e) {
@@ -217,10 +219,8 @@
 
                 setPageDescription: function () {
                     if (this.isLoggedIn && this.$.appIronPages.selectedItem) {
-                        this.pageDescription = this.$.appIronPages.selectedItem.description;
                         document.title = 'CheckApp - ' + this.pageDescription;
                     } else {
-                        this.pageDescription = '';
                         document.title = 'CheckApp - Saúde na palma da sua mão.';
                     }
                 },
@@ -251,9 +251,13 @@
                         this.$.appDrawerLayout.style.display = 'none';
                     }
                 },
-
+                _selectedPageChanged: function (selectedPage) {
+                    this.pageDescription = selectedPage.description;
+                },
                 _routePageChanged: function (page) {
                     this.page = page || 'default';
+                    this.hiddenHistoryBack = this.page == "default";
+                    this._updateDescriptionLabelStyle();
                 },
 
                 _tokenChanged: function (token) {
@@ -269,7 +273,6 @@
                 },
 
                 _isLoggedInChanged: function (isLoggedIn) {
-                    //this.$.appLogin.isLoggedIn = isLoggedIn;
                     this.$.tabs.hidden = this.$.appDrawer.opened || !isLoggedIn;
                     this.setPageDescription();
 
@@ -285,24 +288,20 @@
                     }
                 },
 
-                _pageChanged: function (page) {
-                    // Load page import on demand. Show 404 page if fails
-                    this.setPageDescription();
-                    //var resolvedPageUrl = this.resolveUrl(page + '.html');
-                    //Polymer.Base.importHref(resolvedPageUrl, function () {
-                    //    self.setPageDescription();
-                    //}, this._showPage404, true);
-                },
-
                 _showPage404: function () {
                     this.page = 'view404';
                 },
 
                 _onQueryMatchesChanged: function (event) {
-                    if (!event.detail.value) {
+                    this._updateDescriptionLabelStyle();
+                },
+                _updateDescriptionLabelStyle: function() {
+                    if (!this.$.ironMediaQuery.queryMatches) {
                         this.$.pageDescriptionLabel.style.textAlign = 'center';
+                        this.$.pageDescriptionLabel.style.marginLeft = (this.page != 'default' ? '-40px' : '');
                     } else {
                         this.$.pageDescriptionLabel.style.textAlign = '';
+                        this.$.pageDescriptionLabel.style.marginLeft = '';
                     }
                 }
             });
