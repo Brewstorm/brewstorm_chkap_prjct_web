@@ -1,0 +1,230 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+
+<link rel="import" href="../lib/paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../lib/paper-button/paper-button.html">
+<link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../lib/iron-list/iron-list.html">
+<link rel="import" href="../lib/iron-image/iron-image.html">
+<link rel="import" href="../lib/polymer-paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../lib/iron-icons/iron-icons.html">
+<link rel="import" href="../lib/paper-dialog/paper-dialog.html">
+<link rel="import" href="moment-element.html" />
+<link rel="import" href="numeral-element.html" />
+
+<dom-module id="agenda-view">
+    <template>
+        <style include="checkapp-styles"></style>
+        <style include="paper-date-picker-dialog-style"></style>
+        <style is="custpm-style">
+            :host {
+                display: block;
+                padding: 10px;
+            }
+
+            .group-header,
+            .group-item {
+                padding: 5px 10px;
+                background-color: white;
+                font-size: 20px;
+            }
+
+            .group-item {
+                @apply(--layout-horizontal);
+            }
+
+            .group-header {
+                font-weight: bold;
+                color: #333;
+                margin-top: 20px;
+            }
+
+                .group-header:before {
+                    content: '';
+                    border-top: 1px solid #ddd;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                }
+
+            .avatar {
+                height: 60px;
+                width: 60px;
+                border-radius: 30px;
+                box-sizing: border-box;
+                background-color: #DDD;
+                margin-right: 15px;
+                margin-top: 15px;
+                box-shadow: 1px 1px 5px #ccc;
+            }
+
+            .pad {
+                line-height: 15px;
+            }
+
+                .pad span {
+                    display: -webkit-box;
+                }
+
+            .primary {
+                font-size: 14px;
+                line-height: 25px;
+                font-weight: bold;
+            }
+
+            .secondary {
+                color: gray;
+                font-size: 12px;
+            }
+
+            .state-list {
+                width: 250px;
+                height: 80vh;
+                color: black;
+            }
+
+            #dateSelected {
+                text-align: center;
+                padding: 20px;
+                font-weight: bold;
+            }
+
+            #horarios paper-material {
+                background: var(--app-primary-color);
+                color: white;
+                padding: 10px;
+                cursor: pointer;
+            }
+
+            .item-horario {
+                text-align: center;
+                padding: 5px 0;
+            }
+
+            .selected {
+                background: var(--app-third-color) !important;
+            }
+        </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/agenda/:professionalId" data="{{routeData}}" active="{{hasProfessional}}"></app-route>
+
+        <iron-ajax id="professionalInfoAjax"
+                   url="/agenda/GetProfessionalInfo"
+                   handle-as="json"
+                   loading="{{loadingProfessionalInfo}}"
+                   last-response="{{professionalInfo}}"></iron-ajax>
+        
+        <iron-ajax id="agendaScheduleAjax"
+                   url="/agenda/GetAgendaSchedule"
+                   handle-as="json"
+                   loading="{{loadingAgendaSchedule}}"
+                   last-response="{{agendaSchedule}}"></iron-ajax>
+
+        <div id="container" class="flex-center-justified" hidden$="{{!hasProfessional}}">
+
+            <paper-material elevation="2" class="checkapp-page">
+                <div class="group-item">
+                    <iron-image class="avatar" sizing="contain" src="[[professionalInfo.srcPhoto]]"></iron-image>
+                    <div class="pad">
+                        <span class="primary">[[professionalInfo.name]]</span>
+                        <span class="secondary">[[professionalInfo.endereco]]</span>
+                        <span class="secondary">[[professionalInfo.bairro]]</span>
+                        <span class="secondary">[[professionalInfo.professionalName]]</span>
+                        <span class="secondary">[[_formatCurrency(professionalInfo.value)]]</span>
+                    </div>
+                </div>
+
+                <div id="dateSelected">
+                    {{_formatDate(dateConsulta)}}
+                    <paper-icon-button icon="icons:date-range" on-tap="_showDialog"></paper-icon-button>
+                </div>
+
+                <paper-dialog id="dialog" class="paper-date-picker-dialog" modal on-iron-overlay-closed="dismissDialog">
+                    <paper-date-picker id="picker" date="[[dateConsulta]]" locale="[[locale]]" min-date="[[minDate]]" heading-format="[[headingFormat]]"></paper-date-picker>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Cancelar</paper-button>
+                        <paper-button dialog-confirm on-tap="_confirmDate">OK</paper-button>
+                    </div>
+                </paper-dialog>
+
+                <iron-list id="horarios" items="{{agendaSchedule}}" scroll-target="document">
+                    <template>
+                        <div class="item-horario" on-tap="confirmAgendamento">
+                            <paper-material elevation="1">[[item.beginTime]]</paper-material>
+                        </div>
+                    </template>
+                </iron-list>
+
+            </paper-material>
+        </div>
+    </template>
+    <script>
+        (function () {
+            Polymer({
+                is: 'agenda-view',
+                properties: {
+                    description: {
+                        type: String,
+                        value: 'Agendamento'
+                    },
+                    professionalInfo: {},
+                    dateConsulta: {
+                        type: Date,
+                        value: function () {
+                            return new Date();
+                        }
+                    },
+                    minDate: {
+                        value: function() {
+                            return new Date();
+                        }
+                    },
+                    headingFormat: {
+                        value: "ddd, D MMM"
+                    },
+                    hiddenDPDialog: true,
+                    locale: {
+                        value: "pt-br"
+                    }
+                },
+                observers: [
+                    '_routePageChanged(routeData)'
+                ],
+                attached: function () {
+
+                },
+                _routePageChanged: function () {
+                    console.log('searching agenda info');
+                    this.$.professionalInfoAjax.params.id = this.routeData.professionalId;
+                    this.$.professionalInfoAjax.generateRequest();
+
+                    this.$.agendaScheduleAjax.generateRequest();
+                },
+                confirmAgendamento: function (e) {
+                    e.target.classList.add('selected');
+                    var confirmed = confirm('Deseja confirmar o horário do exame para as ' + e.target.innerText + '?');
+
+                    if (confirmed) {
+                        alert('Confirmado!');
+                    } else {
+                        e.target.classList.remove('selected');
+                    }
+                },
+                _formatDate: function (date) {
+                    return moment(date).format('DD/MM/YYYY');
+                },
+                _formatCurrency: function (value) {
+                    return numeral(value).format('($ 0.00 a)');
+                },
+                _showDialog: function () {
+                    document.body.append(this.$.dialog);
+                    this.$.dialog.toggle();
+                },
+                _confirmDate: function () {
+                    this.dateConsulta = this.$.picker.date;
+                }
+            });
+        })();
+    </script>
+</dom-module>

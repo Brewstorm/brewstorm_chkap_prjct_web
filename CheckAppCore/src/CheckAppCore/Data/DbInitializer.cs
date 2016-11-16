@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using CheckAppCore.Data;
+using CheckAppCore.Enumerators;
 using CheckAppCore.Models;
 
 namespace CheckAppCore.Data
@@ -14,17 +12,17 @@ namespace CheckAppCore.Data
         {
             context.Database.EnsureCreated();
 
-            var card = new AppointmentType { Name = "Cardiologia" };
-            var derma = new AppointmentType { Name = "Dermatologia" };
-            var ger = new AppointmentType { Name = "Geriatria" };
-            var gineco = new AppointmentType { Name = "Ginecologia" };
-            var neuro = new AppointmentType { Name = "Neurologia" };
-            var obst = new AppointmentType { Name = "Obstetrícia" };
-            var orto = new AppointmentType { Name = "Ortopedia" };
-            var otorrino = new AppointmentType { Name = "Otorrinolaringologia" };
-            var pneumo = new AppointmentType { Name = "Pneumonologia" };
-            var psi = new AppointmentType { Name = "Psiquiatria" };
-            var uro = new AppointmentType { Name = "Urologia" };
+            var card = new AppointmentType { Name = "Cardiologia", ProfessionalName = "Cardiologista"};
+            var derma = new AppointmentType { Name = "Dermatologia", ProfessionalName = "Dermatologista" };
+            var ger = new AppointmentType { Name = "Geriatria", ProfessionalName = "Geriatra" };
+            var gineco = new AppointmentType { Name = "Ginecologia", ProfessionalName = "Ginecologista" };
+            var neuro = new AppointmentType { Name = "Neurologia", ProfessionalName = "Neurologista" };
+            var obst = new AppointmentType { Name = "Obstetrícia", ProfessionalName = "Obstetra" };
+            var orto = new AppointmentType { Name = "Ortopedia", ProfessionalName = "Ortopedista" };
+            var otorrino = new AppointmentType { Name = "Otorrinolaringologia", ProfessionalName = "Otorrinolaringologista" };
+            var pneumo = new AppointmentType { Name = "Pneumonologia", ProfessionalName = "Pneumologista" };
+            var psi = new AppointmentType { Name = "Psiquiatria", ProfessionalName = "Psiquiatra" };
+            var uro = new AppointmentType { Name = "Urologia", ProfessionalName = "Urologista" };
 
             if (!context.AppointmentTypes.Any())
             {
@@ -40,33 +38,49 @@ namespace CheckAppCore.Data
 
                 context.SaveChanges();
             }
-            
+
+            if (!context.PersonalInfo.Any())
+            {
+                var personalInfo = new[]
+                {
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "José Ricardo", SrcPhoto = "/images/professionals/masc_1.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Henrique Freitas", SrcPhoto = "/images/professionals/masc_2.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Doroteia Fernandes", SrcPhoto = "/images/professionals/fem_1.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Hipólito Matos", SrcPhoto = "/images/professionals/masc_3.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Alcides Guerra", SrcPhoto = "/images/professionals/masc_4.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Feminino, Name = "Priscila Madeira", SrcPhoto = "/images/professionals/fem_2.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Carlos Gouveia", SrcPhoto = "/images/professionals/masc_5.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Feminino, Name = "Fábia Santana", SrcPhoto = "/images/professionals/fem_3.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Roldão Santos", SrcPhoto = "/images/professionals/masc_6.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Tristão Pereira", SrcPhoto = "/images/professionals/masc_7.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Masculino, Name = "Custódio Barros", SrcPhoto = "/images/professionals/masc_8.jpg"},
+                    new PersonalInfo {GenderID = GenderEnum.Feminino, Name = "Cristiane Madeira", SrcPhoto = "/images/professionals/fem_4.jpg"}
+                };
+
+                foreach (var c in personalInfo)
+                {
+                    context.PersonalInfo.Add(c);
+                }
+
+                context.SaveChanges();
+            }
+
             if (!context.Professionals.Any())
             {
                 var professionals = new[]
                 {
-                    new Professional { Name = "José Ricardo", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = card}, new ProfessionalAppointmentType() { AppointmentType = derma } } },
-                    new Professional { Name = "Olegário Santiago", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = psi}, new ProfessionalAppointmentType() { AppointmentType = uro } } },
-                    new Professional { Name = "Henrique Freitas", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = ger }, new ProfessionalAppointmentType() { AppointmentType = gineco } } },
-                    new Professional { Name = "Doroteia Fernandes", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = gineco }, new ProfessionalAppointmentType() { AppointmentType = neuro } } },
-                    new Professional { Name = "Camilo Nunes", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = neuro }, new ProfessionalAppointmentType() { AppointmentType = obst } } },
-                    new Professional { Name = "Hipólito Matos", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = obst }, new ProfessionalAppointmentType() { AppointmentType = orto } } },
-                    new Professional { Name = "Alcides Guerra", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = orto }, new ProfessionalAppointmentType() { AppointmentType = otorrino } } },
-                    new Professional { Name = "Emanuel Da Costa", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = otorrino }, new ProfessionalAppointmentType() { AppointmentType = pneumo } } },
-                    new Professional { Name = "Priscila Madeira", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = pneumo }, new ProfessionalAppointmentType() { AppointmentType = psi } } },
-                    new Professional { Name = "Carlinhos Gouveia", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = psi}, new ProfessionalAppointmentType() { AppointmentType = uro } } },
-                    new Professional { Name = "Matilde Serafim", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = uro }, new ProfessionalAppointmentType() { AppointmentType = card } } },
-                    new Professional { Name = "Fábia Santana", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = card }, new ProfessionalAppointmentType() { AppointmentType = derma } } },
-                    new Professional { Name = "Roldão Santos", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = derma }, new ProfessionalAppointmentType() { AppointmentType = ger } } },
-                    new Professional { Name = "Teresa Magalhães", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = ger }, new ProfessionalAppointmentType() { AppointmentType = gineco } } },
-                    new Professional { Name = "Tristão Pereira", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = gineco }, new ProfessionalAppointmentType() { AppointmentType = neuro } } },
-                    new Professional { Name = "Custódio Barros", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = neuro }, new ProfessionalAppointmentType() { AppointmentType = obst } } },
-                    new Professional { Name = "Otávio Alves", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = obst }, new ProfessionalAppointmentType() { AppointmentType = orto } } },
-                    new Professional { Name = "Cristiano Madeira", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = orto }, new ProfessionalAppointmentType() { AppointmentType = otorrino } } },
-                    new Professional { Name = "Antônio Belo", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = otorrino }, new ProfessionalAppointmentType() { AppointmentType = pneumo } } },
-                    new Professional { Name = "Henrique Duarte", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = pneumo }, new ProfessionalAppointmentType() { AppointmentType = psi } } },
-                    new Professional { Name = "Aloísio Rocha", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = psi}, new ProfessionalAppointmentType() { AppointmentType = uro } } },
-                    new Professional { Name = "Lúcio Matos", NumeroCRM = "9999999", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = uro } } },
+                    new Professional { PersonalInfoID = 1, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara", ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = card}, new ProfessionalAppointmentType() { AppointmentType = derma } } },
+                    new Professional { PersonalInfoID = 2, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = ger }, new ProfessionalAppointmentType() { AppointmentType = gineco } } },
+                    new Professional { PersonalInfoID = 3, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = gineco }, new ProfessionalAppointmentType() { AppointmentType = neuro } } },
+                    new Professional { PersonalInfoID = 4, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = obst }, new ProfessionalAppointmentType() { AppointmentType = orto } } },
+                    new Professional { PersonalInfoID = 5, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = orto }, new ProfessionalAppointmentType() { AppointmentType = otorrino } } },
+                    new Professional { PersonalInfoID = 6, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = pneumo }, new ProfessionalAppointmentType() { AppointmentType = psi } } },
+                    new Professional { PersonalInfoID = 7, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = card }, new ProfessionalAppointmentType() { AppointmentType = derma } } },
+                    new Professional { PersonalInfoID = 8, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = gineco }, new ProfessionalAppointmentType() { AppointmentType = neuro } } },
+                    new Professional { PersonalInfoID = 9, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = neuro }, new ProfessionalAppointmentType() { AppointmentType = obst } } },
+                    new Professional { PersonalInfoID = 10, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = orto }, new ProfessionalAppointmentType() { AppointmentType = otorrino } } },
+                    new Professional { PersonalInfoID = 11, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = pneumo }, new ProfessionalAppointmentType() { AppointmentType = psi } } },
+                    new Professional { PersonalInfoID = 12, NumeroCRM = "9999999", Endereco = "Rua Oswaldo Schmidt", Bairro = "Guanabara",ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>() { new ProfessionalAppointmentType() {AppointmentType = uro } } },
                 };
 
                 foreach (var c in professionals)
@@ -75,6 +89,59 @@ namespace CheckAppCore.Data
                 }
 
                 context.SaveChanges();
+            }
+
+            if (!context.Agenda.Any())
+            {
+                var agendas = new[]
+                {
+                    new Agenda() { Name = "Principal", ProfessionalID = 1, AppointmentTypeID = 1, Value = 100, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 2, AppointmentTypeID = 2, Value = 80, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 3, AppointmentTypeID = 3, Value = 95, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 4, AppointmentTypeID = 4, Value = 70, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 5, AppointmentTypeID = 5, Value = 75, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 6, AppointmentTypeID = 6, Value = 95, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 7, AppointmentTypeID = 7, Value = 110, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 8, AppointmentTypeID = 8, Value = 99, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 9, AppointmentTypeID = 9, Value = 79, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 10, AppointmentTypeID = 10, Value = 85.5, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 11, AppointmentTypeID = 11, Value = 100, Active = true},
+                    new Agenda() { Name = "Principal", ProfessionalID = 12, AppointmentTypeID = 10, Value = 100, Active = true}
+                };
+
+                foreach (var a in agendas)
+                {
+                    context.Agenda.Add(a);
+                }
+
+                context.SaveChanges();
+
+                if (!context.AgendaSchedules.Any())
+                {
+                    var asch = new[]
+                    {
+                        new AgendaSchedule() { AgendaID = 1, Date = DateTime.Today, BeginTime = 480, EndTime = 1080, IntervalTime = 30}
+                    };
+
+                    var ae = new[]
+                    {
+                        new AgendaException() { AgendaScheduleID = 1, BeginTime = 720, EndTime = 780}
+                    };
+
+                    foreach (var a in asch)
+                    {
+                        context.AgendaSchedules.Add(a);
+                    }
+
+                    context.SaveChanges();
+
+                    foreach (var a in ae)
+                    {
+                        context.AgendaExceptions.Add(a);
+                    }
+
+                    context.SaveChanges();
+                }
             }
         }
     }

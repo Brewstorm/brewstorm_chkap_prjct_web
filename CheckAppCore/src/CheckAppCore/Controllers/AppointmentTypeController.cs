@@ -28,8 +28,9 @@ namespace CheckAppCore.Controllers
             {
                 return new JsonResult(await _context.ProfessionalsAppointmentTypes
                                                     .Include(p => p.Professional)
+                                                    .Include(p => p.Professional.PersonalInfo)
                                                     .Where(o => o.AppointmentType.ID == appTypeId.Value)
-                                                    .Select(pat => pat.Professional)
+                                                    .Select(pat => new { pat.Professional.ID, pat.Professional.PersonalInfo.Name, pat.Professional.PersonalInfo.SrcPhoto})
                                                     .ToListAsync());
             }
 

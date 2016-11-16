@@ -25,7 +25,10 @@
     "google-map": "GoogleWebComponents/google-map",
     "geo-location": "ebidel/geo-location",
     "paper-autocomplete": "ellipticaljs/paper-autocomplete",
-    "iron-list": "PolymerElements/iron-list"
+    "iron-list": "PolymerElements/iron-list",
+    "moment": "2.13.0",
+    "numeral": "1.5.3",
+    "polymer-paper-date-picker": "1.2.0" 
   },
   "resolutions": {
     "polymer": "^1.2.1",

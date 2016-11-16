@@ -31,8 +31,19 @@
                 text-transform: initial;
                 font-size: 13px;
             }
-            .simpleBtn span {
-                padding-left: 5px;
+
+                .simpleBtn span {
+                    padding-left: 5px;
+                }
+
+            .avatar {
+                height: 55px;
+                width: 55px;
+                border-radius: 30px;
+                box-sizing: border-box;
+                background-color: #DDD;
+                margin: 5px 15px 5px 0;
+                box-shadow: 1px 1px 5px #ccc;
             }
         </style>
 
@@ -110,7 +121,7 @@
                     </div>
                 </div>
                 <div hidden$="{{_hiddenProfessional(hasConsult, hasCity, hasAppType)}}">
-                    Médicos relacionados:
+                    Profissionais disponíveis:
 
                     <template is="dom-if" if="{{loadingAppointmentProfessionals}}">
                         <div class="flex-center-justified">
@@ -120,7 +131,9 @@
 
                     <paper-listbox hidden$="{{loadingAppointmentTypes}}" selected="{{professionalSelectedId}}" attr-for-selected="id" style="height: 300px; overflow: auto;">
                         <template is="dom-repeat" items="{{appointmentTypeProfessionalsList}}">
-                            <paper-item id="[[item.id]]">{{item.name}}</paper-item>
+                            <paper-item id="[[item.id]]">
+                                <iron-image class="avatar" sizing="contain" src="[[item.srcPhoto]]"></iron-image>[[item.name]]
+                            </paper-item>
                         </template>
                     </paper-listbox>
 
@@ -183,11 +196,6 @@
                             _this.canConfirmPlace = true;
                         }
                     });
-
-                    this.$.mapaLocal.addEventListener('google-map-ready',
-                        function () {
-                            _this.initializeMap();
-                        });
                 },
                 _routePageChanged: function () {
                     this.searchValue = '';
@@ -212,7 +220,7 @@
                     this.set('route.path', '/consult/' + this.cityId + '/' + this.appTypeSelectedId);
                 },
                 confirmProfessional: function () {
-                    this.set('route.path', '/professional/' + this.professionalSelectedId);
+                    this.set('route.path', '/agenda/' + this.professionalSelectedId);
                 },
                 _isValidAppointment: function (selectedValue) {
                     return selectedValue !== 0;
@@ -249,15 +257,6 @@
                                 _this.canConfirmPlace = true;
                             }
                         });
-                },
-                initializeMap: function () {
-                    var _this = this;
-
-                    this.async(function () {
-
-                        
-
-                    }, 500);
                 },
                 _hiddenMapSelection: function (hasConsult, hasCity, hasAppType) {
                     return hasCity;

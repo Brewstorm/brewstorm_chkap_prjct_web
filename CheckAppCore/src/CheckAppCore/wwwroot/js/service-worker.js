@@ -1,5 +1,5 @@
 ﻿var cacheName = 'checkAppCache';
-var dataCacheName = 'checkAppCacheData-v1.0.2';
+var dataCacheName = 'checkAppCacheData-v1.0.3';
 
 var filesToCache = [
     '/',

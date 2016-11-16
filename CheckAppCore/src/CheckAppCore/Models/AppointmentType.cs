@@ -9,6 +9,7 @@ namespace CheckAppCore.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public string ProfessionalName { get; set; }
         public ICollection<ProfessionalAppointmentType> ProfessionalAppointmentTypes { get; set; }
     }
 }

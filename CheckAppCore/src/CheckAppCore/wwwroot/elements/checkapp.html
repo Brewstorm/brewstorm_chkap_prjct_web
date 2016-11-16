@@ -30,6 +30,7 @@
 <link rel="import" href="history.html">
 <link rel="import" href="profile.html">
 <link rel="import" href="settings.html">
+<link rel="import" href="agenda.html">
 
 <!--styles-->
 <link rel="import" href="../styles/checkapp-styles.html">
@@ -96,32 +97,6 @@
                         </div>
                     </app-toolbar>
                 </app-header>
-                <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
-                    <paper-tab name="default" link>
-                        <a href="#/default" class="link" tabindex="-1">
-                            <iron-icon icon="icons:home"></iron-icon>
-                            <span>Início</span>
-                        </a>
-                    </paper-tab>
-                    <paper-tab name="profile" link>
-                        <a href="#/profile" class="link" tabindex="-1">
-                            <iron-icon icon="social:person"></iron-icon>
-                            <span>Perfil</span>
-                        </a>
-                    </paper-tab>
-                    <paper-tab name="history" link>
-                        <a href="#/history" class="link" tabindex="-1">
-                            <iron-icon icon="icons:history"></iron-icon>
-                            <span>Histórico</span>
-                        </a>
-                    </paper-tab>
-                    <paper-tab name="settings" link>
-                        <a href="#/settings" class="link" tabindex="-1">
-                            <iron-icon icon="icons:settings"></iron-icon>
-                            <span>Configurações</span>
-                        </a>
-                    </paper-tab>
-                </paper-tabs>
                 <iron-pages id="appIronPages"
                             selected="[[page]]"
                             attr-for-selected="name"
@@ -133,10 +108,37 @@
                     <settings-view name="settings"></settings-view>
                     <consult-view name="consult"></consult-view>
                     <examinations-view name="examinations"></examinations-view>
+                    <agenda-view name="agenda"></agenda-view>
                 </iron-pages>
                 <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised></paper-toast>
             </app-header-layout>
         </app-drawer-layout>
+        <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
+            <paper-tab name="default" link>
+                <a href="#/default" class="link" tabindex="-1">
+                    <iron-icon icon="icons:home"></iron-icon>
+                    <span>Início</span>
+                </a>
+            </paper-tab>
+            <paper-tab name="profile" link>
+                <a href="#/profile" class="link" tabindex="-1">
+                    <iron-icon icon="social:person"></iron-icon>
+                    <span>Perfil</span>
+                </a>
+            </paper-tab>
+            <paper-tab name="history" link>
+                <a href="#/history" class="link" tabindex="-1">
+                    <iron-icon icon="icons:history"></iron-icon>
+                    <span>Histórico</span>
+                </a>
+            </paper-tab>
+            <paper-tab name="settings" link>
+                <a href="#/settings" class="link" tabindex="-1">
+                    <iron-icon icon="icons:settings"></iron-icon>
+                    <span>Configurações</span>
+                </a>
+            </paper-tab>
+        </paper-tabs>
     </template>
     <script>
         (function () {
