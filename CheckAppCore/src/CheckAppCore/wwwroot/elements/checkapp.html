@@ -252,7 +252,8 @@
                     }
                 },
                 _selectedPageChanged: function (selectedPage) {
-                    this.pageDescription = selectedPage.description;
+                    if(selectedPage)
+                        this.pageDescription = selectedPage.description;
                 },
                 _routePageChanged: function (page) {
                     this.page = page || 'default';

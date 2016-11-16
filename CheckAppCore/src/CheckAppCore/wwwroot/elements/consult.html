@@ -6,6 +6,7 @@
 <link rel="import" href="../lib/google-map/google-map-search.html">
 <link rel="import" href="../lib/google-map/google-map-marker.html">
 <link rel="import" href="../lib/iron-icon/iron-icon.html">
+<link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../lib/iron-icons/maps-icons.html">
 <link rel="import" href="../lib/geo-location/geo-location.html">
 
@@ -45,6 +46,13 @@
                 margin: 5px 15px 5px 0;
                 box-shadow: 1px 1px 5px #ccc;
             }
+
+            .simpleBtnTop {
+                width: 28%;
+                height: 40px;
+                margin: 10px;
+                font-size: 13px;
+            }
         </style>
 
         <iron-ajax id="appointmentSearchAjax"
@@ -69,40 +77,39 @@
             <paper-material elevation="2" class="checkapp-page">
                 <div hidden$="{{_hiddenMapSelection(hasConsult, hasCity, hasAppType)}}">
 
-                    <div class="flex-center-justified">
-                        <paper-button raised class="primary simpleBtn" on-tap="setCurrentLocation">
+                    <div class="flex-start-justified">
+                        <paper-autocomplete label="Pesquisar cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}" style="width: 70%;"></paper-autocomplete>
+                        <paper-button raised class="primary simpleBtnTop" on-tap="confirmCity" disabled$="{{!canConfirmPlace}}">Confirmar</paper-button>
+                        <!--<paper-button raised class="simpleBtn" on-tap="setCurrentLocation">
                             <iron-icon icon="maps:my-location"></iron-icon>
-                            <span>Usar minha localização atual</span>
-                        </paper-button>
+                        </paper-button>-->
                     </div>
-
-                    <paper-autocomplete label="Pesquisar cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}"></paper-autocomplete>
-
-                    <geo-location id="geoLocation">
+                    <geo-location id="geoLocation" latitude="{{lat}}" longitude="{{lng}}">
                     </geo-location>
 
-                    <google-map-search id="mapSearch" map="[[map]]" types="cities" global-search>
+                    <google-map-search id="mapSearch" map="{{map}}" types="cities" global-search>
                     </google-map-search>
 
                     <google-map id="mapaLocal" map="{{map}}" latitude="[[lat]]" longitude="[[lng]]" api-key="{{GMapsKey}}"
                                 language="pt-BR" zoom="10" fit-to-markers disable-street-view-control>
-                        <google-map-marker id="mapMarker" latitude="[[lat]]" longitude="[[lng]]">
+                        <google-map-marker id="mapMarker" latitude="[[lat]]" longitude="[[lng]]" info="{{markerInfo}}">
                         </google-map-marker>
                     </google-map>
 
-                    <div class="flex-center-justified continueBtnContainer">
+                    <!--<div class="flex-center-justified continueBtnContainer">
                         <paper-button raised class="primary" on-tap="confirmCity" disabled$="{{!canConfirmPlace}}">Confirmar</paper-button>
-                    </div>
+                    </div>-->
 
                 </div>
                 <div hidden$="{{_hiddenAppType(hasConsult, hasCity, hasAppType)}}">
                     <div class="flex-center-justified">
-                        [[cityName]]
+                        <span style="font-size: 24px;">[[cityName]]</span>
+                        <paper-icon-button on-tap="clearCity" class="primary small" icon="icons:cached"></paper-icon-button>
                     </div>
 
-                    <div class="flex-center-justified">
-                        <paper-button on-tap="clearCity" class="primary small">Alterar</paper-button>
-                    </div>
+                    <!--<div class="flex-center-justified">
+                        
+                    </div>-->
 
                     <template is="dom-if" if="{{loadingAppointmentTypes}}">
                         <div class="flex-center-justified">
@@ -162,7 +169,8 @@
                     },
                     canConfirmPlace: false,
                     appTypeSelectedId: 0,
-                    professionalSelectedId: 0
+                    professionalSelectedId: 0,
+                    cityName: ''
                 },
                 observers: [
                     '_routePageChanged(routeData)',
@@ -196,6 +204,11 @@
                             _this.canConfirmPlace = true;
                         }
                     });
+
+                    this.$.geoLocation.addEventListener('geo-response',
+                        function() {
+                            _this.setCurrentLocation();
+                        });
                 },
                 _routePageChanged: function () {
                     this.searchValue = '';
@@ -241,22 +254,49 @@
                     var request = {
                         location: this.map.getCenter(),
                         radius: '500',
-                        types: 'cities'
+                        types: 'locality'
                     };
 
                     this.lat = this.$.geoLocation.latitude;
                     this.lng = this.$.geoLocation.longitude;
 
+                    var latlng = { lat: parseFloat(this.lat), lng: parseFloat(this.lng) };
+
+                    var geocoder = new google.maps.Geocoder;
                     var service = new google.maps.places.PlacesService(this.map);
-                    service.nearbySearch(request,
-                        function (results, status) {
-                            if (status == google.maps.places.PlacesServiceStatus.OK) {
-                                _this.cityId = results[0].place_id;
-                                _this.cityName = results[0].name;
-                                _this.searchValue = results[0].name;
-                                _this.canConfirmPlace = true;
+
+                    geocoder.geocode({ 'location': latlng }, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            if (results[1]) {
+                                service.getDetails({
+                                    placeId: results[1].place_id
+                                }, function (place, status) {
+                                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                                        console.log(place);
+                                        _this.cityId = place.place_id;
+                                        _this.cityName = place.address_components[1].long_name;
+                                        _this.searchValue = place.address_components[1].long_name;
+                                        _this.canConfirmPlace = true;
+                                    }
+                                });
+                            } else {
+                                console.warn('No results found');
                             }
-                        });
+                        } else {
+                            console.warn('Geocoder failed due to: ' + status);
+                        }
+                    });
+                    //debugger;
+                    //service.nearbySearch(request,
+                    //    function (results, status) {
+                    //        if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    //            debugger;
+                    //            _this.cityId = results[0].place_id;
+                    //            _this.cityName = results[0].name;
+                    //            _this.searchValue = results[0].name;
+                    //            _this.canConfirmPlace = true;
+                    //        }
+                    //    });
                 },
                 _hiddenMapSelection: function (hasConsult, hasCity, hasAppType) {
                     return hasCity;
