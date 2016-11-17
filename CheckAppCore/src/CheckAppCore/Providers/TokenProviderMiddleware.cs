@@ -62,10 +62,11 @@ namespace CheckAppCore.Providers
 
         private async Task GenerateToken(HttpContext context)
         {
+            var oauth_id = context.Request.Form["oauth_id"];
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            var identity = await _options.IdentityResolver(username, password);
+            var identity = await _options.IdentityResolver(username, password, oauth_id);
             if (identity == null)
             {
                 context.Response.StatusCode = 400;

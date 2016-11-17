@@ -101,10 +101,10 @@ namespace CheckAppCore
             DbInitializer.Initialize(context);
         }
 
-        private Task<ClaimsIdentity> GetIdentity(string username, string password)
+        private Task<ClaimsIdentity> GetIdentity(string username, string password, string oauth_id)
         {
             // Don't do this in production, obviously!
-            if (username == "TEST" && password == "TEST123")
+            if ((username == "TEST" && password == "TEST123") || oauth_id == "1169409783140925")
             {
                 return Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
             }

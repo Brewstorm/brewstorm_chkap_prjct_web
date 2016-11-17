@@ -68,14 +68,14 @@
                    last-response="{{appointmentTypeProfessionalsList}}"></iron-ajax>
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
-        <app-route route="{{route}}" pattern="/consult" data="{{routeData}}" tail="{{routeConsult}}" active="{{hasConsult}}"></app-route>
+        <app-route route="{{route}}" pattern="/consult" data="{{routeData}}" tail="{{routeConsult}}" active="{{pageActive}}"></app-route>
         <app-route route="{{routeConsult}}" pattern="/:cityId" data="{{routeCityData}}" tail="{{routeCity}}" active="{{hasCity}}"></app-route>
         <app-route route="{{routeCity}}" pattern="/:appType" data="{{routeAppTypeData}}" active="{{hasAppType}}"></app-route>
 
         <div id="container" class="flex-center-justified">
 
             <paper-material elevation="2" class="checkapp-page">
-                <div hidden$="{{_hiddenMapSelection(hasConsult, hasCity, hasAppType)}}">
+                <div hidden$="{{_hiddenMapSelection(pageActive, hasCity, hasAppType)}}">
 
                     <div class="flex-start-justified">
                         <paper-autocomplete label="Pesquisar cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}" style="width: 70%;"></paper-autocomplete>
@@ -84,32 +84,29 @@
                             <iron-icon icon="maps:my-location"></iron-icon>
                         </paper-button>-->
                     </div>
+
                     <geo-location id="geoLocation" latitude="{{lat}}" longitude="{{lng}}">
                     </geo-location>
-
-                    <google-map-search id="mapSearch" map="{{map}}" types="cities" global-search>
-                    </google-map-search>
 
                     <google-map id="mapaLocal" map="{{map}}" latitude="[[lat]]" longitude="[[lng]]" api-key="{{GMapsKey}}"
                                 language="pt-BR" zoom="10" fit-to-markers disable-street-view-control>
                         <google-map-marker id="mapMarker" latitude="[[lat]]" longitude="[[lng]]" info="{{markerInfo}}">
                         </google-map-marker>
                     </google-map>
+                    
+                    <google-map-search id="mapSearch" map="[[map]]" types="cities" global-search>
+                    </google-map-search>
 
                     <!--<div class="flex-center-justified continueBtnContainer">
                         <paper-button raised class="primary" on-tap="confirmCity" disabled$="{{!canConfirmPlace}}">Confirmar</paper-button>
                     </div>-->
 
                 </div>
-                <div hidden$="{{_hiddenAppType(hasConsult, hasCity, hasAppType)}}">
+                <div hidden$="{{_hiddenAppType(pageActive, hasCity, hasAppType)}}">
                     <div class="flex-center-justified">
                         <span style="font-size: 24px;">[[cityName]]</span>
                         <paper-icon-button on-tap="clearCity" class="primary small" icon="icons:cached"></paper-icon-button>
                     </div>
-
-                    <!--<div class="flex-center-justified">
-                        
-                    </div>-->
 
                     <template is="dom-if" if="{{loadingAppointmentTypes}}">
                         <div class="flex-center-justified">
@@ -127,7 +124,7 @@
                         <paper-button raised class="primary" disabled$="[[!_isValidAppointment(appTypeSelectedId)]]" on-tap="confirmAppType">Avançar</paper-button>
                     </div>
                 </div>
-                <div hidden$="{{_hiddenProfessional(hasConsult, hasCity, hasAppType)}}">
+                <div hidden$="{{_hiddenProfessional(pageActive, hasCity, hasAppType)}}">
                     Profissionais disponíveis:
 
                     <template is="dom-if" if="{{loadingAppointmentProfessionals}}">
@@ -167,10 +164,21 @@
                         type: Object,
                         notify: true
                     },
+                    gmapready: {
+                        value: false,
+                        observer: '_gmapReadyChanged'
+                    },
+                    geolocationready: {
+                        value: false
+                    },
                     canConfirmPlace: false,
                     appTypeSelectedId: 0,
                     professionalSelectedId: 0,
-                    cityName: ''
+                    cityName: '',
+                    pageActive: {
+                        type: Boolean,
+                        value: false
+                    }
                 },
                 observers: [
                     '_routePageChanged(routeData)',
@@ -205,26 +213,54 @@
                         }
                     });
 
+                    this.$.mapaLocal.addEventListener('google-map-ready',
+                        function() {
+                            _this.gmapready = true;
+                        });
+
+                    this.$.mapaLocal.addEventListener('google-map-ready',
+                        function () {
+                            _this.gmapready = true;
+                        });
+
                     this.$.geoLocation.addEventListener('geo-response',
                         function() {
-                            _this.setCurrentLocation();
+                            _this.geolocationready = true;
                         });
                 },
+                _gmapReadyChanged: function(value) {
+                    if (value) {
+                        this.async(function() {
+                            this.setCurrentLocation();
+                        }, 2000);
+                    }
+                },
+                //_geolocationReadyChanged: function (value) {
+                //    if (value && this.gmapready) {
+                //        this.setCurrentLocation();
+                //    }
+                //},
                 _routePageChanged: function () {
                     this.searchValue = '';
                     this.$.inputLocal.$.input.focus();
                     this.canConfirmPlace = false;
+
+                    if (this.pageActive && this.gmapready) {
+                        this.setCurrentLocation();
+                    }
                 },
                 _routePageCityChanged: function () {
-                    this.appTypeSelectedId = 0;
-                    console.log('searching apptype');
-                    this.$.appointmentSearchAjax.generateRequest();
+                    if (this.pageActive) {
+                        this.appTypeSelectedId = 0;
+                        this.$.appointmentSearchAjax.generateRequest();
+                    }
                 },
                 _routePageAppTypeChanged: function () {
-                    this.professionalSelectedId = 0;
-                    console.log('searching doctors');
-                    this.$.appointmentProfesionalsAjax.params.appTypeId = this.routeAppTypeData.appType;
-                    this.$.appointmentProfesionalsAjax.generateRequest();
+                    if (this.pageActive) {
+                        this.professionalSelectedId = 0;
+                        this.$.appointmentProfesionalsAjax.params.appTypeId = this.routeAppTypeData.appType;
+                        this.$.appointmentProfesionalsAjax.generateRequest();
+                    }
                 },
                 confirmCity: function () {
                     this.set('route.path', '/consult/' + this.cityId);
@@ -251,21 +287,10 @@
                 setCurrentLocation: function () {
                     var _this = this;
 
-                    var request = {
-                        location: this.map.getCenter(),
-                        radius: '500',
-                        types: 'locality'
-                    };
-
-                    this.lat = this.$.geoLocation.latitude;
-                    this.lng = this.$.geoLocation.longitude;
-
-                    var latlng = { lat: parseFloat(this.lat), lng: parseFloat(this.lng) };
-
                     var geocoder = new google.maps.Geocoder;
                     var service = new google.maps.places.PlacesService(this.map);
 
-                    geocoder.geocode({ 'location': latlng }, function (results, status) {
+                    geocoder.geocode({ 'location': this.map.getCenter() }, function (results, status) {
                         if (status === google.maps.GeocoderStatus.OK) {
                             if (results[1]) {
                                 service.getDetails({
@@ -274,8 +299,8 @@
                                     if (status === google.maps.places.PlacesServiceStatus.OK) {
                                         console.log(place);
                                         _this.cityId = place.place_id;
-                                        _this.cityName = place.address_components[1].long_name;
-                                        _this.searchValue = place.address_components[1].long_name;
+                                        _this.cityName = place.address_components[2].long_name;
+                                        _this.searchValue = place.address_components[2].long_name;
                                         _this.canConfirmPlace = true;
                                     }
                                 });
@@ -286,25 +311,14 @@
                             console.warn('Geocoder failed due to: ' + status);
                         }
                     });
-                    //debugger;
-                    //service.nearbySearch(request,
-                    //    function (results, status) {
-                    //        if (status == google.maps.places.PlacesServiceStatus.OK) {
-                    //            debugger;
-                    //            _this.cityId = results[0].place_id;
-                    //            _this.cityName = results[0].name;
-                    //            _this.searchValue = results[0].name;
-                    //            _this.canConfirmPlace = true;
-                    //        }
-                    //    });
                 },
-                _hiddenMapSelection: function (hasConsult, hasCity, hasAppType) {
+                _hiddenMapSelection: function (pageActive, hasCity, hasAppType) {
                     return hasCity;
                 },
-                _hiddenAppType: function (hasConsult, hasCity, hasAppType) {
+                _hiddenAppType: function (pageActive, hasCity, hasAppType) {
                     return !hasCity || hasAppType;
                 },
-                _hiddenProfessional: function (hasConsult, hasCity, hasAppType) {
+                _hiddenProfessional: function (pageActive, hasCity, hasAppType) {
                     return !hasCity || (!hasAppType && hasCity);
                 }
             });

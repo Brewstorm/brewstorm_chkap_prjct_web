@@ -4,19 +4,15 @@
 <link rel="import" href="../lib/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../lib/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../lib/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../lib/facebook-login/dist/facebook-login.html">
 
 <link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">
 
-<!--
-An element demonstrating neon-animation.
-Example:
-    <login-panel></login-panel>
-@element login-panel
-@demo demo/index.html
--->
+<!--styles-->
+<link rel="import" href="../styles/checkapp-styles.html">
 
 <dom-module id="login-page">
-    <style>
+    <style include="checkapp-styles">
         :host {
             display: none;
             font-family: Roboto, Helvetica, Arial, sans-serif;
@@ -79,6 +75,16 @@ Example:
 
         <paper-material elevation="1">
             <iron-image sizing="contain" fade src="../images/ca_marca.png" class="iconLogo"></iron-image>
+            <div id="fbLoginContainer" class="flex-center-justified" style="margin: 20px 0 10px; display: none;">
+                <facebook-login id="fbLogin"
+                                appid="282359548826115"
+                                button-size="large"
+                                language="pt_BR"
+                                graph-url="me?fields=first_name,last_name,email,picture.type(normal),birthday"
+                                scope="public_profile email user_birthday"
+                                auto-api-call="false"></facebook-login>
+            </div>
+            <span class="flex-center-justified" style="margin-top: 10px">ou</span>
             <div>
                 <paper-input id="loginUsername" label="Usuário" autofocus value="TEST"></paper-input>
             </div>
@@ -114,6 +120,11 @@ Example:
                 opened: {
                     type: Boolean
                 },
+                fbresp: {
+                    type: Object
+                },
+                fbAppId: 282359548826115,
+                fbloginready: false,
                 isLoggedIn: {
                     type: Boolean,
                     notify: true,
@@ -143,11 +154,30 @@ Example:
                 'neon-animation-finish': '_onNeonAnimationFinish'
             },
             ready: function () {
+                var _this = this;
                 var accessToken = this.$.acc_token.readCookie();
                 
                 if (accessToken != '') {
                     this.isLoggedIn = true;
                 }
+
+                this.$.fbLogin.addEventListener('signin-success',
+                    function (e) {
+                        _this.fbresp = e.detail;
+                        _this.getTokenData();
+                    });
+
+                this.$.fbLogin.addEventListener('signin-not-logged-in',
+                    function () {
+                        _this.logout();
+                    });
+
+                this.$.fbLogin.addEventListener('ready',
+                    function () {
+                        _this.async(function() {
+                            _this.$.fbLoginContainer.style.display = 'block';
+                        }, 1000);
+                    });
             },
             show: function () {
                 console.log('show');
@@ -164,7 +194,11 @@ Example:
             },
 
             getTokenData: function () {
-                this.$.tokenService.body = { "username": this.$.loginUsername.value, "password": this.$.loginPassword.value };
+                this.$.tokenService.body = {
+                    "username": this.$.loginUsername.value,
+                    "password": this.$.loginPassword.value,
+                    "oauth_id": this.fbresp.response.authResponse.userID
+                };
                 this.$.tokenService.generateRequest();
             },
 
@@ -201,6 +235,7 @@ Example:
             },
             logout: function() {
                 this.tokenData = {};
+                this.fbresp = {};
                 this.$.acc_token.eraseCookie();
                 this.show();
             },

@@ -28,7 +28,8 @@
     "iron-list": "PolymerElements/iron-list",
     "moment": "2.13.0",
     "numeral": "1.5.3",
-    "polymer-paper-date-picker": "1.2.0" 
+    "polymer-paper-date-picker": "1.2.0",
+    "facebook-login": "*"
   },
   "resolutions": {
     "polymer": "^1.2.1",

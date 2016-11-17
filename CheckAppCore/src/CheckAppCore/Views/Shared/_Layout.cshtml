@@ -12,13 +12,19 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="CheckApp">
-    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+    <meta name="background-color" content="#3E4EB8" />
+    <link rel="apple-touch-icon" href="images/ca_logo.png">
+
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="images/ca_logo.png">
 
     <title>CheckApp - Saúde na palma da sua mão.</title>
 
     <environment names="Development">
         <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>
+        <script src="~/js/service-worker.js" asp-append-version="true"></script>
         <script src="lib/webcomponentsjs/webcomponents-lite.js"></script>
 
         <link rel="stylesheet" href="~/styles/site.css" />
@@ -31,7 +37,7 @@
     </environment>
     <environment names="Staging,Production">
         <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/js/service-worker.js" asp-append-version="false"></script>
+        <script src="~/js/service-worker.js" asp-append-version="true"></script>
 
         <link rel="stylesheet" href="~/styles/site.css" />
         <link rel="manifest" href="/manifest.json">
@@ -49,7 +55,7 @@
 
     @RenderBody()
 
-    @RenderSection("scripts", required: false)
+    @RenderSection("scripts", required:false)
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -59,15 +65,10 @@
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery">
-
-
-
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
                 asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-
-
 
         </script>
     </environment>

@@ -1,13 +1,14 @@
 ﻿var cacheName = 'checkAppCache';
-var dataCacheName = 'checkAppCacheData-v1.0.3';
+var dataCacheName = 'checkAppCacheData-v1.1';
 
 var filesToCache = [
     '/',
-    '/js/site.js',
     '/styles/site.css',
+    '/styles/checkapp-styles.html',
+    '/js/site.js',
     '/images/ca_logo.png',
     '/images/ca_marca.png',
-    '/images/bg_home.jpg',
+    '/images/bg_home.jpg'
 ];
 
 self.addEventListener('install', function (e) {

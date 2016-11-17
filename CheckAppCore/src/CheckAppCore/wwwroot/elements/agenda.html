@@ -107,7 +107,7 @@
         </style>
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
-        <app-route route="{{route}}" pattern="/agenda/:professionalId" data="{{routeData}}" active="{{hasProfessional}}"></app-route>
+        <app-route route="{{route}}" pattern="/agenda/:professionalId" data="{{routeData}}" active="{{pageActive}}"></app-route>
 
         <iron-ajax id="professionalInfoAjax"
                    url="/agenda/GetProfessionalInfo"
@@ -121,7 +121,7 @@
                    loading="{{loadingAgendaSchedule}}"
                    last-response="{{agendaSchedule}}"></iron-ajax>
 
-        <div id="container" class="flex-center-justified" hidden$="{{!hasProfessional}}">
+        <div id="container" class="flex-center-justified" hidden$="{{!pageActive}}">
 
             <paper-material elevation="2" class="checkapp-page">
                 <div class="group-item">
@@ -191,15 +191,13 @@
                 observers: [
                     '_routePageChanged(routeData)'
                 ],
-                attached: function () {
-
-                },
                 _routePageChanged: function () {
-                    console.log('searching agenda info');
-                    this.$.professionalInfoAjax.params.id = this.routeData.professionalId;
-                    this.$.professionalInfoAjax.generateRequest();
+                    if (this.pageActive) {
+                        this.$.professionalInfoAjax.params.id = this.routeData.professionalId;
+                        this.$.professionalInfoAjax.generateRequest();
 
-                    this.$.agendaScheduleAjax.generateRequest();
+                        this.$.agendaScheduleAjax.generateRequest();
+                    }
                 },
                 confirmAgendamento: function (e) {
                     e.target.classList.add('selected');
