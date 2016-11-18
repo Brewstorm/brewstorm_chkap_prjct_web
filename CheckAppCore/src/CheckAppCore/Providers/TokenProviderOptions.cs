@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CheckAppCore.Data;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CheckAppCore.Providers
@@ -40,7 +41,7 @@ namespace CheckAppCore.Providers
         /// <summary>
         /// Resolves a user identity given a username and password.
         /// </summary>
-        public Func<string, string, string, Task<ClaimsIdentity>> IdentityResolver { get; set; }
+        public Func<CheckAppContext, string, string, string, Task<ClaimsIdentity>> IdentityResolver { get; set; }
 
         /// <summary>
         /// Generates a random value (nonce) for each generated token.
@@ -48,5 +49,7 @@ namespace CheckAppCore.Providers
         /// <remarks>The default nonce is a random GUID.</remarks>
         public Func<Task<string>> NonceGenerator { get; set; }
             = () => Task.FromResult(Guid.NewGuid().ToString());
+
+        public CheckAppContext DbContext { get; set; }
     }
 }

@@ -16,6 +16,9 @@ namespace CheckAppCore.Data
         public DbSet<Agenda> Agenda { get; set; }
         public DbSet<AgendaSchedule> AgendaSchedules { get; set; }
         public DbSet<AgendaException> AgendaExceptions { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRole> UsersRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,11 +52,7 @@ namespace CheckAppCore.Data
             modelBuilder.Entity<Agenda>().HasOne(ag => ag.AgendaSchedule)
                                          .WithOne(ag => ag.Agenda)
                                          .HasForeignKey<AgendaSchedule>(a => a.AgendaID);
-
-            //modelBuilder.Entity<AgendaSchedule>().ToTable("AgendaSchedules")
-            //                                        .HasOne(aS => aS.Agenda)
-            //                                        .WithOne();
-
+            
             modelBuilder.Entity<AgendaSchedule>().ToTable("AgendaSchedules")
                                                     .HasMany(o => o.AgendaExceptions)
                                                     .WithOne();
@@ -61,6 +60,20 @@ namespace CheckAppCore.Data
             modelBuilder.Entity<AgendaException>().HasOne(ae => ae.AgendaSchedule)
                                                    .WithMany();
 
+            modelBuilder.Entity<User>().ToTable("Users");
+
+            modelBuilder.Entity<UserRole>()
+                .HasKey(t => new { t.RoleID, t.UserID });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(pt => pt.Role)
+                .WithMany(p => p.UserRoles)
+                .HasForeignKey(pt => pt.RoleID);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(pt => pt.User)
+                .WithMany(t => t.UserRoles)
+                .HasForeignKey(pt => pt.UserID);
         }
     }
 }

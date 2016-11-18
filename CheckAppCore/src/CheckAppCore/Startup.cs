@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CheckAppCore.Data;
 using CheckAppCore.Providers;
+using CheckAppCore.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
@@ -91,7 +92,8 @@ namespace CheckAppCore
                 Audience = "ExampleAudience",
                 Issuer = "ExampleIssuer",
                 SigningCredentials = signingCredentials,
-                IdentityResolver = GetIdentity
+                IdentityResolver = GetIdentity,
+                DbContext = context
             });
 
             app.UseStaticFiles();
@@ -101,10 +103,13 @@ namespace CheckAppCore
             DbInitializer.Initialize(context);
         }
 
-        private Task<ClaimsIdentity> GetIdentity(string username, string password, string oauth_id)
+        private Task<ClaimsIdentity> GetIdentity(CheckAppContext context, string username, string password, string oauth_id)
         {
-            // Don't do this in production, obviously!
-            if ((username == "TEST" && password == "TEST123") || oauth_id == "1169409783140925")
+            var userRepo = new UserRepository(context);
+            var isAuth = userRepo.AuthenticateUser(username, password);
+            var isFbAuth = userRepo.AuthenticateFBUser(oauth_id);
+            
+            if (isAuth.Result || isFbAuth.Result)
             {
                 return Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
             }

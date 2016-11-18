@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CheckAppCore.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -66,7 +67,7 @@ namespace CheckAppCore.Providers
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            var identity = await _options.IdentityResolver(username, password, oauth_id);
+            var identity = await _options.IdentityResolver(_options.DbContext, username, password, oauth_id);
             if (identity == null)
             {
                 context.Response.StatusCode = 400;
