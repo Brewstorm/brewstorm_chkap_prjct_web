@@ -214,10 +214,34 @@
                 background-color: 'none';
             }
 
+            paper-button.danger {
+                background-color: var(--app-third-color) !important;
+                color: white !important;
+                /*--paper-button-ink-color: var(--app-third-color);*/
+                --paper-button-flat-keyboard-focus: {
+                  background-color: var(--app-third-color);
+                  color: white !important;
+                };
+                --paper-button-raised-keyboard-focus: {
+                  background-color: var(--app-third-color) !important;
+                  color: white !important;
+                };
+              }
+
             paper-button[disabled],
             paper-button.disabled {
                 background: #eaeaea;
                 color: #a8a8a8;
+            }
+
+            .avatar {
+                height: 55px;
+                width: 55px;
+                border-radius: 30px;
+                box-sizing: border-box;
+                background-color: #DDD;
+                margin: 5px 15px 5px 0;
+                box-shadow: 1px 1px 5px #ccc;
             }
         </style>
     </template>

@@ -5,6 +5,12 @@
 <link rel="import" href="../lib/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../lib/neon-animation/neon-animation-runner-behavior.html">
 <link rel="import" href="../lib/facebook-login/dist/facebook-login.html">
+<link rel="import" href="../lib/iron-form/iron-form.html" />
+<link rel="import" href="../lib/paper-checkbox/paper-checkbox.html" />
+<link rel="import" href="../lib/paper-radio-group/paper-radio-group.html" />
+<link rel="import" href="../lib/paper-radio-button/paper-radio-button.html" />
+<link rel="import" href="../lib/iron-image/iron-image.html" />
+<link rel="import" href="moment-element.html"/>
 
 <link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">
 
@@ -62,6 +68,12 @@
         paper-input-error {
             padding-top: 10px;
         }
+
+        .avatar{
+            height: 70px;
+            width: 70px;
+            border-radius: 35px;
+        }
     </style>
     <template>
         <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
@@ -73,40 +85,92 @@
                    on-response="updateTokenData"
                    on-error="loginError"></iron-ajax>
 
+        <iron-ajax id="fbcredentialService"
+                   url="/login/fbcredentials"
+                   method="POST"
+                   on-response="_fbcredentialok"
+                   on-error="_fbcredentialnotfound"></iron-ajax>
+        
+
+        <iron-ajax id="cadService"
+                   url="/login/registeruser"
+                   content-type="application/json"
+                   method="POST"
+                   on-response="_cadserviceok"
+                   on-error="_cadservicenotfound"></iron-ajax>        
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/login" data="{{routeData}}" active="{{loginActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/register" data="{{routeData}}" active="{{registerActive}}"></app-route>
+
         <paper-material elevation="1">
-            <iron-image sizing="contain" fade src="../images/ca_marca.png" class="iconLogo"></iron-image>
-            <div id="fbLoginContainer" class="flex-center-justified" style="margin: 20px 0 10px; display: none;">
-                <facebook-login id="fbLogin"
-                                appid="282359548826115"
-                                button-size="large"
-                                language="pt_BR"
-                                graph-url="me?fields=first_name,last_name,email,picture.type(normal),birthday"
-                                scope="public_profile email user_birthday"
-                                auto-api-call="false"></facebook-login>
+            <div hidden$="{{!loginActive}}">
+                <iron-image sizing="contain" fade src="../images/ca_marca.png" class="iconLogo"></iron-image>
+                <div id="fbLoginContainer" class="flex-center-justified" style="margin: 20px 0 10px; display: none;">
+                    <facebook-login id="fbLogin"
+                                    appid="282359548826115"
+                                    button-size="large"
+                                    language="pt_BR"
+                                    graph-url="me?fields=first_name,last_name,email,picture.type(normal),birthday"
+                                    scope="public_profile email user_birthday"
+                                    graph-response="{{fbdata}}"></facebook-login>
+                </div>
+                <span class="flex-center-justified" style="margin-top: 10px">ou</span>
+                <div>
+                    <paper-input id="loginUsername" label="Usuário" autofocus value=""></paper-input>
+                </div>
+                <div>
+                    <paper-input-container id="loginPasswordContainer">
+                        <label>Senha</label>
+                        <input is="iron-input" id="loginPassword" type="password" value="">
+                        <paper-input-error>Usuário ou Senha inválido.</paper-input-error>
+                    </paper-input-container>
+                </div>
+                <div>
+                    <paper-button id="btnLogin" on-tap="getTokenData">Entrar</paper-button>
+                </div>
+                <div class="bottomLoginPage">
+                    <table>
+                        <tr>
+                            <td>Não possui conta? <a href="#/register">Cadastre-se</a></td>
+                        </tr>
+                        <tr>
+                            <td>Esqueceu a senha? <a href="#/forgot">Recupere</a></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <span class="flex-center-justified" style="margin-top: 10px">ou</span>
-            <div>
-                <paper-input id="loginUsername" label="Usuário" autofocus value="TEST"></paper-input>
-            </div>
-            <div>
-                <paper-input-container id="loginPasswordContainer">
-                    <label>Senha</label>
-                    <input is="iron-input" id="loginPassword" type="password" value="TEST123">
-                    <paper-input-error>Usuário ou Senha inválido.</paper-input-error>
-                </paper-input-container>
-            </div>
-            <div>
-                <paper-button id="btnLogin" on-tap="getTokenData">Entrar</paper-button>
-            </div>
-            <div class="bottomLoginPage">
-                <table>
-                    <tr>
-                        <td>Não possui conta? <a href="#/register">Cadastre-se</a></td>
-                    </tr>
-                    <tr>
-                        <td>Esqueceu a senha? <a href="#/forgot">Recupere</a></td>
-                    </tr>
-                </table>
+            <div hidden$="{{!registerActive}}">
+                <!--<h3 class="flex-center-justified">Dados Cadastrais</h3>-->
+                <form is="iron-form" id="cadForm">
+                    <div class="flex-center-justified">
+                        <iron-image class="avatar" sizing="contain" src="{{cadInfo.photourl}}"></iron-image>                        
+                    </div>                    
+                    <paper-input name="name" label="Nome" required value="{{cadInfo.name}}"></paper-input>
+                    <paper-input name="lastname" label="Sobrenome" required value="{{cadInfo.lastname}}"></paper-input>
+                    <paper-input name="email" label="E-mail" required value="{{cadInfo.email}}"></paper-input>
+                    <paper-input name="birthday" label="Data de Nascimento" required value="{{_formatDate(cadInfo.birthday)}}">
+                        <paper-icon-button suffix on-tap="_showDialog" icon="date-range">
+                        </paper-icon-button>
+                    </paper-input>
+                    <paper-radio-group selected="{{cadInfo.usertype}}" class="flex-center-justified">
+                        <paper-radio-button name="1">Paciente</paper-radio-button>
+                        <paper-radio-button name="2">Médico</paper-radio-button>
+                    </paper-radio-group>                    
+                    <br />
+                    <div class="flex-center-justified">
+                        <paper-button class="primary" raised on-tap="_submit">Confirmar</paper-button>
+                        <paper-button class="danger" raised on-tap="_reset">Cancelar</paper-button>
+                    </div>
+                </form>
+
+                <paper-dialog id="dialog" class="paper-date-picker-dialog" modal on-iron-overlay-closed="dismissDialog">
+                    <paper-date-picker id="picker" locale="[[locale]]" max-date="[[maxDate]]" heading-format="[[headingFormat]]"></paper-date-picker>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Cancelar</paper-button>
+                        <paper-button dialog-confirm on-tap="_confirmDate">OK</paper-button>
+                    </div>
+                </paper-dialog>
             </div>
         </paper-material>
     </template>
@@ -125,10 +189,26 @@
                 },
                 fbAppId: 282359548826115,
                 fbloginready: false,
+                fbdata: {
+                    type: Object,
+                    observer: '_fbdataChanged'
+                },
                 isLoggedIn: {
                     type: Boolean,
                     notify: true,
                     observer: '_isLoggedInChanged'
+                },
+                cadInfo: {
+                    type: Object,
+                    value: {
+                        photourl: "",
+                        usertype: 1,
+                        name: "",
+                        lastname: "",
+                        email: "",
+                        birthday: "",
+                        facebookid: ""
+                    }
                 },
                 tokenData: {
                     type: Object,
@@ -148,6 +228,19 @@
                             }
                         }
                     }
+                },
+                userLoggingHidden: false,
+                userFirstTimeHidden: true,
+                maxDate: {
+                    value: function () {
+                        return new Date();
+                    }
+                },
+                headingFormat: {
+                    value: "ddd, D MMM"
+                },
+                locale: {
+                    value: "pt-br"
                 }
             },
             listeners: {
@@ -164,7 +257,7 @@
                 this.$.fbLogin.addEventListener('signin-success',
                     function (e) {
                         _this.fbresp = e.detail;
-                        _this.getTokenData();
+                        _this._checkUserId();
                     });
 
                 this.$.fbLogin.addEventListener('signin-not-logged-in',
@@ -180,7 +273,7 @@
                     });
             },
             show: function () {
-                console.log('show');
+                this.set('route.path', '/login');
                 this.opened = true;
                 this.style.display = 'inline-block';
                 this.cancelAnimation();
@@ -197,7 +290,7 @@
                 this.$.tokenService.body = {
                     "username": this.$.loginUsername.value,
                     "password": this.$.loginPassword.value,
-                    "oauth_id": this.fbresp.response.authResponse.userID
+                    "oauth_id": (this.fbdata ? this.fbdata.id : "")
                 };
                 this.$.tokenService.generateRequest();
             },
@@ -241,10 +334,66 @@
             },
             _isLoggedInChanged: function (isLoggedIn) {
                 if (isLoggedIn) {
+                    this.set('route.path', '/default');
                     this.hide();
                 } else {
+                    this.set('route.path', '/login');
                     this.show();
                 }
+            },
+            _submit: function() {
+                this.$.cadService.body = this.cadInfo;
+                this.$.cadService.generateRequest();
+            },
+            _reset: function() {
+                this.$.cadForm.reset();
+                this.set('route.path', '/login');
+            },
+            _loadfbdata: function () {                
+                if (this.fbdata && Object.keys(this.fbdata).length > 0) {
+                    var fbdata = this.fbdata;
+                    var date = moment(fbdata.birthday);
+
+                    this.cadInfo = {
+                        facebookid: fbdata.id,
+                        usertype: 1,
+                        name: fbdata.first_name,
+                        lastname: fbdata.last_name,
+                        birthday: date,
+                        email: fbdata.email,
+                        photourl: fbdata.picture.data.url,
+                    }
+                }
+            },
+            _confirmDate: function () {
+                this.cadInfo.birthday = this.$.picker.date;
+            },
+            _formatDate: function (date) {
+                var moDate = moment(date);
+                if (moDate.isValid())
+                    return moDate.format('DD/MM/YYYY');
+
+                return "";
+            },
+            _showDialog: function () {
+                document.body.append(this.$.dialog);
+                this.$.dialog.toggle();
+            },
+            _fbcredentialok: function () {
+                this.getTokenData();
+            },
+            _fbcredentialnotfound: function () {
+                this.async(function () {
+                    this._loadfbdata();
+                    this.set('route.path', '/register');
+                }, 1000);
+            },
+            _checkUserId: function () {
+                this.$.fbcredentialService.params.fb_id = this.fbresp.response.authResponse.userID;
+                this.$.fbcredentialService.generateRequest();
+            },
+            _cadserviceok: function () {
+                this.getTokenData();
             }
         });
     </script>

@@ -81,7 +81,7 @@ namespace CheckAppCore.Providers
             // You can add other claims here, if you want:
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Sub, (string.IsNullOrEmpty(username) ? oauth_id : username)),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
                 new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64)
             };
@@ -94,8 +94,8 @@ namespace CheckAppCore.Providers
                 notBefore: now,
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var response = new
             {
                 access_token = encodedJwt,

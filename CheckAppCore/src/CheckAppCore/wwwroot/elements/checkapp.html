@@ -52,6 +52,12 @@
                    content-type="application/x-www-form-urlencoded"
                    on-response="updateTokenData"></iron-ajax>
 
+        <iron-ajax id="userdataService"
+                   url="/login/getuserdata"
+                   content-type="application/json"
+                   method="GET"
+                   last-response="{{userData}}"></iron-ajax>
+
         <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
 
         <iron-media-query id="ironMediaQuery" query="(min-width:640px)" on-query-matches-changed="_onQueryMatchesChanged"></iron-media-query>
@@ -103,7 +109,7 @@
                             fallback-selection="view404"
                             role="main">
                     <default-view name="default"></default-view>
-                    <profile-view name="profile"></profile-view>
+                    <profile-view name="profile" user-data="{{userData}}"></profile-view>
                     <history-view name="history"></history-view>
                     <settings-view name="settings"></settings-view>
                     <consult-view name="consult"></consult-view>
@@ -164,6 +170,10 @@
                         type: Object,
                         observer: '_tokenChanged'
                     },
+                    userData: {
+                        type: Object,
+                        notify: true
+                    },
                     page: {
                         type: String,
                         reflectToAttribute: true
@@ -202,7 +212,7 @@
                         function (e) {
                             self.isLoggedIn = e.detail.value;
                         });
-
+                    
                     self.$.toast.fitInto = self.$.container;
 
                     this.checkTokenStatus();
@@ -211,6 +221,7 @@
                 checkTokenStatus: function () {
                     var accessToken = this.$.acc_token.readCookie();
                     this.isLoggedIn = accessToken != '';
+                    this.$.userdataService.generateRequest();
                 },
 
                 logoutAction: function () {

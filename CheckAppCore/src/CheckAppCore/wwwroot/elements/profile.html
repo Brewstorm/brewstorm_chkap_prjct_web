@@ -2,14 +2,34 @@
 
 <dom-module id="profile-view">
     <template>
+        <style include="checkapp-styles"></style>
         <style>
             :host {
                 display: block;
                 padding: 10px;
             }
         </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/profile" active="{{profileActive}}"></app-route>
+
+        <iron-ajax id="userdataService"
+                   url="/login/getuserdata"
+                   content-type="application/json"
+                   method="GET"
+                   last-response="{{userData}}"></iron-ajax>
+        
         <div>
-            Perfil
+            <div id="container" class="flex-center-justified">
+                <paper-material elevation="2" class="checkapp-page">
+                    <div class="flex-center-justified">
+                        <iron-image class="avatar" sizing="contain" src="{{userData.photoUrl}}"></iron-image>
+                    </div>
+                    <br />
+                    <span class="flex-center-justified">{{userData.name}} {{userData.lastName}}</span>
+                    <span class="flex-center-justified">{{userData.email}}</span>
+                </paper-material>
+            </div>
         </div>
     </template>
     <script>
@@ -19,7 +39,21 @@
                 description: {
                     type: String,
                     value: 'Perfil'
+                },
+                userData: {
+                    type: Object,
+                    notify: true,
+                    reflectToAttribute: true
+                },
+                profileActive: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_profileActiveChanged'
                 }
+            },
+            _profileActiveChanged: function (value) {
+                if (value && Object.keys(userData).length == 0)
+                    this.$.userdataService.generateRequest();
             }
         });
     </script>

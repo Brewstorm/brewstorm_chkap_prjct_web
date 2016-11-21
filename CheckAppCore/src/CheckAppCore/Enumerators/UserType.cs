@@ -7,7 +7,7 @@ namespace CheckAppCore.Enumerators
 {
     public enum UserType
     {
-        Professional,
-        Patient
+        Patient = 1,
+        Professional = 2        
     }
 }

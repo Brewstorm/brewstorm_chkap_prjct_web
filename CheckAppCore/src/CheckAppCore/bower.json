@@ -29,7 +29,8 @@
     "moment": "2.13.0",
     "numeral": "1.5.3",
     "polymer-paper-date-picker": "1.2.0",
-    "facebook-login": "*"
+    "facebook-login": "*",
+    "iron-form" : "1.1.4"
   },
   "resolutions": {
     "polymer": "^1.2.1",
