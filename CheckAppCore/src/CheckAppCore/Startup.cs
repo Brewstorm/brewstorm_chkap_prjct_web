@@ -13,13 +13,14 @@ using CheckAppCore.Providers;
 using CheckAppCore.Repositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Azure.Mobile.Server.Login;
 
 namespace CheckAppCore
 {
     public partial class Startup
     {
-        const string TokenAudience = "ExampleAudience";
-        const string TokenIssuer = "ExampleIssuer";
+        const string TokenAudience = "https://checkapptest.azurewebsites.net/";
+        const string TokenIssuer = "https://checkapptest.azurewebsites.net/";
         
         private SymmetricSecurityKey _key;
 
@@ -52,8 +53,8 @@ namespace CheckAppCore
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            var secretKey = "mysupersecret_secretkey!123";
-            _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+            var secretKey = Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY");
+            _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));            
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -61,7 +62,7 @@ namespace CheckAppCore
                 ValidAudience = TokenAudience,
                 ValidIssuer = TokenIssuer,
                 ValidateIssuerSigningKey = true,
-                ValidateLifetime = true,
+                ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
             };
 
@@ -78,8 +79,7 @@ namespace CheckAppCore
                 AutomaticChallenge = true,
                 AuthenticationScheme = "Cookie",
                 CookieName = "access_token",
-                TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters),
-                ReturnUrlParameter = null
+                TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters)
             });
 
             // The secret key every token will be signed with.
@@ -89,15 +89,15 @@ namespace CheckAppCore
             app.UseSimpleTokenProvider(new TokenProviderOptions
             {
                 Path = "/api/token",
-                Audience = "ExampleAudience",
-                Issuer = "ExampleIssuer",
+                Audience = TokenAudience,
+                Issuer = TokenIssuer,
                 SigningCredentials = signingCredentials,
                 IdentityResolver = GetIdentity,
                 DbContext = context
-            });
+            });            
 
             app.UseStaticFiles();
-
+            app.UseDeveloperExceptionPage();
             app.UseMvcWithDefaultRoute();
 
             DbInitializer.Initialize(context);

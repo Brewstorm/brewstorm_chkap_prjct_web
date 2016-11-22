@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Microsoft.Azure.Mobile.Server.Login;
 
 namespace CheckAppCore.Providers
 {
@@ -79,7 +80,7 @@ namespace CheckAppCore.Providers
 
             // Specifically add the jti (nonce), iat (issued timestamp), and sub (subject/user) claims.
             // You can add other claims here, if you want:
-            var claims = new[]
+            var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, (string.IsNullOrEmpty(username) ? oauth_id : username)),
                 new Claim(JwtRegisteredClaimNames.Jti, await _options.NonceGenerator()),
@@ -95,12 +96,22 @@ namespace CheckAppCore.Providers
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);
 
+            //var jwt = AppServiceLoginHandler.CreateToken(
+            //    claims,
+            //    _options.SigningCredentials,
+            //    _options.Audience,
+            //    _options.Issuer,
+            //    now.Add(_options.Expiration)
+            //);
+
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var response = new
             {
                 access_token = encodedJwt,
                 expires_in = (int)_options.Expiration.TotalSeconds
             };
+
+            await context.Authentication.SignInAsync("Cookie", new ClaimsPrincipal(identity));
 
             // Serialize and return the response
             context.Response.ContentType = "application/json";
