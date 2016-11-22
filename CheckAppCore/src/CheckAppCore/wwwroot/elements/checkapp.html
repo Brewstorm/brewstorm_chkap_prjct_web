@@ -219,8 +219,7 @@
                 },
 
                 checkTokenStatus: function () {
-                    var accessToken = this.$.acc_token.readCookie();
-                    this.isLoggedIn = accessToken != '';
+                    this.isLoggedIn = this.$.acc_token.readCookie() != '';
                     this.$.userdataService.generateRequest();
                 },
 
@@ -251,7 +250,8 @@
                 },
 
                 observers: [
-                    '_routePageChanged(routeData.page)'
+                    '_routePageChanged(routeData.page)',
+                    '_routeChanged(route)'
                 ],
                 listeners: {
                     'neon-animation-finish': '_onNeonAnimationFinish'
@@ -271,7 +271,11 @@
                     this.hiddenHistoryBack = this.page == "default";
                     this._updateDescriptionLabelStyle();
                 },
-
+                _routeChanged: function(route) {
+                    if (this.$.acc_token.readCookie() == '') {
+                        this.isLoggedIn = false;
+                    }
+                },
                 _tokenChanged: function (token) {
                     if (Object.keys(token).length === 0) {
                         this.isLoggedIn = false;
@@ -292,6 +296,7 @@
                         console.log('não logado');
                         this.hide();
                         this.$.appLogin.show();
+                        this.set('route.path', '/login');
                     } else {
                         this.$.appLogin.hide();
                         this.show();

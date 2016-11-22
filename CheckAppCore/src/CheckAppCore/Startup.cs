@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using CheckAppCore.Data;
 using CheckAppCore.Providers;
 using CheckAppCore.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Azure.Mobile.Server.Login;
@@ -45,6 +47,13 @@ namespace CheckAppCore
 
             services.AddDbContext<CheckAppContext>(options =>
                         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Token", new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes("Cookie")
+                    .RequireAuthenticatedUser().Build());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,25 +62,33 @@ namespace CheckAppCore
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            var secretKey = Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY");
+            var secretKey = env.IsDevelopment() ? "mysupersecretkey!@1234" : Environment.GetEnvironmentVariable("WEBSITE_AUTH_SIGNING_KEY");
             _key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));            
 
             var tokenValidationParameters = new TokenValidationParameters
             {
                 IssuerSigningKey = _key,
-                ValidAudience = TokenAudience,
-                ValidIssuer = TokenIssuer,
+                ValidAudience = env.IsDevelopment() ? "localhost" : TokenAudience,
+                ValidateAudience = true,
+                ValidIssuer = env.IsDevelopment() ? "localhost" : TokenIssuer,
+                ValidateIssuer = true,
                 ValidateIssuerSigningKey = true,
                 ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
             };
 
-            //app.UseJwtBearerAuthentication(new JwtBearerOptions
-            //{
-            //    AutomaticAuthenticate = true,
-            //    AutomaticChallenge = true,
-            //    TokenValidationParameters = tokenValidationParameters
-            //});
+            // The secret key every token will be signed with.
+            // Keep this safe on the server!
+            var signingCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
+
+            app.UseSimpleTokenProvider(new TokenProviderOptions
+            {
+                Path = "/token",
+                Audience = env.IsDevelopment() ? "localhost" : TokenAudience,
+                Issuer = env.IsDevelopment() ? "localhost" : TokenIssuer,
+                SigningCredentials = signingCredentials,
+                IdentityResolver = GetIdentity
+            });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
@@ -81,20 +98,6 @@ namespace CheckAppCore
                 CookieName = "access_token",
                 TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters)
             });
-
-            // The secret key every token will be signed with.
-            // Keep this safe on the server!
-            var signingCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
-
-            app.UseSimpleTokenProvider(new TokenProviderOptions
-            {
-                Path = "/api/token",
-                Audience = TokenAudience,
-                Issuer = TokenIssuer,
-                SigningCredentials = signingCredentials,
-                IdentityResolver = GetIdentity,
-                DbContext = context
-            });            
 
             app.UseStaticFiles();
             app.UseDeveloperExceptionPage();
@@ -109,7 +112,7 @@ namespace CheckAppCore
             var isAuth = userRepo.AuthenticateUser(username, password);
             var isFbAuth = userRepo.AuthenticateFBUser(oauth_id);
             
-            if (isAuth.Result || isFbAuth.Result)
+            if (isAuth || isFbAuth)
             {
                 return Task.FromResult(new ClaimsIdentity(new GenericIdentity(username, "Token"), new Claim[] { }));
             }

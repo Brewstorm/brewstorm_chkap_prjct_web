@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CheckAppCore.Data;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -41,7 +42,7 @@ namespace CheckAppCore.Providers
             };
         }
 
-        public Task Invoke(HttpContext context)
+        public Task Invoke(HttpContext context, CheckAppContext dbcontext)
         {
             // If the request path doesn't match, skip
             if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
@@ -59,16 +60,16 @@ namespace CheckAppCore.Providers
 
             _logger.LogInformation("Handling request: " + context.Request.Path);
 
-            return GenerateToken(context);
+            return GenerateToken(context, dbcontext);
         }
 
-        private async Task GenerateToken(HttpContext context)
+        private async Task GenerateToken(HttpContext context, CheckAppContext dbcontext)
         {
             var oauth_id = context.Request.Form["oauth_id"];
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            var identity = await _options.IdentityResolver(_options.DbContext, username, password, oauth_id);
+            var identity = await _options.IdentityResolver(dbcontext, username, password, oauth_id);
             if (identity == null)
             {
                 context.Response.StatusCode = 400;
@@ -95,23 +96,13 @@ namespace CheckAppCore.Providers
                 notBefore: now,
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);
-
-            //var jwt = AppServiceLoginHandler.CreateToken(
-            //    claims,
-            //    _options.SigningCredentials,
-            //    _options.Audience,
-            //    _options.Issuer,
-            //    now.Add(_options.Expiration)
-            //);
-
+            
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var response = new
             {
                 access_token = encodedJwt,
                 expires_in = (int)_options.Expiration.TotalSeconds
             };
-
-            await context.Authentication.SignInAsync("Cookie", new ClaimsPrincipal(identity));
 
             // Serialize and return the response
             context.Response.ContentType = "application/json";

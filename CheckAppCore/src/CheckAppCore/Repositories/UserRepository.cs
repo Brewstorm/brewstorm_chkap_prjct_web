@@ -15,14 +15,14 @@ namespace CheckAppCore.Repositories
         {
         }
 
-        public Task<bool> AuthenticateUser(string email, string password)
+        public bool AuthenticateUser(string email, string password)
         {
-            return Context.Users.AnyAsync(o => o.EmailAddress == email && o.Password == password);
+            return Context.Users.Any(o => o.EmailAddress == email && o.Password == password);
         }
 
-        public Task<bool> AuthenticateFBUser(string userid)
+        public bool AuthenticateFBUser(string userid)
         {
-            return Context.Users.AnyAsync(o => o.FacebookID == userid);
+            return Context.Users.Any(o => o.FacebookID == userid);
         }
 
         public Task<bool> RegisterUser(RegisterModel registerModel)

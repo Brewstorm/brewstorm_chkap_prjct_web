@@ -49,7 +49,5 @@ namespace CheckAppCore.Providers
         /// <remarks>The default nonce is a random GUID.</remarks>
         public Func<Task<string>> NonceGenerator { get; set; }
             = () => Task.FromResult(Guid.NewGuid().ToString());
-
-        public CheckAppContext DbContext { get; set; }
     }
 }

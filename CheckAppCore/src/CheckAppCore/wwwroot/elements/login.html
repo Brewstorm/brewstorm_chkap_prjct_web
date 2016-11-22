@@ -79,7 +79,7 @@
         <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
         
         <iron-ajax id="tokenService"
-                   url="/api/token"
+                   url="/token"
                    method="POST"
                    content-type="application/x-www-form-urlencoded"
                    on-response="updateTokenData"
@@ -116,17 +116,16 @@
                                     button-size="large"
                                     language="pt_BR"
                                     graph-url="me?fields=first_name,last_name,email,picture.type(normal),birthday"
-                                    scope="public_profile email user_birthday"
-                                    graph-response="{{fbdata}}"></facebook-login>
+                                    scope="public_profile email user_birthday"></facebook-login>
                 </div>
                 <span class="flex-center-justified" style="margin-top: 10px">ou</span>
                 <div>
-                    <paper-input id="loginUsername" label="Usuário" autofocus value=""></paper-input>
+                    <paper-input id="loginUsername" label="Usuário" autofocus value="{{userLogin}}"></paper-input>
                 </div>
                 <div>
                     <paper-input-container id="loginPasswordContainer">
                         <label>Senha</label>
-                        <input is="iron-input" id="loginPassword" type="password" value="">
+                        <input is="iron-input" id="loginPassword" type="password" bind-value="{{userPassword}}">
                         <paper-input-error>Usuário ou Senha inválido.</paper-input-error>
                     </paper-input-container>
                 </div>
@@ -193,10 +192,6 @@
                 },
                 fbAppId: 282359548826115,
                 fbloginready: false,
-                fbdata: {
-                    type: Object,
-                    observer: '_fbdataChanged'
-                },
                 isLoggedIn: {
                     type: Boolean,
                     notify: true,
@@ -245,7 +240,9 @@
                 },
                 locale: {
                     value: "pt-br"
-                }
+                },
+                userLogin: '',
+                userPassword: '',
             },
             observers: [
                 '_routeChanged(route)'
@@ -278,6 +275,11 @@
                             _this.$.fbLoginContainer.style.display = 'block';
                         }, 1000);
                     });
+
+                this.$.fbLoginContainer.addEventListener('click',
+                    function() {
+                        console.log('click');
+                    });
             },
             show: function () {
                 this.set('route.path', '/login');
@@ -294,15 +296,22 @@
             },
             _routeChanged: function (route) {
                 if (route.path == '/login') {
-                    this.$.logoutService.generateRequest();
+                    this.logout();
                 }
             },
             getTokenData: function () {
+                this.tokenData = {};
                 this.$.acc_token.eraseCookie();
+
+                var oauth_id = '';
+                try {
+                    oauth_id = this.fbresp.response.authResponse.userID;
+                } catch (e){};
+
                 this.$.tokenService.body = {
-                    "username": this.$.loginUsername.value,
-                    "password": this.$.loginPassword.value,
-                    "oauth_id": (this.fbdata ? this.fbdata.id : "")
+                    "username": this.userLogin,
+                    "password": this.userPassword,
+                    "oauth_id": oauth_id
                 };
                 this.$.tokenService.generateRequest();
             },
@@ -320,28 +329,32 @@
                 if (Object.keys(token).length === 0) {
                     this.isLoggedIn = false;
                 } else {
-                    //this.$.acc_token.value = token.access_token;
-                    //this.$.acc_token.time = token.expires_in;
-                    //this.$.acc_token.createCookie();
+                    this.$.acc_token.value = token.access_token;
+                    this.$.acc_token.time = token.expires_in;
+                    this.$.acc_token.createCookie();
 
                     this.isLoggedIn = true;
                 }
             },
             clearLoginFields: function() {
-                this.$.loginUsername.value = this.$.loginPassword.bindValue = '';
+                this.userLogin = this.userPassword = '';
             },
             loginError: function () {
-                var self = this;
-                this.$.loginUsername.invalid = this.$.loginPasswordContainer.invalid = true;
+                if (this.userLogin != '' || this.userPassword != '') {
+                    var self = this;
+                    this.$.loginUsername.invalid = this.$.loginPasswordContainer.invalid = true;
 
-                setTimeout(function() {
-                    self.$.loginUsername.invalid = self.$.loginPasswordContainer.invalid = false;
-                }, 5000);
+                    setTimeout(function() {
+                            self.$.loginUsername.invalid = self.$.loginPasswordContainer.invalid = false;
+                        },
+                        5000);
+                }
             },
             logout: function() {
                 this.tokenData = {};
                 this.fbresp = {};
                 this.$.acc_token.eraseCookie();
+                this.$.logoutService.generateRequest();
                 this.show();
             },
             _isLoggedInChanged: function (isLoggedIn) {

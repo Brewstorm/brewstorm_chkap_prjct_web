@@ -11,7 +11,7 @@
         </style>
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
-        <app-route route="{{route}}" pattern="/profile" active="{{profileActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/profile"></app-route>
 
         <iron-ajax id="userdataService"
                    url="/login/getuserdata"
@@ -51,8 +51,11 @@
                     observer: '_profileActiveChanged'
                 }
             },
-            _profileActiveChanged: function (value) {
-                if (value && Object.keys(userData).length == 0)
+            observers: [
+                '_routeChanged(route)'
+            ],
+            _routeChanged: function (route) {
+                if (route.path == '/profile')
                     this.$.userdataService.generateRequest();
             }
         });
