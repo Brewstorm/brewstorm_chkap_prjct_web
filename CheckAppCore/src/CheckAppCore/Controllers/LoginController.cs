@@ -2,16 +2,19 @@
 using CheckAppCore.Models;
 using CheckAppCore.Repositories;
 using CheckAppCore.Services;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace CheckAppCore.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : ApiController
     {
         private readonly CheckAppContext _context;
 
@@ -28,7 +31,7 @@ namespace CheckAppCore.Controllers
                 return new NotFoundResult();
         }
 
-        public ActionResult RegisterUser([FromBody] RegisterModel postdata)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterModel postdata)
         {
             var userRepository = new UserRepository(_context);
             var loginService = new LoginService(userRepository);
@@ -36,11 +39,10 @@ namespace CheckAppCore.Controllers
             if (loginService.RegisterUser(postdata))
                 return Ok();
             else
-                return Unauthorized();
+                return NotFound();
         }
-
-        [Authorize]
-        public IActionResult GetUserData()
+        
+        public async Task<IActionResult> GetUserData()
         { 
             var subject = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value;
             if(subject == null)
@@ -51,5 +53,12 @@ namespace CheckAppCore.Controllers
 
             return new JsonResult(loginService.GetUserData(subject));
         }
+
+        public async Task<IActionResult> Logout()
+        {
+            await ActionContext.HttpContext.Authentication.SignOutAsync("Cookie");
+
+            return Ok();
+        }        
     }
 }

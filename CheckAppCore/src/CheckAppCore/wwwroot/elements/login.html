@@ -97,7 +97,11 @@
                    content-type="application/json"
                    method="POST"
                    on-response="_cadserviceok"
-                   on-error="_cadservicenotfound"></iron-ajax>        
+                   on-error="_cadservicenotfound"></iron-ajax>   
+        
+        <iron-ajax id="logoutService"
+                   url="/login/logout"
+                   method="POST"></iron-ajax>     
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
         <app-route route="{{route}}" pattern="/login" data="{{routeData}}" active="{{loginActive}}"></app-route>
@@ -243,6 +247,9 @@
                     value: "pt-br"
                 }
             },
+            observers: [
+                '_routeChanged(route)'
+            ],
             listeners: {
                 'neon-animation-finish': '_onNeonAnimationFinish'
             },
@@ -285,8 +292,13 @@
                 this.cancelAnimation();
                 this.playAnimation('exit');
             },
-
+            _routeChanged: function (route) {
+                if (route.path == '/login') {
+                    this.$.logoutService.generateRequest();
+                }
+            },
             getTokenData: function () {
+                this.$.acc_token.eraseCookie();
                 this.$.tokenService.body = {
                     "username": this.$.loginUsername.value,
                     "password": this.$.loginPassword.value,
@@ -308,9 +320,9 @@
                 if (Object.keys(token).length === 0) {
                     this.isLoggedIn = false;
                 } else {
-                    this.$.acc_token.value = token.access_token;
-                    this.$.acc_token.time = token.expires_in;
-                    this.$.acc_token.createCookie();
+                    //this.$.acc_token.value = token.access_token;
+                    //this.$.acc_token.time = token.expires_in;
+                    //this.$.acc_token.createCookie();
 
                     this.isLoggedIn = true;
                 }

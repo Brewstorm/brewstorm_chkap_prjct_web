@@ -61,6 +61,21 @@
           "lib/net45/Microsoft.AspNet.Identity.Core.dll": {}
         }
       },
+      "Microsoft.AspNet.WebApi.Client/5.2.2": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.4"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http"
+        ],
+        "compile": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Antiforgery/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -121,6 +136,19 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.OpenIdConnect/1.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Authentication": "1.0.0",
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "2.0.0"
+        },
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authorization/1.0.0": {
@@ -498,11 +526,11 @@
           "lib/net451/Microsoft.AspNetCore.Mvc.DataAnnotations.dll": {}
         }
       },
-      "Microsoft.AspNetCore.Mvc.Formatters.Json/1.0.0": {
+      "Microsoft.AspNetCore.Mvc.Formatters.Json/1.0.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.JsonPatch": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.Core": "1.0.0"
+          "Microsoft.AspNetCore.Mvc.Core": "1.0.1"
         },
         "compile": {
           "lib/net451/Microsoft.AspNetCore.Mvc.Formatters.Json.dll": {}
@@ -588,6 +616,26 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNetCore.Mvc.ViewFeatures.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.Mvc.WebApiCompatShim/1.0.1": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Client": "5.2.2",
+          "Microsoft.AspNetCore.Mvc.Core": "1.0.1",
+          "Microsoft.AspNetCore.Mvc.Formatters.Json": "1.0.1",
+          "Microsoft.AspNetCore.WebUtilities": "1.0.0"
+        },
+        "frameworkAssemblies": [
+          "System.Net.Http",
+          "System.Runtime.Serialization",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net451/Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll": {}
         }
       },
       "Microsoft.AspNetCore.Razor/1.0.0": {
@@ -733,6 +781,47 @@
         },
         "runtime": {
           "lib/net451/Microsoft.AspNetCore.WebUtilities.dll": {}
+        }
+      },
+      "Microsoft.Azure.Mobile.Server.Login/0.3.157.1": {
+        "type": "package",
+        "dependencies": {
+          "System.IdentityModel.Tokens.Jwt": "4.0.2.205111437"
+        },
+        "compile": {
+          "lib/net45/Microsoft.Azure.Mobile.Server.Login.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Microsoft.Azure.Mobile.Server.Login.dll": {}
+        },
+        "resource": {
+          "lib/net45/de/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net45/es/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net45/fr/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net45/it/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net45/ja/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net45/ko/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net45/ru/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net45/zh-Hans/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net45/zh-Hant/Microsoft.Azure.Mobile.Server.Login.resources.dll": {
+            "locale": "zh-Hant"
+          }
         }
       },
       "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
@@ -2137,6 +2226,19 @@
         "lib/net45/Microsoft.AspNet.Identity.Core.xml"
       ]
     },
+    "Microsoft.AspNet.WebApi.Client/5.2.2": {
+      "sha512": "YVq+s0WeXrPxJk57CoElbtMYf95j76uJcW6nue3Cs4eIer9sgUp4rasSo0gALX3ls1Zf2jMceOLik9X/sJyrwA==",
+      "type": "package",
+      "path": "Microsoft.AspNet.WebApi.Client/5.2.2",
+      "files": [
+        "Microsoft.AspNet.WebApi.Client.5.2.2.nupkg.sha512",
+        "Microsoft.AspNet.WebApi.Client.nuspec",
+        "lib/net45/System.Net.Http.Formatting.dll",
+        "lib/net45/System.Net.Http.Formatting.xml",
+        "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll",
+        "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.xml"
+      ]
+    },
     "Microsoft.AspNetCore.Antiforgery/1.0.0": {
       "sha512": "oJnrSvL6S7jM2eD/TR/Kyp/7O6pKvN+8FcnYvUaxaHbKlISwl98o44uidzePBjGxTf4fh9NFEx/q3OuuxAvBzw==",
       "type": "package",
@@ -2187,6 +2289,19 @@
         "lib/net451/Microsoft.AspNetCore.Authentication.JwtBearer.xml",
         "lib/netstandard1.4/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
         "lib/netstandard1.4/Microsoft.AspNetCore.Authentication.JwtBearer.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.OpenIdConnect/1.0.0": {
+      "sha512": "HFVAngZ1BiMYLPGqqjUitULrn6jqukHH3Hku2xpe4QlGWXQGOLOsuElF/tQm+/HNqphTO5q6lWwiwf8Dwc0KRQ==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Authentication.OpenIdConnect/1.0.0",
+      "files": [
+        "Microsoft.AspNetCore.Authentication.OpenIdConnect.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Authentication.OpenIdConnect.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll",
+        "lib/net451/Microsoft.AspNetCore.Authentication.OpenIdConnect.xml",
+        "lib/netstandard1.4/Microsoft.AspNetCore.Authentication.OpenIdConnect.dll",
+        "lib/netstandard1.4/Microsoft.AspNetCore.Authentication.OpenIdConnect.xml"
       ]
     },
     "Microsoft.AspNetCore.Authorization/1.0.0": {
@@ -2495,12 +2610,12 @@
         "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.DataAnnotations.xml"
       ]
     },
-    "Microsoft.AspNetCore.Mvc.Formatters.Json/1.0.0": {
-      "sha512": "XQQLbxYLmdRj2U685NxFIrxVxqsXHLO5zN4ZIhTQ23VxzI6Qk2WN9ska0tl4ZMDV/4pSyE8SlmNeKPCN3pW86w==",
+    "Microsoft.AspNetCore.Mvc.Formatters.Json/1.0.1": {
+      "sha512": "wM12hSUlF0Eqed44psOYT4fY/RRjMx049A4bBUfqiGr1UFU54zTR8djRLW0dIp1w7Xv5WQ/bgG9jyqiaRbv6jg==",
       "type": "package",
-      "path": "Microsoft.AspNetCore.Mvc.Formatters.Json/1.0.0",
+      "path": "Microsoft.AspNetCore.Mvc.Formatters.Json/1.0.1",
       "files": [
-        "Microsoft.AspNetCore.Mvc.Formatters.Json.1.0.0.nupkg.sha512",
+        "Microsoft.AspNetCore.Mvc.Formatters.Json.1.0.1.nupkg.sha512",
         "Microsoft.AspNetCore.Mvc.Formatters.Json.nuspec",
         "lib/net451/Microsoft.AspNetCore.Mvc.Formatters.Json.dll",
         "lib/net451/Microsoft.AspNetCore.Mvc.Formatters.Json.xml",
@@ -2571,6 +2686,19 @@
         "lib/net451/Microsoft.AspNetCore.Mvc.ViewFeatures.xml",
         "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.ViewFeatures.dll",
         "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.ViewFeatures.xml"
+      ]
+    },
+    "Microsoft.AspNetCore.Mvc.WebApiCompatShim/1.0.1": {
+      "sha512": "suSBTX0gqTvrjH2rtImPcfpqA4xQU97TJVX0P8/vwO1cehED520a5l9gGYUH80At7F4QpdIbApodt1rnHfFEJg==",
+      "type": "package",
+      "path": "Microsoft.AspNetCore.Mvc.WebApiCompatShim/1.0.1",
+      "files": [
+        "Microsoft.AspNetCore.Mvc.WebApiCompatShim.1.0.1.nupkg.sha512",
+        "Microsoft.AspNetCore.Mvc.WebApiCompatShim.nuspec",
+        "lib/net451/Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll",
+        "lib/net451/Microsoft.AspNetCore.Mvc.WebApiCompatShim.xml",
+        "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.WebApiCompatShim.dll",
+        "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.WebApiCompatShim.xml"
       ]
     },
     "Microsoft.AspNetCore.Razor/1.0.0": {
@@ -2691,6 +2819,27 @@
         "lib/net451/Microsoft.AspNetCore.WebUtilities.xml",
         "lib/netstandard1.3/Microsoft.AspNetCore.WebUtilities.dll",
         "lib/netstandard1.3/Microsoft.AspNetCore.WebUtilities.xml"
+      ]
+    },
+    "Microsoft.Azure.Mobile.Server.Login/0.3.157.1": {
+      "sha512": "ki01D6spEIZGeD0Hzwb2XX+jwQtZyD0Ab5/uKyMhIEQLzmLIVr5m3y0J7V6qr4pDEIKfYd170oPVMgNnnPirrQ==",
+      "type": "package",
+      "path": "Microsoft.Azure.Mobile.Server.Login/0.3.157.1",
+      "files": [
+        "Microsoft.Azure.Mobile.Server.Login.0.3.157.1.nupkg.sha512",
+        "Microsoft.Azure.Mobile.Server.Login.nuspec",
+        "lib/net45/Microsoft.Azure.Mobile.Server.Login.dll",
+        "lib/net45/Microsoft.Azure.Mobile.Server.Login.xml",
+        "lib/net45/de/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/es/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/fr/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/it/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/ja/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/ko/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/ru/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/zh-Hans/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "lib/net45/zh-Hant/Microsoft.Azure.Mobile.Server.Login.resources.dll",
+        "readme.txt"
       ]
     },
     "Microsoft.CodeAnalysis.Analyzers/1.1.0": {
@@ -5394,6 +5543,7 @@
       "Microsoft.AspNet.Identity.Core >= 2.2.1",
       "Microsoft.AspNetCore.Authentication.Cookies >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 1.0.0",
+      "Microsoft.AspNetCore.Authentication.OpenIdConnect >= 1.0.0",
       "Microsoft.AspNetCore.Authorization >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",
       "Microsoft.AspNetCore.Hosting >= 1.0.0",
@@ -5402,11 +5552,13 @@
       "Microsoft.AspNetCore.Mvc.Core >= 1.0.1",
       "Microsoft.AspNetCore.Mvc.Razor >= 1.0.0",
       "Microsoft.AspNetCore.Mvc.ViewFeatures >= 1.0.0",
+      "Microsoft.AspNetCore.Mvc.WebApiCompatShim >= 1.0.1",
       "Microsoft.AspNetCore.Razor.Runtime >= 1.0.0",
       "Microsoft.AspNetCore.Razor.Tools >= 1.0.0-preview2-final",
       "Microsoft.AspNetCore.Server.IISIntegration >= 1.0.0",
       "Microsoft.AspNetCore.Server.Kestrel >= 1.0.0",
       "Microsoft.AspNetCore.StaticFiles >= 1.0.0",
+      "Microsoft.Azure.Mobile.Server.Login >= 0.3.157.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 1.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 1.0.0-preview2-final",
       "Microsoft.Extensions.Configuration.EnvironmentVariables >= 1.0.0",
