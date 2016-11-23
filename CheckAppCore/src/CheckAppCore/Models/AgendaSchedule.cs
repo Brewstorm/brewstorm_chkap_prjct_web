@@ -16,5 +16,6 @@ namespace CheckAppCore.Models
         public int EndTime { get; set; }
 
         public ICollection<AgendaException> AgendaExceptions { get; set; }
+        public ICollection<AgendaAppointment> AgendaAppointments { get; set; }
     }
 }

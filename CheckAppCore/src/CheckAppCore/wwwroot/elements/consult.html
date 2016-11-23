@@ -70,9 +70,6 @@
                     <div class="flex-start-justified">
                         <paper-autocomplete label="Pesquisar cidade" id="inputLocal" remote-source="true" min-length="2" text="{{searchValue}}" style="width: 70%;"></paper-autocomplete>
                         <paper-button raised class="primary simpleBtnTop" on-tap="confirmCity" disabled$="{{!canConfirmPlace}}">Confirmar</paper-button>
-                        <!--<paper-button raised class="simpleBtn" on-tap="setCurrentLocation">
-                            <iron-icon icon="maps:my-location"></iron-icon>
-                        </paper-button>-->
                     </div>
 
                     <geo-location id="geoLocation" latitude="{{lat}}" longitude="{{lng}}">
@@ -155,8 +152,7 @@
                         notify: true
                     },
                     gmapready: {
-                        value: false,
-                        observer: '_gmapReadyChanged'
+                        value: false
                     },
                     geolocationready: {
                         value: false
@@ -171,6 +167,7 @@
                     }
                 },
                 observers: [
+                    '_routeChanged(route)',
                     '_routePageChanged(routeData)',
                     '_routePageCityChanged(routeCityData.cityId)',
                     '_routePageAppTypeChanged(routeAppTypeData.appType)'
@@ -218,26 +215,15 @@
                             _this.geolocationready = true;
                         });
                 },
-                _gmapReadyChanged: function(value) {
-                    if (value) {
-                        this.async(function() {
-                            this.setCurrentLocation();
-                        }, 2000);
+                _routeChanged: function (route) {
+                    if (route.path == '/consult') {
+                        this.setCurrentLocation();
                     }
                 },
-                //_geolocationReadyChanged: function (value) {
-                //    if (value && this.gmapready) {
-                //        this.setCurrentLocation();
-                //    }
-                //},
                 _routePageChanged: function () {
                     this.searchValue = '';
                     this.$.inputLocal.$.input.focus();
-                    this.canConfirmPlace = false;
-
-                    if (this.pageActive && this.gmapready) {
-                        this.setCurrentLocation();
-                    }
+                    this.canConfirmPlace = false;                    
                 },
                 _routePageCityChanged: function () {
                     if (this.pageActive) {

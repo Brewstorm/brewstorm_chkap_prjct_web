@@ -14,5 +14,6 @@ namespace CheckAppCore.Models
         public string FacebookID { get; set; }
 
         public ICollection<UserRole> UserRoles { get; set; }
+        public ICollection<AgendaAppointment> AgendaAppointments { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace CheckAppCore.Data
         public DbSet<ProfessionalAppointmentType> ProfessionalsAppointmentTypes { get; set; }
         public DbSet<PersonalInfo> PersonalInfo { get; set; }
         public DbSet<Agenda> Agenda { get; set; }
+        public DbSet<AgendaAppointment> AgendaAppointments { get; set; }
         public DbSet<AgendaSchedule> AgendaSchedules { get; set; }
         public DbSet<AgendaException> AgendaExceptions { get; set; }
         public DbSet<User> Users { get; set; }
@@ -59,6 +60,14 @@ namespace CheckAppCore.Data
 
             modelBuilder.Entity<AgendaException>().HasOne(ae => ae.AgendaSchedule)
                                                    .WithMany();
+
+            modelBuilder.Entity<AgendaAppointment>().HasOne(ae => ae.AgendaSchedule)
+                                                    .WithMany(aS => aS.AgendaAppointments)
+                                                   .HasForeignKey(aS => aS.AgendaScheduleID);
+
+            modelBuilder.Entity<AgendaAppointment>().HasOne(ae => ae.User)
+                                                    .WithMany(aS => aS.AgendaAppointments)
+                                                   .HasForeignKey(aS => aS.UserID);
 
             modelBuilder.Entity<User>().ToTable("Users");
 

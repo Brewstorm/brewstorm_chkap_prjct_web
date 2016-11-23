@@ -461,6 +461,15 @@ namespace CheckAppCore.Data
                     FacebookID = "1169409783140925"
                 });
 
+                context.Users.Add(new User()
+                {
+                    EmailAddress = "ADMIN",
+                    FirstName = "Usuário",
+                    LastName = "Admin",
+                    Password = "CA1234",
+                    FacebookID = ""
+                });
+
                 context.SaveChanges();
 
                 context.UsersRoles.Add(new UserRole() {RoleID = 2, UserID = 1});

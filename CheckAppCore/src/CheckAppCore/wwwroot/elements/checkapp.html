@@ -217,7 +217,9 @@
 
                     this.checkTokenStatus();
                 },
-
+                _isCookieExpired: function () {
+                    return this.$.acc_token.readCookie() == '';
+                },
                 checkTokenStatus: function () {
                     this.isLoggedIn = this.$.acc_token.readCookie() != '';
                     this.$.userdataService.generateRequest();
@@ -236,17 +238,21 @@
                 },
 
                 show: function () {
-                    this.$.appDrawerLayout.style.display = 'block';
-                    this.$.appDrawerLayout.resetLayout();
-                    this.$.container.resetLayout();
+                    if (this.$.appDrawerLayout.style.display != 'block') {
+                        this.$.appDrawerLayout.style.display = 'block';
+                        this.$.appDrawerLayout.resetLayout();
+                        this.$.container.resetLayout();
 
-                    this.cancelAnimation();
-                    this.playAnimation('entry');
+                        this.cancelAnimation();
+                        this.playAnimation('entry');
+                    }
                 },
 
                 hide: function () {
-                    this.cancelAnimation();
-                    this.playAnimation('exit');
+                    if (this.$.appDrawerLayout.style.display == 'block') {
+                        this.cancelAnimation();
+                        this.playAnimation('exit');
+                    }
                 },
 
                 observers: [
@@ -292,17 +298,14 @@
                     this.$.tabs.hidden = this.$.appDrawer.opened || !isLoggedIn;
                     this.setPageDescription();
 
-                    if (!isLoggedIn) {
-                        console.log('não logado');
-                        this.hide();
-                        this.$.appLogin.show();
-                        this.set('route.path', '/login');
-                    } else {
-                        this.$.appLogin.hide();
-                        this.show();
-                        // página inicial
-                        this.set('route.path', '/default');
-                    }
+                    this.async(function () {
+                        if (this._isCookieExpired()) {
+                            this.hide();
+                            this.set('route.path', '/login');
+                        } else {
+                            this.show();
+                        }
+                    }, 1000);
                 },
 
                 _showPage404: function () {

@@ -1,15 +1,98 @@
 ﻿<link rel="import" href="../lib/polymer/polymer.html">
+<link rel="import" href="../lib/iron-list/iron-list.html">
+<link rel="import" href="../lib/iron-icons/iron-icons.html">
+<link rel="import" href="moment-element.html" />
 
 <dom-module id="history-view">
     <template>
+        <style include="checkapp-styles"></style>
         <style>
             :host {
                 display: block;
                 padding: 10px;
             }
+            #agendamentosIronList {
+                height: 400px;
+                overflow: auto;
+            }
+            .agendamento-item {
+                height: 80px;
+                line-height: 80px;
+                margin: 5px 0;
+                font-size: 14px;
+            }
+            .icon-status {
+                --iron-icon-height: 35px;
+                --iron-icon-width: 35px;
+              }
+            .container-agendamentos{
+                border-bottom-style: outset;
+                margin: 5px 0;
+                border-color: rgba(0, 0, 0, 0.2);
+            }
         </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/history"></app-route>
+
+        <iron-ajax id="agendamentosService"
+                   url="/agenda/getuseragendaappointment"
+                   content-type="application/json"
+                   method="GET"
+                   loading="{{loadingAgendamentosList}}"
+                   last-response="{{agendamentosList}}"></iron-ajax>
+        
         <div>
-            Histórico
+            <div id="container" class="flex-center-justified">
+                <paper-material elevation="2" class="checkapp-page">
+                    <iron-list id="agendamentosIronList"
+                                items="{{agendamentosList}}"
+                                scroll-target="document"
+                                hidden$="{{loadingAgendamentosList}}">
+                        <template>
+                            <div class="container-agendamentos">
+                                <paper-material elevation="0" class="agendamento-item">
+                                    <table style="max-width: 70%;float: left;line-height: 18px;">
+                                        <tr>
+                                            <td rowspan="5" style="padding: 0 10px;">
+                                                <div class="flex-center-justified">
+                                                    <iron-icon icon="{{_formatIcon(1)}}" class="icon-status"></iron-icon>
+                                                </div>
+                                                <span class="flex-center-justified">Confirmado</span>
+                                            </td>
+                                            <td>
+                                                Consulta
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {{item.professional}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {{item.appointmentType}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                {{_formatDate(item.date)}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <b>{{item.beginTime}} - {{item.endTime}}</b>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <span ></span>
+                                    <paper-button class="primary" elevation="0" on-tap="" style="float:right;height: 30px;margin: auto 10px;top: 50%;">Ver</paper-button>
+                                </paper-material>
+                            </div>
+                        </template>
+                    </iron-list>
+                </paper-material>
+            </div>
         </div>
     </template>
     <script>
@@ -20,6 +103,20 @@
                     type: String,
                     value: 'Histórico'
                 }
+            },
+            observers: [
+                '_routeChanged(route)'
+            ],
+            _formatDate: function (date) {
+                return moment(date).format('DD/MM/YYYY');
+            },
+            _routeChanged: function (route) {
+                if (route.path == '/history') {
+                    this.$.agendamentosService.generateRequest();
+                }
+            },
+            _formatIcon: function (status) {
+                return 'icons:check-circle';
             }
         });
     </script>

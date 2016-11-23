@@ -282,7 +282,7 @@
                     });
             },
             show: function () {
-                this.set('route.path', '/login');
+                //this.set('route.path', '/login');
                 this.opened = true;
                 this.style.display = 'inline-block';
                 this.cancelAnimation();
@@ -362,7 +362,6 @@
                     this.set('route.path', '/default');
                     this.hide();
                 } else {
-                    this.set('route.path', '/login');
                     this.show();
                 }
             },

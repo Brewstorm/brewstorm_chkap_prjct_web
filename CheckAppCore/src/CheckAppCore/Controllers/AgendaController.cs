@@ -8,6 +8,9 @@ using CheckAppCore.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using CheckAppCore.Models;
+using System.Security.Claims;
 
 namespace CheckAppCore.Controllers
 {
@@ -45,34 +48,48 @@ namespace CheckAppCore.Controllers
             });
         }
 
-        public async Task<IActionResult> GetAgendaSchedule() //[FromQuery] int professionalid, [FromQuery] string date
-        {
-            var agenda = await _context.Agenda.Include(o => o.AppointmentType).FirstOrDefaultAsync(o => o.ProfessionalID == 1);
-
+        public async Task<IActionResult> GetAgendaSchedule([FromQuery] int professionalid, [FromQuery] string jsdate)
+        {            
+            var agenda = _context.Agenda.Include(o => o.AppointmentType).FirstOrDefault(o => o.ProfessionalID == professionalid);
             if (agenda == null)
                 return new EmptyResult();
 
-            var agendaSchedule = new AgendaService(new AgendaRepository(_context)).GetAgendaScheduleRange(agenda.ID, DateTime.Today);
+            var date = DateTime.Parse(jsdate, CultureInfo.InvariantCulture);
+            var agendaSchedule = new AgendaService(new AgendaRepository(_context)).GetAgendaScheduleRange(agenda.ID, date);
 
             return new JsonResult(await agendaSchedule);
         }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
+        
+        public async Task<IActionResult> Confirm([FromBody] AgendamentoModel agendamento)
         {
+            var agendaRepository = new AgendaRepository(_context);
+            var userRepository = new UserRepository(_context);
+
+            var authenticadedUser = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value;
+            var user = await userRepository.GetUserFromEmailOrOauthID(authenticadedUser);
+
+            if (user == null)
+                return NotFound("Usuário não encontrado");
+
+            if (agendaRepository.IncludeAgendamento(user, agendamento))
+                return Ok();
+
+            return NotFound();
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IActionResult> GetUserAgendaAppointment()
         {
-        }
+            var agendaRepository = new AgendaRepository(_context);
+            var agendaService = new AgendaService(agendaRepository);
+            var userRepository = new UserRepository(_context);
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var authenticadedUser = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value;
+            var user = await userRepository.GetUserFromEmailOrOauthID(authenticadedUser);
+
+            if (user == null)
+                return NotFound("Usuário não encontrado");
+            
+            return Json(agendaService.GetUserAgendaAppointment(user).Result);
         }
     }
 }
