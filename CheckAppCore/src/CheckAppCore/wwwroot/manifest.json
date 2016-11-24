@@ -9,7 +9,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "images/ca_logo.png",
+      "src": "images/ca_logo_bg.png",
       "sizes": "256x256",
       "type": "image/png"
     }
