@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="CheckApp">
+
+    <!-- Add to home screen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="CheckApp">
+    <meta name="background-color" content="#3E4EB8" />
+    <link rel="apple-touch-icon" href="images/ca_logo.png">
+
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="images/ca_logo.png">
+
+    <title>CheckApp - Saúde na palma da sua mão.</title>
+
+    <script src="js/site.js"></script>
+    <script src="js/service-worker.js"></script>
+
+    <link rel="stylesheet" href="styles/site.css" />
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Because this project uses vulcanize this should be your only html import
+        in this file. All other imports should go in elements.html -->
+    <link rel="import" href="elements/checkapp.html">
+</head>
+<body unresolved>
+    <check-app></check-app>
+
+    <script src="lib/jquery/dist/jquery.js"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.js"></script>
+</body>
+</html>

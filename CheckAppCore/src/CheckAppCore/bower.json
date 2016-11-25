@@ -34,6 +34,6 @@
   },
   "resolutions": {
     "polymer": "^1.2.1",
-    "webcomponentsjs": "0.7.22"
+    "webcomponentsjs": "0.7.23"
   }
 }

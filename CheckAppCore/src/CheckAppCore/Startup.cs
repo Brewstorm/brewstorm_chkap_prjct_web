@@ -11,18 +11,16 @@ using System.Threading.Tasks;
 using CheckAppCore.Data;
 using CheckAppCore.Providers;
 using CheckAppCore.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Azure.Mobile.Server.Login;
 
 namespace CheckAppCore
 {
     public partial class Startup
     {
-        const string TokenAudience = "https://checkapptest.azurewebsites.net/";
-        const string TokenIssuer = "https://checkapptest.azurewebsites.net/";
+        private const string TokenAudience = "https://checkapptest.azurewebsites.net/";
+        private const string TokenIssuer = "https://checkapptest.azurewebsites.net/";
         
         private SymmetricSecurityKey _key;
 
@@ -98,12 +96,25 @@ namespace CheckAppCore
                 CookieName = "access_token",
                 TicketDataFormat = new CustomJwtDataFormat(SecurityAlgorithms.HmacSha256, tokenValidationParameters)
             });
-
+            
+            app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseDeveloperExceptionPage();
-            app.UseMvcWithDefaultRoute();
+
+            ConfigureRoutes(app);
+
+            //app.UseDeveloperExceptionPage();
 
             DbInitializer.Initialize(context);
+        }
+
+        private void ConfigureRoutes(IApplicationBuilder app)
+        {
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("login", "{controller=Login}/{action=Index}");
+                routes.MapRoute("agenda", "{controller=Agenda}/{action=Index}");
+                routes.MapRoute("appointmenttype", "{controller=AppointmentType}/{action=Index}");
+            });
         }
 
         private Task<ClaimsIdentity> GetIdentity(CheckAppContext context, string username, string password, string oauth_id)

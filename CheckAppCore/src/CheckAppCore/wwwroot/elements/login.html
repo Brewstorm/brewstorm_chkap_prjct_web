@@ -12,7 +12,7 @@
 <link rel="import" href="../lib/iron-image/iron-image.html" />
 <link rel="import" href="moment-element.html"/>
 
-<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">
+<!--<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">-->
 
 <!--styles-->
 <link rel="import" href="../styles/checkapp-styles.html">
@@ -76,7 +76,7 @@
         }
     </style>
     <template>
-        <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
+        <!--<polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>-->
         
         <iron-ajax id="tokenService"
                    url="/token"
@@ -252,7 +252,7 @@
             },
             ready: function () {
                 var _this = this;
-                var accessToken = this.$.acc_token.readCookie();
+                var accessToken = this.readCookie("access_token");
                 
                 if (accessToken != '') {
                     this.isLoggedIn = true;
@@ -301,7 +301,7 @@
             },
             getTokenData: function () {
                 this.tokenData = {};
-                this.$.acc_token.eraseCookie();
+                this.eraseCookie("access_token");
 
                 var oauth_id = '';
                 try {
@@ -329,9 +329,9 @@
                 if (Object.keys(token).length === 0) {
                     this.isLoggedIn = false;
                 } else {
-                    this.$.acc_token.value = token.access_token;
-                    this.$.acc_token.time = token.expires_in;
-                    this.$.acc_token.createCookie();
+                    //this.$.acc_token.value = token.access_token;
+                    //this.$.acc_token.time = token.expires_in;
+                    this.createCookie("access_token", token.access_token, token.expires_in);
 
                     this.isLoggedIn = true;
                 }
@@ -353,7 +353,7 @@
             logout: function() {
                 this.tokenData = {};
                 this.fbresp = {};
-                this.$.acc_token.eraseCookie();
+                this.eraseCookie("access_token");
                 this.$.logoutService.generateRequest();
                 this.show();
             },
@@ -418,6 +418,30 @@
             },
             _cadserviceok: function () {
                 this.getTokenData();
+            },
+            createCookie: function (name, value, minutes) {
+                var expires = "";
+                if (minutes) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (minutes * 60 * 1000));
+                    expires = "; expires=" + date.toGMTString();
+                }
+
+                document.cookie = name+"="+value+expires+"; path=/";
+            },
+
+            readCookie: function (name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for(var i=0;i < ca.length;i++) {
+                    var c = ca[i];
+                    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+                }
+                return null;
+            },
+            eraseCookie: function (name) {
+                this.createCookie(name,"",-1);
             }
         });
     </script>

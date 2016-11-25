@@ -6,7 +6,7 @@ window.Polymer = {
 
 // Load webcomponentsjs polyfill if browser does not support native Web Components
 (function () {
-    'use strict';
+    //'use strict';
 
     var onload = function () {
         // For native Imports, manually fire WebComponentsReady so user code

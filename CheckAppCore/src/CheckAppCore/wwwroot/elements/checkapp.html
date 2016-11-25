@@ -18,7 +18,7 @@
 <link rel="import" href="../lib/iron-image/iron-image.html">
 <link rel="import" href="../lib/paper-toast/paper-toast.html">
 <link rel="import" href="../lib/iron-ajax/iron-ajax.html">
-<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">
+<!--<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">-->
 <link rel="import" href="../lib/neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../lib/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../lib/neon-animation/neon-animation-runner-behavior.html">
@@ -58,7 +58,7 @@
                    method="GET"
                    last-response="{{userData}}"></iron-ajax>        
 
-        <polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>
+        <!--<polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>-->
 
         <iron-media-query id="ironMediaQuery" query="(min-width:640px)" on-query-matches-changed="_onQueryMatchesChanged"></iron-media-query>
 
@@ -218,10 +218,10 @@
                     this.checkTokenStatus();
                 },
                 _isCookieExpired: function () {
-                    return this.$.acc_token.readCookie() == '';
+                    return this.readCookie("access_token") == '';
                 },
                 checkTokenStatus: function () {
-                    this.isLoggedIn = this.$.acc_token.readCookie() != '';
+                    this.isLoggedIn = this.readCookie("access_token") != '';
                     this.$.userdataService.generateRequest();
                 },
 
@@ -278,7 +278,7 @@
                     this._updateDescriptionLabelStyle();
                 },
                 _routeChanged: function(route) {
-                    if (this.$.acc_token.readCookie() == '') {
+                    if (this.readCookie("access_token") == '') {
                         this.isLoggedIn = false;
                     }
                 },
@@ -286,9 +286,7 @@
                     if (Object.keys(token).length === 0) {
                         this.isLoggedIn = false;
                     } else {
-                        this.$.acc_token.value = token.access_token;
-                        this.$.acc_token.time = token.expires_in;
-                        this.$.acc_token.createCookie();
+                        this.createCookie("access_token", token.access_token, token.expires_in);
 
                         this.isLoggedIn = true;
                     }
@@ -323,6 +321,30 @@
                         this.$.pageDescriptionLabel.style.textAlign = '';
                         this.$.pageDescriptionLabel.style.marginLeft = '';
                     }
+                },
+                createCookie: function (name, value, minutes) {
+                    var expires = "";
+                    if (minutes) {
+                        var date = new Date();
+                        date.setTime(date.getTime() + (minutes * 60 * 1000));
+                        expires = "; expires=" + date.toGMTString();
+                    }
+
+                    document.cookie = name + "=" + value + expires + "; path=/";
+                },
+
+                readCookie: function (name) {
+                    var nameEQ = name + "=";
+                    var ca = document.cookie.split(';');
+                    for (var i = 0; i < ca.length; i++) {
+                        var c = ca[i];
+                        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                    }
+                    return null;
+                },
+                eraseCookie: function (name) {
+                    this.createCookie(name, "", -1);
                 }
             });
         })();

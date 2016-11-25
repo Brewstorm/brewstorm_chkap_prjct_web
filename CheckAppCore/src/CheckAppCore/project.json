@@ -2,6 +2,7 @@
   "dependencies": {
     "CoreCompat.System.Drawing": "1.0.0-beta006",
     "Microsoft.AspNet.Identity.Core": "2.2.1",
+    "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
     "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0",
     "Microsoft.AspNetCore.Authentication.OpenIdConnect": "1.0.0",
