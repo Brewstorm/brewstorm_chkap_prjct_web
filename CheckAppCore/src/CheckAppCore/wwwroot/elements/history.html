@@ -1,7 +1,6 @@
 ﻿<link rel="import" href="../lib/polymer/polymer.html">
 <link rel="import" href="../lib/iron-list/iron-list.html">
 <link rel="import" href="../lib/iron-icons/iron-icons.html">
-<link rel="import" href="moment-element.html" />
 
 <dom-module id="history-view">
     <template>
@@ -30,6 +29,23 @@
                 margin: 5px 0;
                 border-color: rgba(0, 0, 0, 0.2);
             }
+
+            .status-confirm {
+                --iron-icon-height: 35px;
+                --iron-icon-width: 35px;
+                color: var(--paper-green-800)
+            }
+            .status-cancel {
+                --iron-icon-height: 35px;
+                --iron-icon-width: 35px;
+                color: var(--paper-red-800)
+            }
+            .status-schedule {
+                --iron-icon-height: 35px;
+                --iron-icon-width: 35px;
+                color: var(--paper-orange-800)
+            }
+
         </style>
 
         <app-location route="{{route}}" use-hash-as-path></app-location>
@@ -45,20 +61,27 @@
         <div>
             <div id="container" class="flex-center-justified">
                 <paper-material elevation="2" class="checkapp-page">
+                    
+                    <template is="dom-if" if="{{!_listCount(agendamentosList)}}">
+                        <div class="flex-center-justified" style="margin-top: 15px;">
+                            Nenhum histórico encontrado.
+                        </div>
+                    </template>
+
                     <iron-list id="agendamentosIronList"
-                                items="{{agendamentosList}}"
-                                scroll-target="document"
-                                hidden$="{{loadingAgendamentosList}}">
+                               items="{{agendamentosList}}"
+                               scroll-target="document"
+                               hidden$="{{loadingAgendamentosList}}">
                         <template>
                             <div class="container-agendamentos">
                                 <paper-material elevation="0" class="agendamento-item">
-                                    <table style="max-width: 70%;float: left;line-height: 18px;">
+                                    <table style="max-width: 70%; float: left; line-height: 18px;">
                                         <tr>
-                                            <td rowspan="5" style="padding: 0 10px;">
+                                            <td rowspan="5" style="padding: 0 10px;width: 80px;">
                                                 <div class="flex-center-justified">
-                                                    <iron-icon icon="{{_formatIcon(1)}}" class="icon-status"></iron-icon>
+                                                    <iron-icon icon="[[_formatStatusIcon(item.status)]]" class="icon-status"></iron-icon>
                                                 </div>
-                                                <span class="flex-center-justified">Confirmado</span>
+                                                <span class="flex-center-justified" style="font-size: 14px">[[_formatStatusText(item.status)]]</span>
                                             </td>
                                             <td>
                                                 Consulta
@@ -86,7 +109,7 @@
                                         </tr>
                                     </table>
                                     <span ></span>
-                                    <paper-button class="primary" elevation="0" on-tap="" style="float:right;height: 30px;margin: auto 10px;top: 50%;">Ver</paper-button>
+                                    <paper-button class="primary" elevation="0" on-tap="" style="float: right; height: 30px; margin: auto 10px; top: 50%;">Ver</paper-button>
                                 </paper-material>
                             </div>
                         </template>
@@ -99,24 +122,71 @@
         Polymer({
             is: 'history-view',
             properties: {
+                active: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_pageActiveChanged'
+                },
                 description: {
                     type: String,
                     value: 'Histórico'
                 }
             },
-            observers: [
-                '_routeChanged(route)'
-            ],
+            _pageActiveChanged: function (value) {
+                if (value)
+                    this.$.agendamentosService.generateRequest();
+            },
+            observers: [],
             _formatDate: function (date) {
                 return moment(date).format('DD/MM/YYYY');
             },
-            _routeChanged: function (route) {
-                if (route.path == '/history') {
-                    this.$.agendamentosService.generateRequest();
+            _formatStatusIcon: function (status) {
+                switch (status) {
+                    case 1:
+                        return 'icons:help';
+                    case 2:
+                        return 'icons:schedule';
+                    case 3:
+                        return 'icons:check-circle';
+                    case 5:
+                        return 'icons:report';
+                    case 4:
+                    default:
+                        return 'icons:cancel';
                 }
             },
-            _formatIcon: function (status) {
-                return 'icons:check-circle';
+            _formatStatusText: function (status) {
+                switch (status) {
+                    case 1:
+                        return 'Aguardando';
+                    case 2:
+                        return 'Confirmado';
+                    case 3:
+                        return 'Finalizado';
+                    case 5:
+                        return 'Remarcado';
+                    case 4:
+                    default:
+                        return 'Cancelado';
+                }
+            },
+            _formatStatusClass: function (status) {
+                switch (status) {
+                    case 1:
+                        return 'status-schedule';
+                    case 2:
+                        return 'status-confirm';
+                    case 3:
+                        return 'status-confirm';
+                    case 5:
+                        return 'status-schedule';
+                    case 4:
+                    default:
+                        return 'status-cancel';
+                }
+            },
+            _listCount: function(list) {
+                return list.length;
             }
         });
     </script>

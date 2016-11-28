@@ -31,6 +31,7 @@
 
              app-drawer-layout {
                  display: none;
+                 background: #e6e6e6;
              }
 
             app-header-layout {
@@ -42,7 +43,7 @@
                 --paper-icon-button-ink-color: #44546a;
             }
 
-            paper-tabs {
+            .menu-tabs {
                 width: 100%;
                 position: fixed;
                 bottom: 0;
@@ -158,7 +159,7 @@
 
             .login-container {
                 text-align: center;
-                margin-top: 2%;
+                margin-top: 3%;
             }
 
             .flex-center-justified {
@@ -242,6 +243,37 @@
                 background-color: #DDD;
                 margin: 5px 15px 5px 0;
                 box-shadow: 1px 1px 5px #ccc;
+            }
+
+            .btn-confirm {
+                /*--paper-button-ink-color: var(--paper-green-800);*/
+                background-color: var(--paper-green-800);
+                color: white !important;
+
+                --paper-button-raised-keyboard-focus: {
+                  background-color: var(--paper-green-800) !important;
+                  color: white !important;
+                }
+            }
+
+            .btn-cancel {
+                background-color: var(--paper-red-800);
+                color: white !important;
+
+                --paper-button-raised-keyboard-focus: {
+                  background-color: var(--paper-red-800) !important;
+                  color: white !important;
+                }
+            }
+
+            .icon-confirm {
+                --paper-icon-button-ink-color: var(--paper-green-400);
+                color: var(--paper-green-800);
+            }
+
+            .icon-cancel {
+                --paper-icon-button-ink-color: var(--paper-red-400);
+                color: var(--paper-red-800);
             }
         </style>
     </template>

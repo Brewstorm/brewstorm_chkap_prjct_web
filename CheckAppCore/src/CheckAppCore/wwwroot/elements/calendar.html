@@ -1,0 +1,402 @@
+﻿<link rel="import" href="../lib/polymer/polymer.html">
+<link rel="import" href="../lib/iron-list/iron-list.html">
+<link rel="import" href="../lib/iron-icons/iron-icons.html">
+<link rel="import" href="../lib/polymer-paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../lib/paper-tabs/paper-tabs.html">
+<link rel="import" href="../lib/iron-pages/iron-pages.html">
+<link rel="import" href="../lib/paper-badge/paper-badge.html">
+
+<dom-module id="calendar-view">
+    <template>
+        <style include="checkapp-styles"></style>
+        <style>
+            :host {
+                display: block;
+                padding: 10px;
+            }
+            #agendamentosIronList {
+                height: 400px;
+                overflow: auto;
+            }
+            .agendamento-item {
+                height: 80px;
+                line-height: 80px;
+                margin: 5px 0;
+                font-size: 14px;
+            }
+            .icon-status {
+                --iron-icon-height: 35px;
+                --iron-icon-width: 35px;
+              }
+            .container-agendamentos{
+                border-bottom-style: outset;
+                margin: 5px 0;
+                border-color: rgba(0, 0, 0, 0.2);
+            }
+            paper-tabs {
+                --paper-tabs-selection-bar-color: var(--app-primary-color)
+            }
+            .red {
+                --paper-badge-background: var(--paper-red-300);
+              }
+            .tab-container {
+                display: inline-block;
+              }
+            .tab-container paper-badge {
+                --paper-badge-width: 20px;
+                --paper-badge-height: 20px;
+                --paper-badge-margin-left: 5px;
+                --paper-badge:
+                {
+                    margin-top: 15px;
+                    font-size: 14px;
+                }
+              }
+            .paper-badge-confirmed {
+                --paper-badge-background: var(--app-primary-color);
+            }
+            .paper-badge-pendency {
+                --paper-badge-background: var(--app-third-color);
+            }
+            .paper-badge-completed {
+                --paper-badge-background: var(--paper-grey-700);
+              }
+
+        </style>
+
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route route="{{route}}" pattern="/schedules"></app-route>
+
+        <iron-ajax id="schedulesService"
+                   url="/agenda/getprofessionalschedule"
+                   content-type="application/json"
+                   method="GET"
+                   loading="{{loadingProfessionalSchedule}}"
+                   last-response="{{professionalSchedule}}"></iron-ajax>
+        
+        <iron-ajax id="confirmSchedulesService"
+                   url="/agenda/confirmschedule"
+                   method="POST"
+                   on-response="_confirmScheduleOk"></iron-ajax>
+        
+        <iron-ajax id="completeSchedulesService"
+                   url="/agenda/completeschedule"
+                   method="POST"
+                   on-response="_completeScheduleOk"></iron-ajax>
+        
+        <div>
+            <div id="container" class="flex-center-justified">
+                <paper-material elevation="2" class="checkapp-page">
+
+                    <div class="flex-center-justified">
+                        <paper-date-picker id="picker" date="{{dateConsulta}}" locale="pt-br" heading-format="[[headingFormat]]" responsive-width="1045px"></paper-date-picker>
+                    </div>
+
+                    <paper-tabs selected="{{selected}}" style="margin-top: 20px;">
+                        <paper-tab class="tab-container">
+                            <div>
+                                Próximos
+                                <template is="dom-if" if="{{_confirmedListCount(professionalSchedule)}}">
+                                    <paper-badge label="[[_confirmedListCount(professionalSchedule)]]" class="paper-badge-confirmed"></paper-badge> 
+                                </template>
+                            </div>
+                        </paper-tab>
+                        <paper-tab class="tab-container">
+                            <div>
+                                Pendentes
+                                <template is="dom-if" if="{{_pendencyListCount(professionalSchedule)}}">
+                                    <paper-badge label="[[_pendencyListCount(professionalSchedule)]]" class="paper-badge-pendency"></paper-badge>
+                                </template>
+                            </div>
+                        </paper-tab>
+                        <paper-tab class="tab-container">
+                            <div>
+                                Finalizados
+                                <template is="dom-if" if="{{_completedListCount(professionalSchedule)}}">
+                                    <paper-badge label="[[_completedListCount(professionalSchedule)]]" class="paper-badge-completed"></paper-badge>
+                                </template>
+                            </div>
+                        </paper-tab>
+                    </paper-tabs>
+
+                    <iron-pages selected="{{selected}}">
+                        <div>
+                            <template is="dom-if" if="{{!_confirmedListCount(professionalSchedule)}}">
+                                <div class="flex-center-justified" style="margin-top: 15px;">
+                                    Nenhum horário confirmado.
+                                </div>
+                            </template>
+                            <iron-list id="scheduleIronList"
+                                       items="{{_getConfirmedList(professionalSchedule)}}"
+                                       scroll-target="document"
+                                       hidden$="{{loadingProfessionalSchedule}}">
+                                <template>
+                                    <div class="container-agendamentos">
+                                        <paper-material elevation="0" class="agendamento-item">
+                                            <table style="float: left; line-height: 18px;">
+                                                <tr>
+                                                    <td rowspan="4" style="padding: 0 10px;width: 25%">
+                                                        <div class="flex-center-justified">
+                                                            <iron-image class="avatar" sizing="contain" src="{{item.photoUrl}}"></iron-image>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width: 25%">
+                                                        {{item.patient}}
+                                                    </td>
+                                                    <td style="width: 50%">
+                                                        <div style="float: right;">
+                                                            <template is="dom-if" if="{{_checkFirstItem(item)}}">
+                                                                <paper-button schedule-id="{{item.id}}" class="btn-confirm" elevation="0" on-tap="_completeScheduleClick" style="height: 30px; font-size: 12px;">Concluir</paper-button>
+                                                                <paper-button schedule-id="{{item.id}}" class="btn-cancel" elevation="0" on-tap="_cancelScheduleClick" style="height: 30px; font-size: 12px;">Cancelar</paper-button>
+                                                            </template>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <b>{{item.beginTime}}</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Particular
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <!--<div style="float: right; margin: auto 10px; top: 30%; line-height: 40px;">
+                                                
+                                            </div>-->
+                                            <!--<div style="float: right; margin: auto 10px; top: 30%; line-height: 40px;">
+                                                <paper-button class="primary" elevation="0" on-tap="" style="height: 30px; font-size: 12px;">Exame</paper-button>
+                                                <paper-button class="primary" elevation="0" on-tap="" style="height: 30px; font-size: 12px;">Receita</paper-button>
+                                            </div>-->
+                                        </paper-material>
+                                    </div>
+                                </template>
+                            </iron-list>
+                        </div>
+                        <div>
+                            <template is="dom-if" if="{{!_pendencyListCount(professionalSchedule)}}">
+                                <div class="flex-center-justified" style="margin-top: 15px;">
+                                    Nenhum horário pendente.
+                                </div>
+                            </template>
+                            <iron-list id="schedulePendencyIronList"
+                                       items="{{_getPendencyList(professionalSchedule)}}"
+                                       scroll-target="document"
+                                       hidden$="{{loadingProfessionalSchedule}}">
+                                <template>
+                                    <div class="container-agendamentos">
+                                        <paper-material elevation="0" class="agendamento-item">
+                                            <table style="max-width: 70%; float: left; line-height: 18px;">
+                                                <tr>
+                                                    <td rowspan="4" style="padding: 0 10px;">
+                                                        <div class="flex-center-justified">
+                                                            <iron-image class="avatar" sizing="contain" src="{{item.photoUrl}}"></iron-image>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {{item.patient}}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <b>{{item.beginTime}}</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Particular
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <div style="float: right; margin: auto 10px; line-height: 80px;">
+                                                <paper-button schedule-id="{{item.id}}" class="btn-confirm" elevation="0" on-tap="_confirmScheduleClick" style="height: 30px;">Confirmar</paper-button>
+                                            </div>
+                                        </paper-material>
+                                    </div>
+                                </template>
+                            </iron-list>
+                        </div>
+                        <div>
+                            <template is="dom-if" if="{{!_completedListCount(professionalSchedule)}}">
+                                <div class="flex-center-justified" style="margin-top: 15px;">
+                                    Nenhum horário finalizado.
+                                </div>
+                            </template>
+                            <iron-list id="scheduleCompletedIronList"
+                                       items="{{_getCompletedList(professionalSchedule)}}"
+                                       scroll-target="document"
+                                       hidden$="{{loadingProfessionalSchedule}}">
+                                <template>
+                                    <div class="container-agendamentos">
+                                        <paper-material elevation="0" class="agendamento-item">
+                                            <table style="max-width: 70%; float: left; line-height: 18px;">
+                                                <tr>
+                                                    <td rowspan="4" style="padding: 0 10px;">
+                                                        <div class="flex-center-justified">
+                                                            <iron-image class="avatar" sizing="contain" src="{{item.photoUrl}}"></iron-image>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        {{item.patient}}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <b>{{item.beginTime}}</b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Particular
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            <!--<div style="float: right; margin: auto 10px; top: 30%; line-height: 40px;">
+                                                <template is="dom-if" if="{{_checkFirstItem(item)}}">
+                                                    <paper-button class="btn-confirm" elevation="0" on-tap="" style="height: 30px;">Concluir</paper-button>
+                                                </template>
+                                                <paper-button class="primary" elevation="0" on-tap="" style="height: 30px;">Exame</paper-button>
+                                                <paper-button class="primary" elevation="0" on-tap="" style="height: 30px;">Receita</paper-button>
+                                            </div>-->
+                                        </paper-material>
+                                    </div>
+                                </template>
+                            </iron-list>
+                        </div>
+                    </iron-pages>
+                </paper-material>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'calendar-view',
+            properties: {
+                selected: {
+                    value: 0
+                },
+                active: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_pageActiveChanged'
+                },
+                description: {
+                    type: String,
+                    value: 'Calendário'
+                },
+                dateConsulta: {
+                    type: Date,
+                    value: function () {
+                        return new Date();
+                    }
+                },
+                minDate: {
+                    value: function () {
+                        return new Date();
+                    }
+                },
+                headingFormat: {
+                    value: "ddd, D MMM"
+                },
+                locale: "pt-BR"
+            },
+            observers: [
+                '_dateConsultaChanged(dateConsulta)'
+            ],
+            _pageActiveChanged: function (value) {
+                if (value) {
+                    this._loadScheduleDate();
+                }
+            },
+            _dateConsultaChanged: function () {
+                if (this.active)
+                    this._loadScheduleDate();
+            },
+            _loadScheduleDate: function() {
+                this.$.schedulesService.params.jsdate = this.dateConsulta.toISOString();
+                this.$.schedulesService.generateRequest();
+            },
+            _formatDate: function (date) {
+                return moment(date).format('DD/MM/YYYY');
+            },
+            _checkFirstItem: function (item) {
+                var list = this._getConfirmedList(this.professionalSchedule);
+                return list && list[0].id == item.id;
+            },
+            _getConfirmedList: function(professionalSchedule) {
+                var aux = [];
+
+                for (var i in professionalSchedule) {
+                    if (professionalSchedule[i].status == 2)
+                        aux.push(professionalSchedule[i]);
+                }
+
+                return aux;
+            },
+            _confirmedListCount: function (professionalSchedule) {
+                return this._getConfirmedList(professionalSchedule).length;
+            },
+            _getPendencyList: function(professionalSchedule) {
+                var aux = [];
+
+                for (var i in professionalSchedule) {
+                    if (professionalSchedule[i].status == 1)
+                        aux.push(professionalSchedule[i]);
+                }
+
+                return aux;
+            },
+            _pendencyListCount: function (professionalSchedule) {
+                return this._getPendencyList(professionalSchedule).length;
+            },
+            _getCompletedList: function (professionalSchedule) {
+                var aux = [];
+
+                for (var i in professionalSchedule) {
+                    if (!(professionalSchedule[i].status == 2 || professionalSchedule[i].status == 1))
+                        aux.push(professionalSchedule[i]);
+                }
+
+                return aux;
+            },
+            _completedListCount: function (professionalSchedule) {
+                return this._getCompletedList(professionalSchedule).length;
+            },
+            _confirmScheduleClick: function(e) {
+                this._confirmSchedule(e.target.scheduleId);
+            },
+            _confirmSchedule: function (scheduleId) {
+                this.$.confirmSchedulesService.params.scheduleId = scheduleId;
+                this.$.confirmSchedulesService.generateRequest();
+            },
+            _confirmScheduleOk: function() {
+                this._loadScheduleDate();
+            },
+            _completeScheduleClick: function (e) {
+                this._completeSchedule(e.target.scheduleId);
+            },
+            _cancelScheduleClick: function (e) {
+                this._cancelSchedule(e.target.scheduleId);
+            },
+            _completeSchedule: function (scheduleId) {
+                this.$.completeSchedulesService.params.scheduleId = scheduleId;
+                this.$.completeSchedulesService.params.status = 3;
+                this.$.completeSchedulesService.generateRequest();
+            },
+            _cancelSchedule: function (scheduleId) {
+                this.$.completeSchedulesService.params.scheduleId = scheduleId;
+                this.$.completeSchedulesService.params.status = 4;
+                this.$.completeSchedulesService.generateRequest();
+            },
+            _completeScheduleOk: function() {
+                this._loadScheduleDate();
+            }
+        });
+    </script>
+</dom-module>

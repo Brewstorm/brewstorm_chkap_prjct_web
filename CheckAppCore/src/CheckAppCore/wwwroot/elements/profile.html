@@ -36,6 +36,11 @@
         Polymer({
             is: 'profile-view',
             properties: {
+                active: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_pageActiveChanged'
+                },
                 description: {
                     type: String,
                     value: 'Perfil'
@@ -47,15 +52,12 @@
                 },
                 profileActive: {
                     type: Boolean,
-                    value: false,
-                    observer: '_profileActiveChanged'
+                    value: false
                 }
             },
-            observers: [
-                '_routeChanged(route)'
-            ],
-            _routeChanged: function (route) {
-                if (route.path == '/profile')
+            observers: [],
+            _pageActiveChanged: function (value) {
+                if (value)
                     this.$.userdataService.generateRequest();
             }
         });

@@ -6,6 +6,8 @@
 <link rel="import" href="../lib/iron-icons/maps-icons.html">
 <link rel="import" href="../lib/paper-spinner/paper-spinner-lite.html">
 
+<link rel="import" href="../iconset/custom-icons.html">
+
 <dom-module id="default-view">
     <template>
         <style include="checkapp-styles"></style>
@@ -14,10 +16,6 @@
                 display: block;
                 padding: 10px;
                 text-align: center;
-            }
-
-            #container {
-                margin-top: 35px;
             }
 
             .container-alignment {
@@ -37,8 +35,8 @@
                 --iron-icon-height: 32px;
                 --iron-icon-width: 32px;
             }
-            
-            @media only screen and (min-width: 850px) {
+
+            /*@media only screen and (min-width: 850px) {
                 #menu {
                     width: 65%;
                 }
@@ -49,7 +47,7 @@
                     @apply(--layout-wrap);
                     width: 100%;
                 }
-            }
+            }*/
 
             paper-button iron-icon {
                 margin: 0 20px 0 15px;
@@ -59,41 +57,110 @@
             #loadingSpinner {
                 --paper-spinner-color: var(--app-third-color);
             }
+
+            #container {
+                margin-top: 20px;
+            }
         </style>
+        
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        
+        <iron-ajax id="userdataService"
+                   url="/login/getuserdata"
+                   content-type="application/json"
+                   method="GET"
+                   loading="{{loadingUserData}}"
+                   last-response="{{userData}}"></iron-ajax>
+
         <div id="container" class="container flex-center-justified">
+            
+            <paper-material elevation="2">
+                <template is="dom-if" if="{{loadingUserData}}">
+                    <div class="flex-center-justified">
+                        <paper-spinner-lite active></paper-spinner-lite>
+                    </div>
+                </template>
 
-            <!--<paper-spinner-lite id="loadingSpinner" active hidden></paper-spinner-lite>-->
+                <paper-listbox id="menu" class="container-alignment">
+                    <template is="dom-repeat" items="{{userMenuList}}" hidden$="{{loadingUserData}}">
+                        <paper-button noink on-tap="clickMenu" id="{{item.id}}">
+                            <iron-icon icon="[[item.icon]]" class="big"></iron-icon>[[item.description]]
+                        </paper-button>
+                    </template>
+                </paper-listbox>
+            </paper-material>
 
-            <paper-listbox id="menu" class="container-alignment">
-                <paper-button noink on-tap="consultaClick">
-                    <iron-icon icon="perm-contact-calendar" class="big"></iron-icon>Consulta
-                </paper-button>
-                <paper-button noink>
-                    <iron-icon icon="maps:local-hospital" class="big"></iron-icon>Emergência
-                </paper-button>
-                <paper-button noink on-tap="examinationsClick">
-                    <iron-icon icon="content-paste" class="big"></iron-icon>Exames
-                </paper-button>
-                <paper-button noink>
-                    <iron-icon icon="check" class="big"></iron-icon>Medicamentos
-                </paper-button>
-            </paper-listbox>
         </div>
     </template>
     <script>
         Polymer({
             is: 'default-view',
             properties: {
+                active: {
+                    type: Boolean,
+                    value: false,
+                    observer: '_pageActiveChanged'
+                },
                 description: {
                     type: String,
                     value: 'Início'
+                },
+                menulist: {
+                    type: Array,
+                    value: [
+                        { id: 0, description: "Consulta", icon: "perm-contact-calendar", usertype: 1 },
+                        { id: 1, description: "Emergência", icon: "maps:local-hospital", usertype: 1 },
+                        { id: 2, description: "Exames", icon: "custom-icons:needle", usertype: 1 },
+                        { id: 3, description: "Medicamentos", icon: "custom-icons:pill", usertype: 1 },
+                        { id: 4, description: "Calendário", icon: "icons:date-range", usertype: 2 }
+                    ]
+                },
+                userMenuList: {
+                    type: Array,
+                    value: []
+                }
+            },
+            observers: [
+                '_userDataChanged(userData)'
+            ],
+            _pageActiveChanged: function (value) {
+                if (value)
+                    this.$.userdataService.generateRequest();
+            },
+            _userDataChanged: function () {
+                this.userMenuList = this.computeMenuList(this.menulist);
+            },
+            computeMenuList: function (menulist) {
+                var aux = [];
+                if (this.domHost.userData) {
+                    for (var i in menulist) {
+                        if (menulist[i].usertype == this.userData.userType)
+                            aux.push(menulist[i]);
+                    }
+                }
+
+                return aux;
+            },
+            clickMenu: function (e) {
+                switch(e.target.id) {
+                    case "0":
+                        return this.consultaClick();
+                    case "2":
+                        return this.examinationsClick();
+                    case "4":
+                        return this.schedulesClick();
+                    default:
+                        return false;
                 }
             },
             consultaClick: function () {
                 location.hash = '/consult';
             },
-            examinationsClick: function() {
+            examinationsClick: function () {
                 location.hash = '/examinations';
+            },
+            schedulesClick: function () {
+                location.hash = '/calendar';
             }
         });
     </script>

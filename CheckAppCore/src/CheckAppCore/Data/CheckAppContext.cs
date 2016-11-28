@@ -1,5 +1,6 @@
 ﻿using CheckAppCore.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace CheckAppCore.Data
 {
@@ -24,12 +25,20 @@ namespace CheckAppCore.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AppointmentType>().ToTable("AppointmentType");
-            modelBuilder.Entity<Professional>().ToTable("Professionals")
-                                               .HasOne(p => p.PersonalInfo)
-                                               .WithOne();
+
+            modelBuilder.Entity<Professional>().ToTable("Professionals");
+
+            modelBuilder.Entity<Professional>().HasOne(p => p.User)
+                                                .WithOne(o => o.Professional)
+                                                .HasForeignKey<User>(o => o.ProfessionalID);
 
             modelBuilder.Entity<PersonalInfo>().ToTable("PersonalInfo");
-            
+
+            modelBuilder.Entity<PersonalInfo>().HasOne(pi => pi.User)
+                                                .WithOne(p => p.PersonalInfo)
+                                                .HasForeignKey<PersonalInfo>(p => p.UserID)
+                                                .IsRequired(false);
+
             modelBuilder.Entity<ProfessionalAppointmentType>()
                 .HasKey(t => new { t.ProfessionalId, t.AppointmentTypeId });
 
@@ -63,11 +72,12 @@ namespace CheckAppCore.Data
 
             modelBuilder.Entity<AgendaAppointment>().HasOne(ae => ae.AgendaSchedule)
                                                     .WithMany(aS => aS.AgendaAppointments)
-                                                   .HasForeignKey(aS => aS.AgendaScheduleID);
+                                                    .HasForeignKey(aS => aS.AgendaScheduleID);
 
             modelBuilder.Entity<AgendaAppointment>().HasOne(ae => ae.User)
                                                     .WithMany(aS => aS.AgendaAppointments)
-                                                   .HasForeignKey(aS => aS.UserID);
+                                                    .HasForeignKey(aS => aS.UserID)
+                                                    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>().ToTable("Users");
 

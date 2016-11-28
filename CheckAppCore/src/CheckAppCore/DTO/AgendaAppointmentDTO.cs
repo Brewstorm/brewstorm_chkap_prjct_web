@@ -13,5 +13,6 @@ namespace CheckAppCore.DTO
         public string EndTime { get; internal set; }
         public int ID { get; internal set; }
         public string Professional { get; internal set; }
+        public int Status { get; set; }
     }
 }

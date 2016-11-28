@@ -10,7 +10,7 @@
 <link rel="import" href="../lib/paper-radio-group/paper-radio-group.html" />
 <link rel="import" href="../lib/paper-radio-button/paper-radio-button.html" />
 <link rel="import" href="../lib/iron-image/iron-image.html" />
-<link rel="import" href="moment-element.html"/>
+<link rel="import" href="../lib/paper-dropdown-menu/paper-dropdown-menu.html" />
 
 <!--<link rel="import" href="../lib/polymer-cookie/polymer-cookie.html">-->
 
@@ -50,6 +50,10 @@
             font-size: 13px;
         }
 
+        .width100 {
+            width: 100%;
+        }
+
         .bottomLoginPage table{
             width: 100%;
         }
@@ -74,6 +78,11 @@
             width: 70px;
             border-radius: 35px;
         }
+        .pdm-especialidade {
+            --paper-dropdown-menu-button: {
+                width: 100%;
+            };
+        }
     </style>
     <template>
         <!--<polymer-cookie name="access_token" id="acc_token" format="s"></polymer-cookie>-->
@@ -96,8 +105,14 @@
                    url="/login/registeruser"
                    content-type="application/json"
                    method="POST"
+                   last-error="{{cadresponse}}"
                    on-response="_cadserviceok"
                    on-error="_cadservicenotfound"></iron-ajax>   
+
+        <iron-ajax id="appointmentSearchAjax"
+                   url="/appointmenttype"
+                   handle-as="json"
+                   last-response="{{appointmentTypesList}}"></iron-ajax>
         
         <iron-ajax id="logoutService"
                    url="/login/logout"
@@ -144,22 +159,36 @@
                 </div>
             </div>
             <div hidden$="{{!registerActive}}">
-                <!--<h3 class="flex-center-justified">Dados Cadastrais</h3>-->
                 <form is="iron-form" id="cadForm">
                     <div class="flex-center-justified">
                         <iron-image class="avatar" sizing="contain" src="{{cadInfo.photourl}}"></iron-image>                        
-                    </div>                    
-                    <paper-input name="name" label="Nome" required value="{{cadInfo.name}}"></paper-input>
-                    <paper-input name="lastname" label="Sobrenome" required value="{{cadInfo.lastname}}"></paper-input>
-                    <paper-input name="email" label="E-mail" required value="{{cadInfo.email}}"></paper-input>
-                    <paper-input name="birthday" label="Data de Nascimento" required value="{{_formatDate(cadInfo.birthday)}}">
+                    </div>
+                    <paper-radio-group selected="{{cadInfo.usertype}}" class="flex-center-justified">
+                        <paper-radio-button name="1" value="1">Paciente</paper-radio-button>
+                        <paper-radio-button name="2" value="2">Médico</paper-radio-button>
+                    </paper-radio-group>
+                    <template is="dom-if" if="{{isCadMedic}}">
+                        <paper-dropdown-menu label="Especialidade" noink no-animations class="flex-center-justified pdm-especialidade">
+                            <paper-listbox class="dropdown-content" attr-for-selected="id" selected="{{cadInfo.appointmenttype}}">
+                                <template is="dom-repeat" items="{{appointmentTypesList}}">
+                                    <paper-item id="[[item.id]]">{{item.name}}</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                    </template>                         
+                    <paper-input id="Name" name="name" label="Nome Completo" required value="{{cadInfo.name}}"></paper-input>
+                    <paper-input id="Email" name="email" type="email" label="E-mail" required value="{{cadInfo.email}}"></paper-input>
+                    <paper-input id="Password" name="password" label="Senha" type="password" required value="{{cadInfo.password}}"></paper-input>
+                    <paper-dropdown-menu id="Gender" label="Gênero" attr-for-selected="id" noink no-animations class="flex-center-justified pdm-especialidade">
+                        <paper-listbox class="dropdown-content" attr-for-selected="id" selected="{{cadInfo.gender}}">
+                            <paper-item id="0">Feminino</paper-item>
+                            <paper-item id="1">Masculino</paper-item>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                    <paper-input id="Birthday" name="birthday" label="Data de Nascimento" required value="{{_formatDate(birthday)}}">
                         <paper-icon-button suffix on-tap="_showDialog" icon="date-range">
                         </paper-icon-button>
-                    </paper-input>
-                    <paper-radio-group selected="{{cadInfo.usertype}}" class="flex-center-justified">
-                        <paper-radio-button name="1">Paciente</paper-radio-button>
-                        <paper-radio-button name="2">Médico</paper-radio-button>
-                    </paper-radio-group>                    
+                    </paper-input>                             
                     <br />
                     <div class="flex-center-justified">
                         <paper-button class="primary" raised on-tap="_submit">Confirmar</paper-button>
@@ -167,8 +196,8 @@
                     </div>
                 </form>
 
-                <paper-dialog id="dialog" class="paper-date-picker-dialog" modal on-iron-overlay-closed="dismissDialog">
-                    <paper-date-picker id="picker" locale="[[locale]]" max-date="[[maxDate]]" heading-format="[[headingFormat]]"></paper-date-picker>
+                <paper-dialog id="dialog" class="paper-date-picker-dialog" modal>
+                    <paper-date-picker id="picker" date="[[cadInfo.birthday]]" locale="[[locale]]" heading-format="[[headingFormat]]"></paper-date-picker>
                     <div class="buttons">
                         <paper-button dialog-dismiss>Cancelar</paper-button>
                         <paper-button dialog-confirm on-tap="_confirmDate">OK</paper-button>
@@ -190,6 +219,7 @@
                 fbresp: {
                     type: Object
                 },
+                isCadMedic: false,
                 fbAppId: 282359548826115,
                 fbloginready: false,
                 isLoggedIn: {
@@ -197,17 +227,22 @@
                     notify: true,
                     observer: '_isLoggedInChanged'
                 },
+                birthday: new Date(),
                 cadInfo: {
                     type: Object,
                     value: {
-                        photourl: "",
+                        photourl: "/images/common/ic_account_circle_black.png",
                         usertype: 1,
                         name: "",
                         lastname: "",
                         email: "",
-                        birthday: "",
-                        facebookid: ""
-                    }
+                        birthday: new Date(),
+                        facebookid: "",
+                        appointmenttype: 0,
+                        password: "",
+                        gender: 0
+                    },
+                    notify: true
                 },
                 tokenData: {
                     type: Object,
@@ -242,10 +277,12 @@
                     value: "pt-br"
                 },
                 userLogin: '',
-                userPassword: '',
+                userPassword: ''
             },
             observers: [
-                '_routeChanged(route)'
+                '_routeChanged(route)',
+                '_cadinfoUsertypeChanged(cadInfo.usertype)',
+                '_birthdayChanged(birthday)'
             ],
             listeners: {
                 'neon-animation-finish': '_onNeonAnimationFinish'
@@ -258,15 +295,10 @@
                     this.isLoggedIn = true;
                 }
 
-                this.$.fbLogin.addEventListener('signin-success',
+                this.$.fbLogin.addEventListener('graph-response',
                     function (e) {
                         _this.fbresp = e.detail;
                         _this._checkUserId();
-                    });
-
-                this.$.fbLogin.addEventListener('signin-not-logged-in',
-                    function () {
-                        _this.logout();
                     });
 
                 this.$.fbLogin.addEventListener('ready',
@@ -280,6 +312,12 @@
                     function() {
                         console.log('click');
                     });
+            },
+            _birthdayChanged: function (birthday) {
+                this.cadInfo.birthday = birthday;
+            },
+            _cadinfoUsertypeChanged: function (usertype) {
+                this.isCadMedic = usertype == 2;
             },
             show: function () {
                 //this.set('route.path', '/login');
@@ -298,6 +336,9 @@
                 if (route.path == '/login') {
                     this.logout();
                 }
+                if (route.path == '/register') {
+                    this.$.appointmentSearchAjax.generateRequest();
+                }
             },
             getTokenData: function () {
                 this.tokenData = {};
@@ -305,7 +346,7 @@
 
                 var oauth_id = '';
                 try {
-                    oauth_id = this.fbresp.response.authResponse.userID;
+                    oauth_id = this.fbresp.response.id;
                 } catch (e){};
 
                 this.$.tokenService.body = {
@@ -329,8 +370,6 @@
                 if (Object.keys(token).length === 0) {
                     this.isLoggedIn = false;
                 } else {
-                    //this.$.acc_token.value = token.access_token;
-                    //this.$.acc_token.time = token.expires_in;
                     this.createCookie("access_token", token.access_token, token.expires_in);
 
                     this.isLoggedIn = true;
@@ -340,7 +379,7 @@
                 this.userLogin = this.userPassword = '';
             },
             loginError: function () {
-                if (this.userLogin != '' || this.userPassword != '') {
+                //if (this.userLogin != '' || this.userPassword != '') {
                     var self = this;
                     this.$.loginUsername.invalid = this.$.loginPasswordContainer.invalid = true;
 
@@ -348,7 +387,7 @@
                             self.$.loginUsername.invalid = self.$.loginPasswordContainer.invalid = false;
                         },
                         5000);
-                }
+                //}
             },
             logout: function() {
                 this.tokenData = {};
@@ -362,6 +401,7 @@
                     this.set('route.path', '/default');
                     this.hide();
                 } else {
+                    this.set('route.path', '/login');
                     this.show();
                 }
             },
@@ -413,11 +453,25 @@
                 }, 1000);
             },
             _checkUserId: function () {
-                this.$.fbcredentialService.params.fb_id = this.fbresp.response.authResponse.userID;
+                this.$.fbcredentialService.params.fb_id = this.fbresp.response.id;
                 this.$.fbcredentialService.generateRequest();
             },
             _cadserviceok: function () {
+                this.userLogin = this.cadInfo.email;
                 this.getTokenData();
+            },
+            _cadservicenotfound: function() {
+                if (this.cadresponse &&
+                    this.cadresponse.response) {
+                    for (var i in this.cadresponse.response) {
+                        var validation = this.cadresponse.response[i];
+                        this.$[validation.key].errorMessage = validation.errors[0].errorMessage;
+                        this.$[validation.key].invalid = true;
+                    }
+                }
+            },
+            _confirmDate: function () {
+                this.birthday = this.$.picker.date;
             },
             createCookie: function (name, value, minutes) {
                 var expires = "";

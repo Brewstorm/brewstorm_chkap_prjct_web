@@ -73,7 +73,7 @@ namespace CheckAppCore.Providers
             if (identity == null)
             {
                 context.Response.StatusCode = 400;
-                await context.Response.WriteAsync("Invalid username or password.");
+                await context.Response.WriteAsync("Usuário ou senha inválidos.");
                 return;
             }
 

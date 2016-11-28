@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CheckAppCore.Data;
@@ -11,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using CheckAppCore.Models;
 using System.Security.Claims;
+using CheckAppCore.Enumerators;
 
 namespace CheckAppCore.Controllers
 {
@@ -26,8 +26,7 @@ namespace CheckAppCore.Controllers
         
         public async Task<IActionResult> GetProfessionalInfo([FromQuery]int id)
         {
-            var professional = await _context.Professionals.Include(o => o.PersonalInfo)
-                                                           .FirstOrDefaultAsync(o => o.ID == id);
+            var professional = await _context.Professionals.Include("User.PersonalInfo").FirstOrDefaultAsync(o => o.ID == id);
 
             if (professional == null)
                 return new EmptyResult();
@@ -39,8 +38,8 @@ namespace CheckAppCore.Controllers
 
             return new JsonResult(new
             {
-                professional.PersonalInfo.SrcPhoto,
-                professional.PersonalInfo.Name,
+                professional.User.PersonalInfo.SrcPhoto,
+                professional.User.PersonalInfo.Name,
                 professional.Endereco,
                 professional.Bairro,
                 agenda.Value,
@@ -90,6 +89,58 @@ namespace CheckAppCore.Controllers
                 return NotFound("Usuário não encontrado");
             
             return Json(agendaService.GetUserAgendaAppointment(user).Result);
+        }
+
+        public async Task<IActionResult> GetProfessionalSchedule([FromQuery] string jsdate)
+        {
+            var agendaRepository = new AgendaRepository(_context);
+            var agendaService = new AgendaService(agendaRepository);
+            var userRepository = new UserRepository(_context);
+            var date = DateTime.Parse(jsdate, CultureInfo.InvariantCulture);
+
+            var authenticadedUser = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value;
+            var user = await userRepository.GetUserFromEmailOrOauthID(authenticadedUser);
+
+            if (user == null)
+                return NotFound("Usuário não encontrado");
+
+            return Json(agendaService.GetProfessionalUserSchedules(user, date).Result);
+        }
+
+        public async Task<IActionResult> ConfirmSchedule([FromQuery] int scheduleId)
+        {
+            var agendaRepository = new AgendaRepository(_context);
+            var agendaService = new AgendaService(agendaRepository);
+            var userRepository = new UserRepository(_context);
+
+            var authenticadedUser = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value;
+            var user = await userRepository.GetUserFromEmailOrOauthID(authenticadedUser);
+
+            if (user == null)
+                return NotFound("Usuário não encontrado");
+
+            if (agendaService.ConfirmSchedule(user, scheduleId).Result)
+                return Ok();
+
+            return NotFound("Agendamento não encontrado");
+        }
+
+        public async Task<IActionResult> CompleteSchedule([FromQuery] int scheduleId, [FromQuery] StatusAgendamento status)
+        {
+            var agendaRepository = new AgendaRepository(_context);
+            var agendaService = new AgendaService(agendaRepository);
+            var userRepository = new UserRepository(_context);
+
+            var authenticadedUser = ((ClaimsIdentity)User.Identity).Claims.FirstOrDefault()?.Value;
+            var user = await userRepository.GetUserFromEmailOrOauthID(authenticadedUser);
+
+            if (user == null)
+                return NotFound("Usuário não encontrado");
+
+            if (agendaService.CompleteSchedule(user, scheduleId, status).Result)
+                return Ok();
+
+            return NotFound("Agendamento não encontrado");
         }
     }
 }

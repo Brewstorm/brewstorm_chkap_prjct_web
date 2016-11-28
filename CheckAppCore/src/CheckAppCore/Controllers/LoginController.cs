@@ -28,19 +28,22 @@ namespace CheckAppCore.Controllers
             if (await _context.Users.AnyAsync(o => o.FacebookID == fb_id))
                 return new OkResult();
 
-            return new NotFoundResult();
+            return new BadRequestResult();
         }
 
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterModel postdata)
         {
-            var userRepository = new UserRepository(_context);
-            var loginService = new LoginService(userRepository);
+            if (ModelState.IsValid)
+            {
+                var userRepository = new UserRepository(_context);
+                var loginService = new LoginService(userRepository);
 
-            if (loginService.RegisterUser(postdata))
-                return Ok();
+                if (loginService.RegisterUser(postdata))
+                    return Ok();
+            }
 
-            return NotFound();
+            return BadRequest(ModelState.Values);
         }
 
         [HttpGet]

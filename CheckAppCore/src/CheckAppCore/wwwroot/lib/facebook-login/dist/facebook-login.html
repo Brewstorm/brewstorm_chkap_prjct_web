@@ -249,7 +249,9 @@ Polymer({
       });
 
       FB.getLoginStatus(function (response) {
-        _this2._statusChangeCallback(response);
+          if (_this2.autoApiCall) {
+              _this2._statusChangeCallback(response);
+          }
       });
 
       FB.XFBML.parse(_this2.$['fb-login-container']);

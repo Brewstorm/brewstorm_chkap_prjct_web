@@ -102,7 +102,7 @@ namespace CheckAppCore
 
             ConfigureRoutes(app);
 
-            //app.UseDeveloperExceptionPage();
+            app.UseDeveloperExceptionPage();
 
             DbInitializer.Initialize(context);
         }

@@ -1,4 +1,5 @@
 ﻿
+using CheckAppCore.Enumerators;
 using System;
 
 namespace CheckAppCore.Models
@@ -13,5 +14,6 @@ namespace CheckAppCore.Models
         public DateTime DateSchedule { get; set; }
         public int BeginTime { get; set; }
         public int EndTime { get; set; }
+        public StatusAgendamento Status { get; set; } = StatusAgendamento.Aguardando;
     }
 }

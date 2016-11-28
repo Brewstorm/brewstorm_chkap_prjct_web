@@ -17,11 +17,18 @@ namespace CheckAppCore.Repositories
 
         public bool AuthenticateUser(string email, string password)
         {
+            if (string.IsNullOrEmpty(email) ||
+                string.IsNullOrEmpty(password)) 
+                return false;
+
             return Context.Users.Any(o => o.EmailAddress == email && o.Password == password);
         }
 
         public bool AuthenticateFBUser(string userid)
         {
+            if (string.IsNullOrEmpty(userid))
+                return false;
+
             return Context.Users.Any(o => o.FacebookID == userid);
         }
 
@@ -31,19 +38,27 @@ namespace CheckAppCore.Repositories
             {
                 var user = new User
                 {
-                    FirstName = registerModel.Name,
-                    LastName = registerModel.LastName,
-                    Password = string.Empty,
-                    PhotoUrl = registerModel.PhotoUrl,
+                    Password = registerModel.Password,
                     FacebookID = registerModel.FacebookID,
-                    EmailAddress = registerModel.Email
-                };   
-
-                var userRole = new UserRole { User = user, RoleID = registerModel.UserType };
-                user.UserRoles = new List<UserRole>() { userRole };
+                    EmailAddress = registerModel.Email,
+                    UserRoles = new List<UserRole>
+                    {
+                        new UserRole { RoleID = registerModel.UserType.GetHashCode() }
+                    },
+                    PersonalInfo = new PersonalInfo()
+                    {
+                        Name = registerModel.Name,
+                        SrcPhoto = registerModel.PhotoUrl
+                    }
+                };
 
                 Context.Users.Add(user);
                 Context.SaveChanges();
+
+                if(registerModel.UserType == UserType.Professional)
+                {
+                    return Task.FromResult(new ProfessionalRepository(Context).RegisterProfessional(registerModel));
+                }
 
                 return Task.FromResult(true);
             }
@@ -65,7 +80,10 @@ namespace CheckAppCore.Repositories
 
         public Task<User> GetUserFromEmailOrOauthID(string subject)
         {
-            return Context.Users.FirstOrDefaultAsync(o => o.FacebookID == subject || o.EmailAddress == subject);
+            return Context.Users
+                            .Include("UserRoles")
+                            .Include("PersonalInfo")
+                            .FirstOrDefaultAsync(o => o.FacebookID == subject || o.EmailAddress == subject);
         }
     }
 }

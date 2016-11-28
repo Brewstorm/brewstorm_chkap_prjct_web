@@ -23,6 +23,8 @@
 <link rel="import" href="../lib/neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../lib/neon-animation/neon-animation-runner-behavior.html">
 
+<link rel="import" href="../lib/moment-element/moment-with-locales-import.html" />
+
 <link rel="import" href="login.html">
 <link rel="import" href="consult.html">
 <link rel="import" href="examinations.html">
@@ -31,6 +33,7 @@
 <link rel="import" href="profile.html">
 <link rel="import" href="settings.html">
 <link rel="import" href="agenda.html">
+<link rel="import" href="calendar.html">
 
 <!--styles-->
 <link rel="import" href="../styles/checkapp-styles.html">
@@ -115,11 +118,12 @@
                     <consult-view name="consult"></consult-view>
                     <examinations-view name="examinations"></examinations-view>
                     <agenda-view name="agenda"></agenda-view>
+                    <calendar-view name="calendar"></calendar-view>
                 </iron-pages>
                 <paper-toast id="toast" class="fit-bottom" duration="0" text="Você está Offline." raised></paper-toast>
             </app-header-layout>
         </app-drawer-layout>
-        <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky>
+        <paper-tabs id="tabs" selected="[[page]]" attr-for-selected="name" sticky class="menu-tabs">
             <paper-tab name="default" link>
                 <a href="#/default" class="link" tabindex="-1">
                     <iron-icon icon="icons:home"></iron-icon>
@@ -188,7 +192,8 @@
                                 },
                                 'exit': {
                                     name: 'fade-out-animation',
-                                    node: this.$.appDrawerLayout
+                                    node: this.$.appDrawerLayout,
+                                    timing: { duration: 50 }
                                 }
                             }
                         }
@@ -203,6 +208,8 @@
                 ready: function () {
                     var self = this;
 
+                    moment.locale('pt-BR');
+
                     this.$.appDrawer.addEventListener('opened-changed',
                         function (e) {
                             self.$.tabs.hidden = e.detail.value || !self.isLoggedIn;
@@ -211,6 +218,16 @@
                     this.$.appLogin.addEventListener('is-logged-in-changed',
                         function (e) {
                             self.isLoggedIn = e.detail.value;
+                        });
+
+                    this.$.appIronPages.addEventListener('iron-select',
+                        function(e) {
+                            e.detail.item.active = true;
+                        });
+
+                    this.$.appIronPages.addEventListener('iron-deselect',
+                        function (e) {
+                            e.detail.item.active = false;
                         });
                     
                     self.$.toast.fitInto = self.$.container;
@@ -251,7 +268,8 @@
                 hide: function () {
                     if (this.$.appDrawerLayout.style.display == 'block') {
                         this.cancelAnimation();
-                        this.playAnimation('exit');
+                        //this.playAnimation('exit');
+                        this.$.appDrawerLayout.style.display = 'none';
                     }
                 },
 
@@ -278,8 +296,11 @@
                     this._updateDescriptionLabelStyle();
                 },
                 _routeChanged: function(route) {
-                    if (this.readCookie("access_token") == '') {
-                        this.isLoggedIn = false;
+                    if (route.path != '/register' &&
+                        (this.readCookie("access_token") == '' ||
+                        this.readCookie("access_token") == null)) {
+                        this.hide();
+                        this.set('route.path', '/login');
                     }
                 },
                 _tokenChanged: function (token) {
@@ -287,7 +308,6 @@
                         this.isLoggedIn = false;
                     } else {
                         this.createCookie("access_token", token.access_token, token.expires_in);
-
                         this.isLoggedIn = true;
                     }
                 },
@@ -296,14 +316,12 @@
                     this.$.tabs.hidden = this.$.appDrawer.opened || !isLoggedIn;
                     this.setPageDescription();
 
-                    this.async(function () {
-                        if (this._isCookieExpired()) {
-                            this.hide();
-                            this.set('route.path', '/login');
-                        } else {
-                            this.show();
-                        }
-                    }, 1000);
+                    if (this._isCookieExpired()) {
+                        this.hide();
+                        this.set('route.path', '/login');
+                    } else {
+                        this.show();
+                    }
                 },
 
                 _showPage404: function () {

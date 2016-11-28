@@ -4,10 +4,8 @@
 <link rel="import" href="../lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../lib/iron-list/iron-list.html">
 <link rel="import" href="../lib/iron-image/iron-image.html">
-<link rel="import" href="../lib/polymer-paper-date-picker/paper-date-picker.html">
 <link rel="import" href="../lib/iron-icons/iron-icons.html">
 <link rel="import" href="../lib/paper-dialog/paper-dialog.html">
-<link rel="import" href="moment-element.html" />
 <link rel="import" href="numeral-element.html" />
 
 <dom-module id="agenda-view">
@@ -177,7 +175,7 @@
                         <paper-icon-button icon="icons:arrow-forward" on-tap="_nextDateConsulta" disabled="{{!canForwardDate}}"></paper-icon-button>
                     </div>
                     <paper-dialog id="dialog" class="paper-date-picker-dialog" modal on-iron-overlay-closed="dismissDialog">
-                        <paper-date-picker id="picker" date="[[dateConsulta]]" locale="[[locale]]" min-date="[[minDate]]" heading-format="[[headingFormat]]"></paper-date-picker>
+                        <paper-date-picker id="picker" date="[[dateConsulta]]" locale="pt-BR" min-date="[[minDate]]" heading-format="[[headingFormat]]"></paper-date-picker>
                         <div class="buttons">
                             <paper-button dialog-dismiss>Cancelar</paper-button>
                             <paper-button dialog-confirm on-tap="_confirmDate">OK</paper-button>
@@ -244,9 +242,6 @@
                         value: "ddd, D MMM"
                     },
                     hiddenDPDialog: true,
-                    locale: {
-                        value: "pt-br"
-                    },
                     agendamentoConfirmed: {
                         value: false
                     }

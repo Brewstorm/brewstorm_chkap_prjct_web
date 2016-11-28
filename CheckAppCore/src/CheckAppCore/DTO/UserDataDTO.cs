@@ -11,5 +11,6 @@ namespace CheckAppCore.DTO
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PhotoUrl { get; set; }
+        public int? UserType { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CheckAppCore.Controllers
 {
-    [Authorize]
+    
     public class AppointmentTypeController : Controller
     {
         private readonly CheckAppContext _context;
@@ -22,15 +22,15 @@ namespace CheckAppCore.Controllers
             return new JsonResult(await _context.AppointmentTypes.ToListAsync());
         }
 
+        [Authorize]
         public async Task<IActionResult> GetProfessionals([FromQuery] int? appTypeId)
         {
             if (appTypeId.HasValue)
             {
                 return new JsonResult(await _context.ProfessionalsAppointmentTypes
-                                                    .Include(p => p.Professional)
-                                                    .Include(p => p.Professional.PersonalInfo)
+                                                    .Include(p => p.Professional.User.PersonalInfo)
                                                     .Where(o => o.AppointmentType.ID == appTypeId.Value)
-                                                    .Select(pat => new { pat.Professional.ID, pat.Professional.PersonalInfo.Name, pat.Professional.PersonalInfo.SrcPhoto})
+                                                    .Select(pat => new { pat.Professional.ID, pat.Professional.User.PersonalInfo.Name, pat.Professional.User.PersonalInfo.SrcPhoto})
                                                     .ToListAsync());
             }
 

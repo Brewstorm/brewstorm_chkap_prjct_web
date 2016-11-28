@@ -30,10 +30,10 @@ namespace CheckAppCore.Services
 
             return new UserDataDTO
             {
-                Name = user.FirstName,
-                LastName = user.LastName,
+                Name = user.PersonalInfo.Name,
                 Email = user.EmailAddress,
-                PhotoUrl = user.PhotoUrl
+                PhotoUrl = user.PersonalInfo.SrcPhoto ?? "/images/common/ic_account_circle_black.png",
+                UserType = user.UserRoles.FirstOrDefault()?.RoleID
             };
         }
     }
