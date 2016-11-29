@@ -130,8 +130,9 @@
                                     appid="282359548826115"
                                     button-size="large"
                                     language="pt_BR"
-                                    graph-url="me?fields=first_name,last_name,email,picture.type(normal),birthday"
-                                    scope="public_profile email user_birthday"></facebook-login>
+                                    graph-url="me?fields=first_name,last_name,email,gender,picture.type(normal),birthday"
+                                    scope="public_profile email user_birthday"
+                                    graph-response="{{fbdata}}"></facebook-login>
                 </div>
                 <span class="flex-center-justified" style="margin-top: 10px">ou</span>
                 <div>
@@ -216,9 +217,7 @@
                 opened: {
                     type: Boolean
                 },
-                fbresp: {
-                    type: Object
-                },
+                fbresp_id: 0,
                 isCadMedic: false,
                 fbAppId: 282359548826115,
                 fbloginready: false,
@@ -295,9 +294,22 @@
                     this.isLoggedIn = true;
                 }
 
-                this.$.fbLogin.addEventListener('graph-response',
+                //this.$.fbLogin.addEventListener('graph-response',
+                //    function (e) {
+                //        _this.fbresp = e.detail;
+                //        _this._checkUserId();
+                //    });
+
+                this.$.fbLogin.addEventListener('signin-success',
                     function (e) {
-                        _this.fbresp = e.detail;
+                        try {
+                            _this.fbresp_id = e.detail.response.id;
+
+                        } catch (e) { }
+                        try {
+                            _this.fbresp_id = e.detail.response.authResponse.userID;
+                        } catch (e) { }
+
                         _this._checkUserId();
                     });
 
@@ -346,7 +358,7 @@
 
                 var oauth_id = '';
                 try {
-                    oauth_id = this.fbresp.response.id;
+                    oauth_id = this.fbresp_id;
                 } catch (e){};
 
                 this.$.tokenService.body = {
@@ -391,7 +403,7 @@
             },
             logout: function() {
                 this.tokenData = {};
-                this.fbresp = {};
+                this.fbresp_id = 0;
                 this.eraseCookie("access_token");
                 this.$.logoutService.generateRequest();
                 this.show();
@@ -417,16 +429,18 @@
                 if (this.fbdata && Object.keys(this.fbdata).length > 0) {
                     var fbdata = this.fbdata;
                     var date = moment(fbdata.birthday);
-
+                    
                     this.cadInfo = {
                         facebookid: fbdata.id,
                         usertype: 1,
                         name: fbdata.first_name,
                         lastname: fbdata.last_name,
-                        birthday: date,
+                        gender: (fbdata.gender == "female" ? 0 : 1),
                         email: fbdata.email,
-                        photourl: fbdata.picture.data.url,
+                        photourl: fbdata.picture.data.url
                     }
+
+                    this.birthday = date.toDate();
                 }
             },
             _confirmDate: function () {
@@ -453,11 +467,12 @@
                 }, 1000);
             },
             _checkUserId: function () {
-                this.$.fbcredentialService.params.fb_id = this.fbresp.response.id;
+                this.$.fbcredentialService.params.fb_id = this.fbresp_id;
                 this.$.fbcredentialService.generateRequest();
             },
             _cadserviceok: function () {
                 this.userLogin = this.cadInfo.email;
+                this.userPassword = this.cadInfo.password;
                 this.getTokenData();
             },
             _cadservicenotfound: function() {

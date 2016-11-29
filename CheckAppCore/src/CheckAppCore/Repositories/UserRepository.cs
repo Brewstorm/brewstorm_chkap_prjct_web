@@ -32,11 +32,29 @@ namespace CheckAppCore.Repositories
             return Context.Users.Any(o => o.FacebookID == userid);
         }
 
+        public bool EmailUserExist(string email)
+        {
+            return Context.Users.Any(o => o.EmailAddress == email);
+        }
+
         public Task<bool> RegisterUser(RegisterModel registerModel)
         {
             try
             {
-                var user = new User
+                User user;
+                if (EmailUserExist(registerModel.Email))
+                {
+                    user = GetUserFromEmail(registerModel.Email).Result;
+                    if (!string.IsNullOrEmpty(user.FacebookID))
+                        return Task.FromResult(false);
+
+                    user.FacebookID = registerModel.FacebookID;
+                    Context.SaveChanges();
+
+                    return Task.FromResult(true);
+                }
+
+                user = new User
                 {
                     Password = registerModel.Password,
                     FacebookID = registerModel.FacebookID,
@@ -45,19 +63,33 @@ namespace CheckAppCore.Repositories
                     {
                         new UserRole { RoleID = registerModel.UserType.GetHashCode() }
                     },
-                    PersonalInfo = new PersonalInfo()
+                    PersonalInfo = new PersonalInfo
                     {
                         Name = registerModel.Name,
                         SrcPhoto = registerModel.PhotoUrl
                     }
                 };
 
-                Context.Users.Add(user);
-                Context.SaveChanges();
-
                 if(registerModel.UserType == UserType.Professional)
                 {
-                    return Task.FromResult(new ProfessionalRepository(Context).RegisterProfessional(registerModel));
+                    var agendaRepository = new AgendaRepository(Context);
+                    var professional = new Professional
+                    {
+                        Endereco = "Não informado",
+                        Bairro = "Não informado",
+                        NumeroCRM = "Não informado",
+                        ProfessionalAppointmentTypes = new List<ProfessionalAppointmentType>()
+                        {
+                            new ProfessionalAppointmentType {AppointmentTypeId = registerModel.AppointmentType}
+                        }
+                    };
+
+                    user.Professional = professional;
+
+                    Context.Users.Add(user);
+                    Context.SaveChanges();
+
+                    return Task.FromResult(agendaRepository.CreateDefaultAgendaByProfessional(professional));
                 }
 
                 return Task.FromResult(true);

@@ -29,7 +29,7 @@ namespace CheckAppCore.Repositories
                 Context.Professionals.Add(professional);
                 Context.SaveChanges();               
 
-                return new AgendaRepository(Context).CreateDefaultAgendaByProfessional(professional); ;
+                return new AgendaRepository(Context).CreateDefaultAgendaByProfessional(professional);
             }
             catch
             {

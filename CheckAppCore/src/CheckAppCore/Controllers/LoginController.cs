@@ -34,16 +34,16 @@ namespace CheckAppCore.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterModel postdata)
         {
-            if (ModelState.IsValid)
-            {
-                var userRepository = new UserRepository(_context);
-                var loginService = new LoginService(userRepository);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState.Values);
 
-                if (loginService.RegisterUser(postdata))
-                    return Ok();
-            }
+            var userRepository = new UserRepository(_context);
+            var loginService = new LoginService(userRepository);
 
-            return BadRequest(ModelState.Values);
+            if (loginService.RegisterUser(postdata))
+                return Ok();
+
+            return BadRequest("Não foi possível cadastrar as informações.");
         }
 
         [HttpGet]
