@@ -92,6 +92,9 @@ namespace CheckAppCore.Repositories
                     return Task.FromResult(agendaRepository.CreateDefaultAgendaByProfessional(professional));
                 }
 
+                Context.Users.Add(user);
+                Context.SaveChanges();
+
                 return Task.FromResult(true);
             }
             catch(Exception)
